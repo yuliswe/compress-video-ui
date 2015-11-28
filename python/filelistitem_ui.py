@@ -49,6 +49,8 @@ class Ui_FileListItem(object):
         self.filename.setObjectName("filename")
         self.verticalLayout_2.addWidget(self.filename)
         self.horizontalLayout_2 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_2.setContentsMargins(-1, -1, 12, -1)
+        self.horizontalLayout_2.setSpacing(12)
         self.horizontalLayout_2.setObjectName("horizontalLayout_2")
         self.fileinfo = QtWidgets.QLabel(FileListItem)
         self.fileinfo.setObjectName("fileinfo")
