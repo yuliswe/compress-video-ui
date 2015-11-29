@@ -62,10 +62,12 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
 
    def setupFileListArea(self):
       self.filelistArea.setCurrentIndex(0)
-      def onAddFile(path):
-         self.filelistArea.setCurrentIndex(1)
+      def onRemoveFile(path):
+         if len(self.filelist.children) == 0:
+            self.filelistArea.setCurrentIndex(0)
       self.filelist = F.FileList(self.hasfile)
-      self.filelist.addFileSignal.connect(onAddFile)
+      self.filelist.addFileSignal.connect(lambda:self.filelistArea.setCurrentIndex(1))
+      self.filelist.removeFileSignal.connect(onRemoveFile)
       self.filelist._debug()
 
 

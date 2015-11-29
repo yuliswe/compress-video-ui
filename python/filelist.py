@@ -86,7 +86,8 @@ class FileList(W.QListWidget):
    _unique = 0
    _shouldKill = False
    doneSignal = C.pyqtSignal()
-   addFileSignal = C.pyqtSignal([int])
+   addFileSignal = C.pyqtSignal([str])
+   removeFileSignal = C.pyqtSignal([str])
 
    def __init__(self, parent):
       super().__init__()
@@ -134,7 +135,10 @@ class FileList(W.QListWidget):
       file.killProcess()
       self.children.remove(file)
       self.layout().removeWidget(file)
+      self.removeFileSignal.emit(file.name)
       file.deleteLater()
+
+
 
 
    def killAll(self):
