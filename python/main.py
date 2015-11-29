@@ -6,16 +6,33 @@ from PyQt5 import QtCore
 from mainwindow_ui import Ui_MainWindow
 import mainwindow_rc
 import filelist as F
+import types
+
+def addBetween(parent, target, children):
+   for c in children:
+      parent.layout().removeWidget(c)
+      target.layout().addWidget(c)
+      parent.layout().addWidget(target)
+
 
 class MainWindow(W.QMainWindow, Ui_MainWindow):
+   def dragEnterEvent(self, event):
+      event.accept()
+
+   def dropEvent(self, event):
+      event.accept()
+      for url in event.mimeData().urls():
+         self.filelist.addFile(url.path())
+
    def __init__(self):
       super(MainWindow, self).__init__()
       self.setupUi(self)
       self.setupDragHint()
       self.setupSidebar()
-      self.setupFileList()
+      self.setupFileListArea()
       self.setupStartButton()
       self.show()
+      self.setAcceptDrops(True)
 
    def setupDragHint(self):
       effect = W.QGraphicsOpacityEffect()
@@ -45,8 +62,13 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       self.filelist.doneSignal.connect(off)
       self.startButton.clicked.connect(onClick)
 
-   def setupFileList(self):
-      self.filelist =F.FileList(self.hasfile)
+   def setupFileListArea(self):
+      self.filelistArea.setCurrentIndex(0)
+      def onAddFile(path):
+         self.filelistArea.setCurrentIndex(1)
+      self.filelist = F.FileList(self.hasfile)
+      self.filelist.addFileSignal.connect(onAddFile)
+      self.filelist._debug()
 
 
 def main():

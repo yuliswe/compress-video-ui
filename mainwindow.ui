@@ -326,6 +326,9 @@ QToolButton {
        </item>
        <item>
         <widget class="QStackedWidget" name="filelistArea">
+         <property name="acceptDrops">
+          <bool>true</bool>
+         </property>
          <property name="autoFillBackground">
           <bool>false</bool>
          </property>
