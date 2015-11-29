@@ -8,6 +8,7 @@ import mainwindow_rc
 import filelist as F
 import types
 from lib.qtopacity import opacity
+from control.configfile import ConfigFile
 
 def addBetween(parent, target, children):
    for c in children:
@@ -27,6 +28,7 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       self.setupStartButton()
       self.show()
       self.setAcceptDrops(True)
+      ConfigFile(self, self.configSelector)
 
    def dragEnterEvent(self, event):
       event.accept()

@@ -266,7 +266,7 @@ QToolButton {
            </widget>
           </item>
           <item>
-           <widget class="QComboBox" name="comboBox">
+           <widget class="QComboBox" name="configSelector">
             <property name="focusPolicy">
              <enum>Qt::NoFocus</enum>
             </property>
