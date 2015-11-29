@@ -30,7 +30,6 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       def on():
          self.filelist.startAll()
          self.startButton.setText("终止")
-         print("ouch")
 
       def off():
          self.startButton.setChecked(False)

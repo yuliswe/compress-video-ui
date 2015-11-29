@@ -7,10 +7,6 @@ from subprocess import Popen
 from autoprocess import AutoProcess, Process
 from time import sleep
 
-class FileState:
-    InProcess, Done, Error, Await = range(4)
-
-
 class File(Ui_FileListItem, W.QWidget):
 
    class Await():
@@ -35,15 +31,12 @@ class File(Ui_FileListItem, W.QWidget):
       self.setupUi(self)
       self.progress.reset()
       parent.layout().addWidget(self)
-      # self.progress.valueChanged.connect(self.progress.setValue)
       self.progress.valueChanged.connect(self.updateProgressBar)
       self.progress.hide()
 
-   def _debug(self):
-      self.name = "example_file_name"
-      self.size = "size"
-      self.date = "date"
-      self.time = "time"
+   def update(self):
+      self.fileinfo.setText(naturalsize(self.size))
+      self.filename.setText(self.name)
 
    def updateProgressBar(self, val):
       self.progress.setValue(val)
