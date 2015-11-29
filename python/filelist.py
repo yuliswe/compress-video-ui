@@ -7,12 +7,15 @@ from subprocess import Popen
 from lib.autoprocess import AutoProcess, Process
 from time import sleep
 from lib.lisp import *
+from lib.qtopacity import opacity
 
 class File(Ui_FileListItem, W.QWidget):
 
    class Await():
       """State"""
-   class Done():
+   class Success():
+      stdout = ""
+   class Failure():
       stdout = ""
    class Running():
       percentage = 0
@@ -31,7 +34,8 @@ class File(Ui_FileListItem, W.QWidget):
       self.progress.valueChanged.connect(self.updateUI)
       self.initUI()
       #set up deleteFileButton
-      # self.deleteFileButton.
+      opacity(self.deleteFileButton, 0.5)
+      self.deleteFileButton.clicked.connect(lambda:parent.removeFile(self))
 
    def initUI(self):
       self.fileinfo.setText(naturalsize(self.size))
@@ -64,16 +68,16 @@ class File(Ui_FileListItem, W.QWidget):
          print(self.state.percentage)
          if self.state.percentage >= 100:
             self.progress.valueChanged.emit(self.state.percentage)
-            self.state = File.Done()
+            self.state = File.Success()
 
       self.state._process = AutoProcess(lambda: self.stateIs(File.Running), do, 1)
       self.state._process.start()
       return self.state._process
 
    def killProcess(self):
-      self.state._process.kill()
-      self.state = File.Done()
-
+      if self.stateIs(File.Running):
+         self.state._process.kill()
+         self.state = File.Failure()
 
 
 class FileList(W.QListWidget):
@@ -112,19 +116,30 @@ class FileList(W.QListWidget):
       self._shouldKill = False
       for c in self.children: c.reset()
       def do():
-         for idx, c in enumerate(self.children):
-            if self._shouldKill:
-               break
-            print("starting"+str(c))
+         idx = 0
+         while idx < len(self.children):
+            c = self.children[idx]
+            if self._shouldKill: break
+            print("Starts: "+ c.name)
             p = c.startProcess()
             p.join()
-            print("done "+str(c.id))
+            print("Finishes: " + c.name)
+            if c.stateIs(File.Success):
+               self.removeFile(c)
          self.doneSignal.emit()
       self._process = Process(do)
       self._process.start()
+
+   def removeFile(self, file):
+      file.killProcess()
+      self.children.remove(file)
+      self.layout().removeWidget(file)
+      file.deleteLater()
+
 
    def killAll(self):
       self._shouldKill = True
       for idx, c in enumerate(self.children):
          if c.stateIs(File.Running):
             c.killProcess()
+

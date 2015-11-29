@@ -43,11 +43,9 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       self.sidebar.setCurrentRow(0)
 
    def setupStartButton(self):
-
       def on():
          self.filelist.startAll()
          self.startButton.setText("终止")
-
       def off():
          self.startButton.setChecked(False)
          self.startButton.setText("开始")
@@ -68,7 +66,7 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
          self.filelistArea.setCurrentIndex(1)
       self.filelist = F.FileList(self.hasfile)
       self.filelist.addFileSignal.connect(onAddFile)
-      # self.filelist._debug()
+      self.filelist._debug()
 
 
 def main():
