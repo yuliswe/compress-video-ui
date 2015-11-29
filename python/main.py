@@ -7,6 +7,7 @@ from mainwindow_ui import Ui_MainWindow
 import mainwindow_rc
 import filelist as F
 import types
+from lib.qtopacity import opacity
 
 def addBetween(parent, target, children):
    for c in children:
@@ -16,13 +17,6 @@ def addBetween(parent, target, children):
 
 
 class MainWindow(W.QMainWindow, Ui_MainWindow):
-   def dragEnterEvent(self, event):
-      event.accept()
-
-   def dropEvent(self, event):
-      event.accept()
-      for url in event.mimeData().urls():
-         self.filelist.addFile(url.path())
 
    def __init__(self):
       super(MainWindow, self).__init__()
@@ -34,10 +28,16 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       self.show()
       self.setAcceptDrops(True)
 
+   def dragEnterEvent(self, event):
+      event.accept()
+
+   def dropEvent(self, event):
+      event.accept()
+      for url in event.mimeData().urls():
+         self.filelist.addFile(url.path())
+
    def setupDragHint(self):
-      effect = W.QGraphicsOpacityEffect()
-      effect.setOpacity(0.2)
-      self.dragHint.setGraphicsEffect(effect)
+      opacity(self.dragHint, 0.2)
 
    def setupSidebar(self):
       self.sidebar.setCurrentRow(0)
@@ -68,12 +68,12 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
          self.filelistArea.setCurrentIndex(1)
       self.filelist = F.FileList(self.hasfile)
       self.filelist.addFileSignal.connect(onAddFile)
-      self.filelist._debug()
+      # self.filelist._debug()
 
 
 def main():
    app = W.QApplication(sys.argv)
-   w = MainWindow()
+   MainWindow()
    sys.exit(app.exec_())
 
 main()

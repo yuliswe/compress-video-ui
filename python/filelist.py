@@ -30,6 +30,8 @@ class File(Ui_FileListItem, W.QWidget):
       parent.layout().insertWidget(0, self)
       self.progress.valueChanged.connect(self.updateUI)
       self.initUI()
+      #set up deleteFileButton
+      # self.deleteFileButton.
 
    def initUI(self):
       self.fileinfo.setText(naturalsize(self.size))

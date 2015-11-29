@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_FileListItem(object):
     def setupUi(self, FileListItem):
         FileListItem.setObjectName("FileListItem")
-        FileListItem.resize(449, 64)
+        FileListItem.resize(493, 64)
         FileListItem.setStyleSheet("#FileListItem {\n"
 "    background-color: transparent;\n"
 "}\n"
@@ -25,7 +25,12 @@ class Ui_FileListItem(object):
 "    max-width: 64;\n"
 "    min-width: 64;\n"
 "}\n"
-"")
+"#deleteFileButton {\n"
+"    max-height: 32;\n"
+"    min-height: 32;\n"
+"    max-width: 32;\n"
+"    min-width: 32;\n"
+"}")
         self.horizontalLayout = QtWidgets.QHBoxLayout(FileListItem)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
@@ -61,6 +66,12 @@ class Ui_FileListItem(object):
         self.horizontalLayout_2.addWidget(self.progress)
         self.verticalLayout_2.addLayout(self.horizontalLayout_2)
         self.horizontalLayout.addLayout(self.verticalLayout_2)
+        self.deleteFileButton = QtWidgets.QLabel(FileListItem)
+        self.deleteFileButton.setText("")
+        self.deleteFileButton.setPixmap(QtGui.QPixmap(":/trash.png"))
+        self.deleteFileButton.setScaledContents(True)
+        self.deleteFileButton.setObjectName("deleteFileButton")
+        self.horizontalLayout.addWidget(self.deleteFileButton)
 
         self.retranslateUi(FileListItem)
         QtCore.QMetaObject.connectSlotsByName(FileListItem)

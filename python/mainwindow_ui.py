@@ -161,6 +161,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.addWidget(self.startButton)
         self.verticalLayout.addWidget(self.controlBar)
         self.filelistArea = QtWidgets.QStackedWidget(self.widget)
+        self.filelistArea.setAcceptDrops(True)
         self.filelistArea.setAutoFillBackground(False)
         self.filelistArea.setStyleSheet("#hasfile {\n"
 "    background-color: transparent;\n"

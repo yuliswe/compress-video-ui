@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>449</width>
+    <width>493</width>
     <height>64</height>
    </rect>
   </property>
@@ -27,12 +27,14 @@
 	max-width: 64;
 	min-width: 64;
 }
-</string>
+#deleteFileButton {
+	max-height: 32;
+	min-height: 32;
+	max-width: 32;
+	min-width: 32;
+}</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
-   <property name="spacing">
-    <number>-1</number>
-   </property>
    <property name="leftMargin">
     <number>0</number>
    </property>
@@ -107,6 +109,22 @@
       </layout>
      </item>
     </layout>
+   </item>
+   <item>
+    <widget class="QLabel" name="deleteFileButton">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="pixmap">
+      <pixmap resource="../resource/mainwindow.qrc">:/trash.png</pixmap>
+     </property>
+     <property name="scaledContents">
+      <bool>true</bool>
+     </property>
+     <property name="margin">
+      <number>12</number>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>
