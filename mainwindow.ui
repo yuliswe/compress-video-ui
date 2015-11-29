@@ -308,7 +308,7 @@ QToolButton {
             <property name="icon">
              <iconset resource="resource/mainwindow.qrc">
               <normaloff>:/start.png</normaloff>
-              <normalon>:/pause.png</normalon>:/start.png</iconset>
+              <normalon>:/stop.png</normalon>:/start.png</iconset>
             </property>
             <property name="checkable">
              <bool>true</bool>

@@ -151,8 +151,8 @@ class Ui_MainWindow(object):
 "    font-size: 13px;\n"
 "}")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/pause.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
         icon.addPixmap(QtGui.QPixmap(":/start.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/stop.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.startButton.setIcon(icon)
         self.startButton.setCheckable(True)
         self.startButton.setChecked(False)

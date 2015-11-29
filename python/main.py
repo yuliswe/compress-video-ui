@@ -5,7 +5,7 @@ from PyQt5 import QtWidgets as W
 from PyQt5 import QtCore
 from mainwindow_ui import Ui_MainWindow
 import mainwindow_rc
-
+import filelist as F
 
 class MainWindow(W.QMainWindow, Ui_MainWindow):
    def __init__(self):
@@ -13,6 +13,8 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       self.setupUi(self)
       self.setupDragHint()
       self.setupSidebar()
+      self.setupFileList()
+      self.setupStartButton()
       self.show()
 
    def setupDragHint(self):
@@ -24,12 +26,33 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       self.sidebar.setCurrentRow(0)
 
    def setupStartButton(self):
-      self.startButton.setDown(true)
+
+      def on():
+         self.filelist.startAll()
+         self.startButton.setText("终止")
+         print("ouch")
+
+      def off():
+         self.startButton.setChecked(False)
+         self.startButton.setText("开始")
+         self.filelist.killAll()
+
+      def onClick():
+         if self.startButton.isChecked():
+            on()
+         else:
+            off()
+
+      self.filelist.doneSignal.connect(off)
+      self.startButton.clicked.connect(onClick)
+
+   def setupFileList(self):
+      self.filelist =F.FileList(self.hasfile)
+
 
 def main():
    app = W.QApplication(sys.argv)
    w = MainWindow()
    sys.exit(app.exec_())
-
 
 main()
