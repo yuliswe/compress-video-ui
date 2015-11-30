@@ -1,3 +1,8 @@
 echo "processing"
-sleep 5
+i=0
+while [ ${i} -lt 101 ]; do
+   echo ${i} > "${1}"
+   sleep 0.1
+   ((i++))
+done
 echo "done"

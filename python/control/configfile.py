@@ -23,3 +23,7 @@ class ConfigFile():
    def loadDir(self, path):
       for p in listdir(path):
          self.loadFile(path+'/'+p)
+
+   def currentConfig(self):
+      print(self.ui.currentText())
+      return (self.ui.currentText())

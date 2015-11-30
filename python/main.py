@@ -28,7 +28,7 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       self.setupStartButton()
       self.show()
       self.setAcceptDrops(True)
-      ConfigFile(self, self.configSelector)
+      self.configSelector = ConfigFile(self, self.configSelector)
 
    def dragEnterEvent(self, event):
       event.accept()
@@ -67,15 +67,18 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       def onRemoveFile(path):
          if len(self.filelist.children) == 0:
             self.filelistArea.setCurrentIndex(0)
-      self.filelist = F.FileList(self.hasfile)
+      self.filelist = F.FileList(self, self.hasfile)
       self.filelist.addFileSignal.connect(lambda:self.filelistArea.setCurrentIndex(1))
       self.filelist.removeFileSignal.connect(onRemoveFile)
       self.filelist._debug()
 
 
 def main():
-   app = W.QApplication(sys.argv)
-   MainWindow()
-   sys.exit(app.exec_())
+   try:
+      app = W.QApplication(sys.argv)
+      w = MainWindow()
+      sys.exit(app.exec_())
+   except:
+      w.filelist.killAll()
 
 main()

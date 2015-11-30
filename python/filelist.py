@@ -8,6 +8,7 @@ from lib.autoprocess import AutoProcess, Process
 from time import sleep
 from lib.lisp import *
 from lib.qtopacity import opacity
+from subprocess import Popen
 
 class File(Ui_FileListItem, W.QWidget):
 
@@ -20,6 +21,8 @@ class File(Ui_FileListItem, W.QWidget):
    class Running():
       percentage = 0
       _process = None
+      _ptmp = None
+      subproc = None
 
    name = ""
    size = 0
@@ -27,7 +30,8 @@ class File(Ui_FileListItem, W.QWidget):
    time = 0
    state = Await()
 
-   def __init__(self, parent):
+   def __init__(self, root, parent):
+      self.root = root
       super().__init__()
       self.setupUi(self)
       parent.layout().insertWidget(0, self)
@@ -59,23 +63,35 @@ class File(Ui_FileListItem, W.QWidget):
 
    def startProcess(self):
       assert not self.stateIs(File.Running)
-
       self.state = File.Running()
-      def do():
-         self.state.percentage += 10
-         self.progress.valueChanged.emit(self.state.percentage)
 
+      # call bin with the config and input file
+      print("./bin/convert " + self.root.configSelector.currentConfig())
+      self.state._ptmp = open("tmp/progress", "w+") # create temp progress file
+      self.state._ptmp.write("0")
+      self.state.subproc = Popen(['/bin/bash', './bin/testbin', 'tmp/progress'])
+
+      # start a thread to check the progress repeatedly
+      def do():
+         intput = self.state._ptmp.read()
+         self.state._ptmp.seek(0)
+         self.state.percentage = int(self.state._ptmp.read())
          print(self.state.percentage)
+         self.progress.valueChanged.emit(self.state.percentage)
          if self.state.percentage >= 100:
             self.progress.valueChanged.emit(self.state.percentage)
+            self.state._ptmp.close()
             self.state = File.Success()
 
       self.state._process = AutoProcess(lambda: self.stateIs(File.Running), do, 1)
       self.state._process.start()
+
       return self.state._process
 
    def killProcess(self):
       if self.stateIs(File.Running):
+         self.state._ptmp.close()
+         self.state.subproc.terminate()
          self.state._process.kill()
          self.state = File.Failure()
 
@@ -89,7 +105,8 @@ class FileList(W.QListWidget):
    addFileSignal = C.pyqtSignal([str])
    removeFileSignal = C.pyqtSignal([str])
 
-   def __init__(self, parent):
+   def __init__(self, root, parent):
+      self.root = root
       super().__init__()
       la = W.QVBoxLayout()
       self.setLayout(la)
@@ -104,7 +121,7 @@ class FileList(W.QListWidget):
 
    def addFile(self, path):
       if not memberf(lambda x: x.name == path, self.children):
-         file = File(self)
+         file = File(self.root, self)
          self._unique += 1
          file.id = self._unique
          file.name = path
@@ -115,7 +132,9 @@ class FileList(W.QListWidget):
 
    def startAll(self):
       self._shouldKill = False
-      for c in self.children: c.reset()
+      for c in self.children:
+         c.reset()
+
       def do():
          idx = 0
          while idx < len(self.children):
