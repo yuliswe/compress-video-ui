@@ -9,26 +9,17 @@ from time import sleep
 from lib.lisp import *
 from lib.qtopacity import opacity
 from subprocess import Popen
+from lib.subprocmonitor import *
+
 
 class File(Ui_FileListItem, W.QWidget):
-
-   class Await():
-      """State"""
-   class Success():
-      stdout = ""
-   class Failure():
-      stdout = ""
-   class Running():
-      percentage = 0
-      _process = None
-      _ptmp = None
-      subproc = None
 
    name = ""
    size = 0
    date = [0,0,0]
    time = 0
-   state = Await()
+   percentage = 0
+   monitor = SubProcMonitor()
 
    def __init__(self, root, parent):
       self.root = root
@@ -59,41 +50,35 @@ class File(Ui_FileListItem, W.QWidget):
          self.progress.setValue(percentage)
 
    def stateIs(self, type):
-      return isinstance(self.state, type)
+      return self.monitor.stateIs(type)
 
    def startProcess(self):
-      assert not self.stateIs(File.Running)
-      self.state = File.Running()
 
-      # call bin with the config and input file
       print("./bin/convert " + self.root.configSelector.currentConfig())
-      self.state._ptmp = open("tmp/progress", "w+") # create temp progress file
-      self.state._ptmp.write("0")
-      self.state.subproc = Popen(['/bin/bash', './bin/testbin', 'tmp/progress'])
-
+      self._ptmp = open("tmp/progress", "w+") # create temp progress file
+      self._ptmp.write("0")
       # start a thread to check the progress repeatedly
-      def do():
-         intput = self.state._ptmp.read()
-         self.state._ptmp.seek(0)
-         self.state.percentage = int(self.state._ptmp.read())
-         print(self.state.percentage)
-         self.progress.valueChanged.emit(self.state.percentage)
-         if self.state.percentage >= 100:
-            self.progress.valueChanged.emit(self.state.percentage)
-            self.state._ptmp.close()
-            self.state = File.Success()
+      def do(monitor):
+         intput = self._ptmp.read()
+         self._ptmp.seek(0)
+         self.percentage = int(self._ptmp.read())
+         print(self.percentage)
+         self.progress.valueChanged.emit(self.percentage)
+         if self.percentage >= 100:
+            self.progress.valueChanged.emit(self.percentage)
+            self.monitor.kill()
 
-      self.state._process = AutoProcess(lambda: self.stateIs(File.Running), do, 1)
-      self.state._process.start()
+      def cleanup():
+         self._ptmp.close()
 
-      return self.state._process
+      self.monitor = SubProcMonitor(['/bin/bash', './bin/testbin', 'tmp/progress'], do, cleanup)
+      self.monitor.start()
 
    def killProcess(self):
-      if self.stateIs(File.Running):
-         self.state._ptmp.close()
-         self.state.subproc.terminate()
-         self.state._process.kill()
-         self.state = File.Failure()
+      self.monitor.kill()
+
+   def joinProcess(self):
+      self.monitor.join()
 
 
 class FileList(W.QListWidget):
@@ -141,14 +126,13 @@ class FileList(W.QListWidget):
             c = self.children[idx]
             if self._shouldKill: break
             print("Starts: "+ c.name)
-            p = c.startProcess()
-            p.join()
+            c.startProcess()
+            c.joinProcess()
             print("Finishes: " + c.name)
-            if c.stateIs(File.Success):
+            if c.stateIs(Success):
                self.removeFile(c)
          self.doneSignal.emit()
-      self._process = Process(do)
-      self._process.start()
+      Process(do).start()
 
    def removeFile(self, file):
       file.killProcess()
@@ -157,12 +141,8 @@ class FileList(W.QListWidget):
       self.removeFileSignal.emit(file.name)
       file.deleteLater()
 
-
-
-
    def killAll(self):
       self._shouldKill = True
-      for idx, c in enumerate(self.children):
-         if c.stateIs(File.Running):
-            c.killProcess()
+      for c in self.children:
+         c.killProcess()
 

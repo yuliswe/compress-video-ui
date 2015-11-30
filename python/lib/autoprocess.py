@@ -1,15 +1,16 @@
 from time import sleep
 # import multiprocessing as M
 import threading as M
+from lib.lisp import *
 
 class AutoProcess():
 
    _killSingal = False
 
-   def __init__(self, shouldContinue, update, frequency = 1):
-      self.shouldContinue = shouldContinue
+   def __init__(self, update, cleanup = nub, frequency = 1):
       self.update = update
       self.frequency = frequency
+      self.cleanup = cleanup
 
    def start(self):
       self._process = M.Thread(target=self._do)
@@ -24,19 +25,23 @@ class AutoProcess():
       self._killSingal = True
 
    def _do(self):
-      while self.shouldContinue() and not self._killSingal:
-         self.update()
+      while not self._killSingal:
+         self.update(self)
          sleep(self.frequency)
       self._killSingal = False
+      self.cleanup()
       exit(0)
 
 
 class Process():
-   def __init__(self, do):
+   def __init__(self, do, cleanup = nub):
       self.do = do
+      self.cleanup = cleanup
 
    def _do(self):
       self.do()
+      self.cleanup()
+
       exit(0)
 
    def start(self):
@@ -48,11 +53,13 @@ class Process():
 
 def test():
    i = 0
-   def do():
+   def do(autoproc):
       nonlocal i
       print(i)
       i = i + 1
-   AutoProcess(lambda: i < 10, do).start()
-   AutoProcess(lambda: i < 5, do).start()
+      if i > 5:
+         autoproc.kill()
+   AutoProcess(do).start()
+   AutoProcess(do).start()
 
 # test()

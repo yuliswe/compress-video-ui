@@ -3,3 +3,6 @@ def memberf(f, ls):
       if f(x):
          return True
    return False
+
+def nub():
+   pass
