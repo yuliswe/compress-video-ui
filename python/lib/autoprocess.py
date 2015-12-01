@@ -11,10 +11,10 @@ class AutoProcess():
       self.update = update
       self.frequency = frequency
       self.cleanup = cleanup
-
-   def start(self):
       self._process = M.Thread(target=self._do)
       self._process.setDaemon(True)
+
+   def start(self):
       self._process.start()
       return self._process
 
