@@ -46,19 +46,21 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
 
    def setupStartButton(self):
       def on():
-         self.filelist.startAll()
+         self.startButton.setChecked(True)
          self.startButton.setText("终止")
       def off():
          self.startButton.setChecked(False)
          self.startButton.setText("开始")
-         self.filelist.killAll()
 
       def onClick():
          if self.startButton.isChecked():
             on()
+            self.filelist.startAll()
          else:
             off()
+            self.filelist.killAll()
 
+      self.filelist.startSignal.connect(on)
       self.filelist.doneSignal.connect(off)
       self.startButton.clicked.connect(onClick)
 
@@ -79,6 +81,7 @@ def main():
       w = MainWindow()
       sys.exit(app.exec_())
    except:
-      w.filelist.killAll()
+      pass
+      # w.filelist.killAll()
 
 main()

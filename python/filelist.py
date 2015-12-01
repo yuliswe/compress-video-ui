@@ -21,6 +21,9 @@ class File(Ui_FileListItem, W.QWidget):
    percentage = 0
    monitor = SubProcMonitor()
 
+   _startCalled = 0
+   _endCalled = 0
+
    def __init__(self, root, parent):
       self.root = root
       super().__init__()
@@ -53,6 +56,9 @@ class File(Ui_FileListItem, W.QWidget):
       return self.monitor.stateIs(type)
 
    def startProcess(self):
+      assert self._startCalled == self._endCalled
+      self._startCalled += 1
+      print(self._startCalled, self._endCalled)
 
       print("./bin/convert " + self.root.configSelector.currentConfig())
       self._ptmp = open("tmp/progress", "w+") # create temp progress file
@@ -75,7 +81,12 @@ class File(Ui_FileListItem, W.QWidget):
       self.monitor.start()
 
    def killProcess(self):
+      print(self._startCalled, self._endCalled)
       self.monitor.kill()
+
+      self._endCalled += 1
+      # assert self._startCalled == self._endCalled, \
+         # str(self._startCalled) + str(self._endCalled)
 
    def joinProcess(self):
       self.monitor.join()
@@ -85,10 +96,15 @@ class FileList(W.QListWidget):
 
    children = []
    _unique = 0
-   _shouldKill = False
+   _shouldKill = True
    doneSignal = C.pyqtSignal()
+   startSignal = C.pyqtSignal()
    addFileSignal = C.pyqtSignal([str])
    removeFileSignal = C.pyqtSignal([str])
+   isRunning = False
+
+   _startCalled = 0
+   _endCalled = 0
 
    def __init__(self, root, parent):
       self.root = root
@@ -116,7 +132,14 @@ class FileList(W.QListWidget):
          self.addFileSignal.emit(path)
 
    def startAll(self):
+
+      assert self._startCalled == self._endCalled
+      self._startCalled += 1
+
+      assert not self.isRunning
+
       self._shouldKill = False
+      self.isRunning = True
       for c in self.children:
          c.reset()
 
@@ -133,6 +156,7 @@ class FileList(W.QListWidget):
                self.removeFile(c)
          self.doneSignal.emit()
       Process(do).start()
+      self.startSignal.emit()
 
    def removeFile(self, file):
       file.killProcess()
@@ -142,7 +166,12 @@ class FileList(W.QListWidget):
       file.deleteLater()
 
    def killAll(self):
+
+      self._endCalled += 1
+      assert self._startCalled == self._endCalled
+
       self._shouldKill = True
       for c in self.children:
          c.killProcess()
-
+      self.isRunning = False
+      self.doneSignal.emit()
