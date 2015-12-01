@@ -82,6 +82,6 @@ def main():
       sys.exit(app.exec_())
    except:
       pass
-      # w.filelist.killAll()
+      w.filelist.killAll()
 
 main()

@@ -10,6 +10,7 @@ from lib.lisp import *
 from lib.qtopacity import opacity
 from subprocess import Popen
 from lib.subprocmonitor import *
+import threading as T
 
 
 class File(Ui_FileListItem, W.QWidget):
@@ -19,6 +20,7 @@ class File(Ui_FileListItem, W.QWidget):
    date = [0,0,0]
    time = 0
    percentage = 0
+
    monitor = SubProcMonitor()
 
    _startCalled = 0
@@ -56,15 +58,18 @@ class File(Ui_FileListItem, W.QWidget):
       return self.monitor.stateIs(type)
 
    def startProcess(self):
+      assert T.current_thread().name == "FileList.startAll"
       assert self._startCalled == self._endCalled
       self._startCalled += 1
-      print(self._startCalled, self._endCalled)
 
       print("./bin/convert " + self.root.configSelector.currentConfig())
       self._ptmp = open("tmp/progress", "w+") # create temp progress file
       self._ptmp.write("0")
+
       # start a thread to check the progress repeatedly
       def do(monitor):
+         assert T.currentThread().name == "monitor"
+
          intput = self._ptmp.read()
          self._ptmp.seek(0)
          self.percentage = int(self._ptmp.read())
@@ -73,20 +78,31 @@ class File(Ui_FileListItem, W.QWidget):
          if self.percentage >= 100:
             self.progress.valueChanged.emit(self.percentage)
             self.monitor.kill()
+            self.monitor = None
 
       def cleanup():
          self._ptmp.close()
 
       self.monitor = SubProcMonitor(['/bin/bash', './bin/testbin', 'tmp/progress'], do, cleanup)
-      self.monitor.start()
+
+      self.monitor.start("monitor")
+
 
    def killProcess(self):
-      print(self._startCalled, self._endCalled)
-      self.monitor.kill()
-
+      # asserts
+      assert T.current_thread() == T.main_thread() or\
+             T.current_thread().name == "FileList.startAll"
+      # code
+      if not self.stateIs(Running): return
+      # asserts
+      assert self._startCalled > 0
       self._endCalled += 1
-      # assert self._startCalled == self._endCalled, \
-         # str(self._startCalled) + str(self._endCalled)
+      print(self._startCalled, self._endCalled)
+      assert self._startCalled == self._endCalled
+      # code
+      self.monitor.kill()
+      self.monitor = SubProcMonitor()
+
 
    def joinProcess(self):
       self.monitor.join()
@@ -132,6 +148,7 @@ class FileList(W.QListWidget):
          self.addFileSignal.emit(path)
 
    def startAll(self):
+      assert T.current_thread() == T.main_thread()
 
       assert self._startCalled == self._endCalled
       self._startCalled += 1
@@ -155,7 +172,7 @@ class FileList(W.QListWidget):
             if c.stateIs(Success):
                self.removeFile(c)
          self.doneSignal.emit()
-      Process(do).start()
+      Process(do).start("FileList.startAll")
       self.startSignal.emit()
 
    def removeFile(self, file):
@@ -166,7 +183,7 @@ class FileList(W.QListWidget):
       file.deleteLater()
 
    def killAll(self):
-
+      assert T.current_thread() == T.main_thread()
       self._endCalled += 1
       assert self._startCalled == self._endCalled
 

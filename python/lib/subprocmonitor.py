@@ -1,6 +1,7 @@
 from lib.autoprocess import AutoProcess
 from subprocess import Popen
 from lib.lisp import *
+import threading as T
 
 class Await():
    """State"""
@@ -21,17 +22,9 @@ class SubProcMonitor():
       self.frequency = frequency
       self.do = do
       self.cleanup = cleanup
-
-   def stateIs(self, type):
-      return isinstance(self.state, type)
-
-   def start(self):
-      assert not self.stateIs(Running)
-      self.state = Running()
-      self.state.subproc = Popen(self.cmdArgs)
-
       # start a thread to check the subprocess repeatedly
       def _do(autoproc):
+         assert T.current_thread().name == self.threadName
          assert self.stateIs(Running)
          # when the subprocess terminates, the monitor terminates
          if self.state.subproc.poll() == 0:
@@ -39,16 +32,24 @@ class SubProcMonitor():
             autoproc.kill()
          else:
             self.do(self)
+      self.monitor = AutoProcess(_do, self.cleanup, self.frequency)
 
-      self.state.monitor = AutoProcess(_do, self.cleanup, self.frequency)
-      self.state.monitor.start()
+   def stateIs(self, type):
+      return isinstance(self.state, type)
+
+   def start(self, threadName = "monitor"):
+      assert not self.stateIs(Running)
+      self.threadName = threadName
+      self.state = Running()
+      self.state.subproc = Popen(self.cmdArgs)
+      self.monitor.start(threadName)
 
    def kill(self):
       if self.stateIs(Running):
+         self.monitor.kill()
          self.state.subproc.terminate()
-         self.state.monitor.kill()
          self.state = Failure()
 
    def join(self):
       if self.stateIs(Running):
-         self.state.monitor.join()
+         self.monitor.join()
