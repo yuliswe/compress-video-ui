@@ -27,8 +27,8 @@ class File(Ui_FileListItem, W.QWidget):
    _endCalled = 0
 
    def __init__(self, root, parent):
+      super(File, self).__init__()
       self.root = root
-      super().__init__()
       self.setupUi(self)
       parent.layout().insertWidget(0, self)
       self.progress.valueChanged.connect(self.updateUI)
@@ -90,8 +90,8 @@ class File(Ui_FileListItem, W.QWidget):
 
    def killProcess(self):
       # asserts
-      assert T.current_thread() == T.main_thread() or\
-             T.current_thread().name == "FileList.startAll"
+      # assert T.current_thread() == T.main_thread() or\
+             # T.current_thread().name == "FileList.startAll"
       # code
       if not self.stateIs(Running): return
       # asserts
@@ -123,8 +123,8 @@ class FileList(W.QListWidget):
    _endCalled = 0
 
    def __init__(self, root, parent):
+      super(FileList, self).__init__()
       self.root = root
-      super().__init__()
       la = W.QVBoxLayout()
       self.setLayout(la)
       la.addStretch(1)
@@ -148,7 +148,7 @@ class FileList(W.QListWidget):
          self.addFileSignal.emit(path)
 
    def startAll(self):
-      assert T.current_thread() == T.main_thread()
+      # assert T.current_thread() == T.main_thread()
 
       assert self._startCalled == self._endCalled
       self._startCalled += 1
@@ -183,7 +183,7 @@ class FileList(W.QListWidget):
       file.deleteLater()
 
    def killAll(self):
-      assert T.current_thread() == T.main_thread()
+      # assert T.current_thread() == T.main_thread()
       self._endCalled += 1
       assert self._startCalled == self._endCalled
 

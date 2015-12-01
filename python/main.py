@@ -1,4 +1,5 @@
 #!/usr/local/bin/python
+# coding=utf-8
 
 import sys
 from PyQt5 import QtWidgets as W
@@ -76,11 +77,11 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
 
 
 def main():
-   try:
+   # try:
       app = W.QApplication(sys.argv)
       w = MainWindow()
       sys.exit(app.exec_())
-   except:
+   # except:
       try: w.filelist.killAll()
       except: pass
 

@@ -1,3 +1,5 @@
+# coding=utf-8
+
 from os import listdir
 from os.path import basename
 
@@ -6,7 +8,6 @@ class ConfigFile():
    configs = []
 
    def __init__(self, root, ui):
-      super(ConfigFile, self).__init__()
       self.root = root
       self.ui = ui
       self.loadDir('./config')

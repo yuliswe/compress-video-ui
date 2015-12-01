@@ -63,7 +63,6 @@ class Process():
 def test():
    i = 0
    def do(autoproc):
-      nonlocal i
       print(i)
       i = i + 1
       if i > 5:
