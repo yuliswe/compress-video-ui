@@ -10,6 +10,9 @@ import filelist as F
 import types
 from lib.qtopacity import opacity
 from control.configfile import ConfigFile
+from os.path import abspath, dirname
+import os
+from lib.message import Message
 
 def addBetween(parent, target, children):
    for c in children:
@@ -30,6 +33,7 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       self.show()
       self.setAcceptDrops(True)
       self.configSelector = ConfigFile(self, self.configSelector)
+      self.message = Message(self, self.notification)
 
    def dragEnterEvent(self, event):
       event.accept()
@@ -52,7 +56,6 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       def off():
          self.startButton.setChecked(False)
          self.startButton.setText("开始")
-
       def onClick():
          if self.startButton.isChecked():
             on()
@@ -77,11 +80,14 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
 
 
 def main():
-   # try:
+   appRoot = dirname(abspath(sys.argv[0]))
+   print("Running at", appRoot)
+   os.chdir(appRoot)
+   try:
       app = W.QApplication(sys.argv)
       w = MainWindow()
-      sys.exit(app.exec_())
-   # except:
+      app.exec_()
+   except AssertionError:
       try: w.filelist.killAll()
       except: pass
 

@@ -1,4 +1,4 @@
-from PyQt5 import QtWidgets as W
+from PyQt5.QtWidgets import *
 from PyQt5 import QtCore as C
 from filelistitem_ui import Ui_FileListItem
 import mainwindow_rc
@@ -13,7 +13,7 @@ from lib.subprocmonitor import *
 import threading as T
 
 
-class File(Ui_FileListItem, W.QWidget):
+class File(Ui_FileListItem, QWidget):
 
    name = ""
    size = 0
@@ -108,7 +108,7 @@ class File(Ui_FileListItem, W.QWidget):
       self.monitor.join()
 
 
-class FileList(W.QListWidget):
+class FileList(QListView):
 
    children = []
    _unique = 0
@@ -119,21 +119,31 @@ class FileList(W.QListWidget):
    removeFileSignal = C.pyqtSignal([str])
    isRunning = False
 
+   gChildH = 74 # child height
+
    _startCalled = 0
    _endCalled = 0
 
    def __init__(self, root, parent):
       super(FileList, self).__init__()
       self.root = root
-      la = W.QVBoxLayout()
-      self.setLayout(la)
-      la.addStretch(1)
+      self.parent = parent
+      self.setLayout(QVBoxLayout())
+      scroll = QScrollArea()
+      parent.layout().addWidget(scroll)
+      scroll.setWidget(self)
+
+      scroll.setWidgetResizable(True)
       self.setFocusPolicy(0)
       self.setFrameShape(0)
-      parent.layout().addWidget(self)
+      scroll.setVerticalScrollBarPolicy(C.Qt.ScrollBarAlwaysOn)
+      self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)
+
+   def sizeHint(self):
+      return C.QSize(0, len(self.children) * self.gChildH)
 
    def _debug(self):
-      for i in range(0,3):
+      for i in range(0,10):
          self.addFile("sample_" + str(i))
 
    def addFile(self, path):
@@ -145,6 +155,8 @@ class FileList(W.QListWidget):
          file.size = 0
          self.children.insert(0,file)
          file.initUI()
+         # file.layout().setSizeConstraint(QLayout.SetMaximumSize)
+         # file.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
          self.addFileSignal.emit(path)
 
    def startAll(self):

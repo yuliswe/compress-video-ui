@@ -12,12 +12,14 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.setEnabled(True)
-        MainWindow.resize(746, 500)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Expanding)
+        MainWindow.resize(800, 500)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.MinimumExpanding, QtWidgets.QSizePolicy.MinimumExpanding)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(MainWindow.sizePolicy().hasHeightForWidth())
         MainWindow.setSizePolicy(sizePolicy)
+        MainWindow.setMinimumSize(QtCore.QSize(800, 500))
+        MainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
         MainWindow.setAutoFillBackground(False)
         MainWindow.setStyleSheet("#centralWidget {\n"
 "    background-color: white;\n"
@@ -28,7 +30,7 @@ class Ui_MainWindow(object):
         MainWindow.setUnifiedTitleAndToolBarOnMac(True)
         self.centralWidget = QtWidgets.QWidget(MainWindow)
         self.centralWidget.setEnabled(True)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(1)
         sizePolicy.setVerticalStretch(1)
         sizePolicy.setHeightForWidth(self.centralWidget.sizePolicy().hasHeightForWidth())
@@ -41,6 +43,7 @@ class Ui_MainWindow(object):
 "}")
         self.centralWidget.setObjectName("centralWidget")
         self.horizontalLayout = QtWidgets.QHBoxLayout(self.centralWidget)
+        self.horizontalLayout.setSizeConstraint(QtWidgets.QLayout.SetDefaultConstraint)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName("horizontalLayout")
@@ -115,7 +118,7 @@ class Ui_MainWindow(object):
         self.widget = QtWidgets.QWidget(self.centralWidget)
         self.widget.setObjectName("widget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.widget)
-        self.verticalLayout.setContentsMargins(0, 0, 0, 11)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout.setSpacing(6)
         self.verticalLayout.setObjectName("verticalLayout")
         self.controlBar = QtWidgets.QWidget(self.widget)
@@ -151,8 +154,8 @@ class Ui_MainWindow(object):
 "    font-size: 13px;\n"
 "}")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/stop.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
         icon.addPixmap(QtGui.QPixmap(":/start.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/stop.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.startButton.setIcon(icon)
         self.startButton.setCheckable(True)
         self.startButton.setChecked(False)
@@ -219,6 +222,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.addWidget(self.dragHint)
         self.filelistArea.addWidget(self.nofile)
         self.hasfile = QtWidgets.QWidget()
+        self.hasfile.setStyleSheet("QScrollArea {\n"
+"    border: none;\n"
+"}\n"
+"\n"
+"")
         self.hasfile.setObjectName("hasfile")
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.hasfile)
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 0)
@@ -226,6 +234,35 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.filelistArea.addWidget(self.hasfile)
         self.verticalLayout.addWidget(self.filelistArea)
+        self.notificationArea = QtWidgets.QWidget(self.widget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.notificationArea.sizePolicy().hasHeightForWidth())
+        self.notificationArea.setSizePolicy(sizePolicy)
+        self.notificationArea.setStyleSheet("#notificationArea {\n"
+"    min-height: 20;\n"
+"    max-height: 20;\n"
+"}\n"
+"#notification {\n"
+"    padding-left: 5;\n"
+"    background-color: rgba(0, 0, 0, 0.7);\n"
+"    color: rgba(255, 255, 255, 0.9);\n"
+"}")
+        self.notificationArea.setObjectName("notificationArea")
+        self.horizontalLayout_4 = QtWidgets.QHBoxLayout(self.notificationArea)
+        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout_4.setSpacing(0)
+        self.horizontalLayout_4.setObjectName("horizontalLayout_4")
+        self.notification = QtWidgets.QLabel(self.notificationArea)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.notification.sizePolicy().hasHeightForWidth())
+        self.notification.setSizePolicy(sizePolicy)
+        self.notification.setObjectName("notification")
+        self.horizontalLayout_4.addWidget(self.notification)
+        self.verticalLayout.addWidget(self.notificationArea)
         self.horizontalLayout.addWidget(self.widget)
         MainWindow.setCentralWidget(self.centralWidget)
 
@@ -248,5 +285,6 @@ class Ui_MainWindow(object):
         self.configSelector.setItemText(0, _translate("MainWindow", "正在加载..."))
         self.startButton.setText(_translate("MainWindow", "开始"))
         self.dragHintText.setText(_translate("MainWindow", "拖入视频文件"))
+        self.notification.setText(_translate("MainWindow", "完成 C:movie.flv"))
 
 import mainwindow_rc

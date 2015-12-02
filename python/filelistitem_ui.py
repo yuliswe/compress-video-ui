@@ -12,11 +12,13 @@ class Ui_FileListItem(object):
     def setupUi(self, FileListItem):
         FileListItem.setObjectName("FileListItem")
         FileListItem.resize(493, 64)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(FileListItem.sizePolicy().hasHeightForWidth())
         FileListItem.setSizePolicy(sizePolicy)
+        FileListItem.setMinimumSize(QtCore.QSize(0, 64))
+        FileListItem.setMaximumSize(QtCore.QSize(16777215, 64))
         FileListItem.setStyleSheet("#FileListItem {\n"
 "    background-color: transparent;\n"
 "}\n"
@@ -38,6 +40,7 @@ class Ui_FileListItem(object):
 "    border: none;\n"
 "}")
         self.horizontalLayout = QtWidgets.QHBoxLayout(FileListItem)
+        self.horizontalLayout.setSizeConstraint(QtWidgets.QLayout.SetMaximumSize)
         self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.icon = QtWidgets.QLabel(FileListItem)
