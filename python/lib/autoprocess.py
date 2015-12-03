@@ -59,6 +59,23 @@ class Process():
       self._process.start()
       return self._process
 
+class TimeOut():
+   def __init__(self, f, time, frequency = 1):
+      self.timer = time
+      def do(proc):
+         if self.timer > 0:
+            self.timer -= frequency
+         else:
+            f()
+            proc.kill()
+      self.proc = AutoProcess(do, nub, frequency)
+      self.proc.start()
+   def kill(self):
+      self.proc.kill()
+
+
+
+
 
 def test():
    i = 0

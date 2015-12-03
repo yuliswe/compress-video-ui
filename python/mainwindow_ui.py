@@ -115,13 +115,13 @@ class Ui_MainWindow(object):
         item.setFont(font)
         self.sidebar.addItem(item)
         self.horizontalLayout.addWidget(self.sidebar)
-        self.widget = QtWidgets.QWidget(self.centralWidget)
-        self.widget.setObjectName("widget")
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.widget)
+        self.mainWidget = QtWidgets.QWidget(self.centralWidget)
+        self.mainWidget.setObjectName("mainWidget")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.mainWidget)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout.setSpacing(6)
+        self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.controlBar = QtWidgets.QWidget(self.widget)
+        self.controlBar = QtWidgets.QWidget(self.mainWidget)
         self.controlBar.setAutoFillBackground(False)
         self.controlBar.setStyleSheet("#controlBar {\n"
 "    max-height: 30px;\n"
@@ -154,8 +154,8 @@ class Ui_MainWindow(object):
 "    font-size: 13px;\n"
 "}")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/start.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         icon.addPixmap(QtGui.QPixmap(":/stop.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        icon.addPixmap(QtGui.QPixmap(":/start.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.startButton.setIcon(icon)
         self.startButton.setCheckable(True)
         self.startButton.setChecked(False)
@@ -163,7 +163,7 @@ class Ui_MainWindow(object):
         self.startButton.setObjectName("startButton")
         self.horizontalLayout_2.addWidget(self.startButton)
         self.verticalLayout.addWidget(self.controlBar)
-        self.filelistArea = QtWidgets.QStackedWidget(self.widget)
+        self.filelistArea = QtWidgets.QStackedWidget(self.mainWidget)
         self.filelistArea.setAcceptDrops(True)
         self.filelistArea.setAutoFillBackground(False)
         self.filelistArea.setStyleSheet("#hasfile {\n"
@@ -224,6 +224,7 @@ class Ui_MainWindow(object):
         self.hasfile = QtWidgets.QWidget()
         self.hasfile.setStyleSheet("QScrollArea {\n"
 "    border: none;\n"
+"    margin: 0;\n"
 "}\n"
 "\n"
 "")
@@ -234,8 +235,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.filelistArea.addWidget(self.hasfile)
         self.verticalLayout.addWidget(self.filelistArea)
-        self.notificationArea = QtWidgets.QWidget(self.widget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
+        self.notificationArea = QtWidgets.QWidget(self.mainWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.notificationArea.sizePolicy().hasHeightForWidth())
@@ -263,7 +264,7 @@ class Ui_MainWindow(object):
         self.notification.setObjectName("notification")
         self.horizontalLayout_4.addWidget(self.notification)
         self.verticalLayout.addWidget(self.notificationArea)
-        self.horizontalLayout.addWidget(self.widget)
+        self.horizontalLayout.addWidget(self.mainWidget)
         MainWindow.setCentralWidget(self.centralWidget)
 
         self.retranslateUi(MainWindow)

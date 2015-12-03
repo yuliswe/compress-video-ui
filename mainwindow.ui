@@ -234,8 +234,11 @@
      </widget>
     </item>
     <item>
-     <widget class="QWidget" name="widget" native="true">
+     <widget class="QWidget" name="mainWidget" native="true">
       <layout class="QVBoxLayout" name="verticalLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -483,6 +486,7 @@ QToolButton {
           <property name="styleSheet">
            <string notr="true">QScrollArea {
 	border: none;
+	margin: 0;
 }
 
 </string>
@@ -510,7 +514,7 @@ QToolButton {
        <item>
         <widget class="QWidget" name="notificationArea" native="true">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
            <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>

@@ -132,11 +132,10 @@ class FileList(QListView):
       scroll = QScrollArea()
       parent.layout().addWidget(scroll)
       scroll.setWidget(self)
-
+      self.layout().addStretch(1)
       scroll.setWidgetResizable(True)
       self.setFocusPolicy(0)
       self.setFrameShape(0)
-      scroll.setVerticalScrollBarPolicy(C.Qt.ScrollBarAlwaysOn)
       self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)
 
    def sizeHint(self):

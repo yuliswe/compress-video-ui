@@ -33,7 +33,7 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       self.show()
       self.setAcceptDrops(True)
       self.configSelector = ConfigFile(self, self.configSelector)
-      self.message = Message(self, self.notification)
+      self.message = Message(self)
 
    def dragEnterEvent(self, event):
       event.accept()
@@ -59,9 +59,11 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       def onClick():
          if self.startButton.isChecked():
             on()
+            self.message.show("开始压缩")
             self.filelist.startAll()
          else:
             off()
+            self.message.show("压缩完成")
             self.filelist.killAll()
 
       self.filelist.startSignal.connect(on)
