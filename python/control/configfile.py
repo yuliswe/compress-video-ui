@@ -26,5 +26,4 @@ class ConfigFile():
          self.loadFile(path+'/'+p)
 
    def currentConfig(self):
-      print(self.ui.currentText())
-      return (self.ui.currentText())
+      return './config/'+self.ui.currentText()

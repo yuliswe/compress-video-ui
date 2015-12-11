@@ -53,17 +53,17 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       def on():
          self.startButton.setChecked(True)
          self.startButton.setText("终止")
+         self.message.show("任务开始")
       def off():
          self.startButton.setChecked(False)
          self.startButton.setText("开始")
+         self.message.show("任务结束")
       def onClick():
          if self.startButton.isChecked():
             on()
-            self.message.show("开始压缩")
             self.filelist.startAll()
          else:
             off()
-            self.message.show("压缩完成")
             self.filelist.killAll()
 
       self.filelist.startSignal.connect(on)
@@ -80,17 +80,23 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       self.filelist.removeFileSignal.connect(onRemoveFile)
       self.filelist._debug()
 
+   def closeEvent(self, event):
+      event.accept()
+      try: self.filelist.killAll()
+      except AssertionError: pass
+      print "[Application Closed]"
+
 
 def main():
    appRoot = dirname(abspath(sys.argv[0]))
-   print("Running at", appRoot)
+   print "Running at", appRoot
    os.chdir(appRoot)
    try:
       app = W.QApplication(sys.argv)
       w = MainWindow()
       app.exec_()
-   except AssertionError:
-      try: w.filelist.killAll()
-      except: pass
+   except Exception as e:
+      w.message.error(e)
+      print "[Application Error]", e
 
 main()

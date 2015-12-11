@@ -1,3 +1,5 @@
+#coding=utf-8
+
 from PyQt5.QtWidgets import *
 from lib.autoprocess import Process, TimeOut
 from PyQt5.QtCore import pyqtSignal
@@ -11,7 +13,7 @@ class Message():
 
    def __init__(self, root):
       self.root = root
-      # self.root.notificationArea.
+      self.hide()
 
    def show(self, text, time = 10):
       self.root.notification.setText(text)
@@ -23,4 +25,7 @@ class Message():
    def hide(self):
       self.root.notificationArea.hide()
 
-
+   def error(self, exception, time = 10):
+      print exception
+      self.show("发生错误: " + str(exception), time)
+      raise exception

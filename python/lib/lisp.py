@@ -4,5 +4,5 @@ def memberf(f, ls):
          return True
    return False
 
-def nub():
+def nub(a=None):
    pass

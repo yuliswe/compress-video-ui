@@ -2,61 +2,80 @@ from time import sleep
 # import multiprocessing as M
 import threading as T
 from lib.lisp import *
+from lib.state import State
 
-class AutoProcess():
 
-   _killSingal = False
+class AutoProcess(State):
+
    lock = T.Lock()
 
-   def __init__(self, update, cleanup = nub, frequency = 1):
+   def __init__(self, update, cleanup = nub, frequency = 1, onError = nub):
+      super(AutoProcess, self).__init__()
       self.update = update
       self.frequency = frequency
       self.cleanup = cleanup
+      self.onError = onError
       self._process = T.Thread(target=self._do)
       self._process.setDaemon(True)
+      self.setAwait()
 
    def start(self, threadName = "proc"):
       self._process.name = threadName
+      self.setRunning()
       self._process.start()
-      return self._process
 
    def join(self):
       self._process.join()
+      self.setSuccess()
 
    def kill(self):
-      self._killSingal = True
+      self.setSuccess()
 
    def _do(self):
-      assert T.currentThread().name == self._process.name
-      while not self._killSingal:
-         with self.lock:
-            self.update(self)
-         sleep(self.frequency)
-      self._killSingal = False
-      self.cleanup()
-      exit(0)
-
-
-class Process():
-   lock = T.Lock()
-
-   def __init__(self, do, cleanup = nub):
-      self.do = do
-      self.cleanup = cleanup
-      def _do():
-         # assert
+      try:
          assert T.currentThread().name == self._process.name
-         # code
-         with self.lock:
-            self.do()
+         while self.isRunning():
+            with self.lock:
+               self.update(self)
+            sleep(self.frequency)
+      except Exception as e:
+         self.onError(e)
+         self.setFailure(e)
+      finally:
          self.cleanup()
          exit(0)
+
+
+class Process(State):
+
+   lock = T.Lock()
+
+   def __init__(self, do, cleanup = nub, onError = nub):
+      super(Process, self).__init__()
+      self.setAwait()
+      self.do = do
+      self.cleanup = cleanup
+      self.onError = onError
+      def _do():
+         try:
+            # assert
+            assert T.currentThread().name == self._process.name
+            # code
+            with self.lock:
+               self.do()
+         except Exception as e:
+            self.onError(e)
+            self.setFailure(e)
+         finally:
+            self.cleanup()
+            exit(0)
       self._process = T.Thread(target=_do)
 
    def start(self, threadName = "proc"):
       self._process.setDaemon(True)
       self._process.name = threadName
       self._process.start()
+      self.setRunning()
       return self._process
 
 class TimeOut():
@@ -68,8 +87,11 @@ class TimeOut():
          else:
             f()
             proc.kill()
-      self.proc = AutoProcess(do, nub, frequency)
+      def onErr(e):
+         print e
+      self.proc = AutoProcess(do, nub, frequency, onError=onErr)
       self.proc.start()
+
    def kill(self):
       self.proc.kill()
 
