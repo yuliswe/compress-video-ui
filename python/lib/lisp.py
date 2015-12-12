@@ -1,3 +1,5 @@
+import traceback
+
 def memberf(f, ls):
    for x in ls:
       if f(x):
@@ -7,5 +9,6 @@ def memberf(f, ls):
 def nub(a=None):
    pass
 
-def show(a):
-   print a
+def showError(e):
+   print e
+   traceback.print_exc()

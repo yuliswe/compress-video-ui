@@ -9,7 +9,7 @@ class AutoProcess(State):
 
    lock = T.Lock()
 
-   def __init__(self, update, cleanup = nub, frequency = 1, onError = show):
+   def __init__(self, update, cleanup = nub, frequency = 1, onError = showError):
       super(AutoProcess, self).__init__()
       self.update = update
       self.frequency = frequency
@@ -54,7 +54,7 @@ class Process(State):
 
    lock = T.Lock()
 
-   def __init__(self, do, cleanup = nub, onError = show):
+   def __init__(self, do, cleanup = nub, onError = showError):
       super(Process, self).__init__()
       self.setAwait()
       self.do = do
@@ -88,15 +88,13 @@ class Process(State):
 class TimeOut():
    def __init__(self, do, time, frequency = 1):
       self.timer = time
-      def do(proc):
+      def _do(proc):
          if self.timer > 0:
             self.timer -= frequency
          else:
             do()
             proc.kill()
-      def onErr(e):
-         print e
-      self.proc = AutoProcess(do, nub, frequency, onError=onErr)
+      self.proc = AutoProcess(_do, nub, frequency, onError=showError)
       self.proc.start()
 
    def kill(self):

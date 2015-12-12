@@ -91,7 +91,7 @@ class File(Ui_FileListItem, QWidget):
          self.root.message.error(e)
 
       # args = ['/bin/bash', './bin/testbin']
-      args = ['./bin/compress', self.name, self.name+'_bilibili_.mp4', self.root.configSelector.currentConfig()]
+      args = ['./bin/compress', self.name, self.name, self.root.configSelector.currentConfig()]
       print args
       self.monitor = SubProcMonitor(
          args,

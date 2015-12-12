@@ -16,7 +16,7 @@ class SubProcMonitor(State):
                  cleanup = nub,
                  frequency = 1,
                  pipeOut = False,
-                 onError = show ):
+                 onError = showError ):
       super(SubProcMonitor, self).__init__()
       self.cmdArgs = cmdArgs
       self.frequency = frequency

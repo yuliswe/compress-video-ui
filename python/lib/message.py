@@ -27,8 +27,10 @@ class Message():
       self.root.notificationArea.hide()
 
    def error(self, exception, time = 10):
+      print "*******"
       print exception
-      # for i in inspect.trace():
-         # print i
+      for i in inspect.trace():
+         print i
+      print "*******"
       self.show("发生错误: " + str(exception), time)
       raise exception
