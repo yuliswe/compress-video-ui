@@ -6,3 +6,6 @@ def memberf(f, ls):
 
 def nub(a=None):
    pass
+
+def show(a):
+   print a

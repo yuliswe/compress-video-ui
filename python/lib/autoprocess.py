@@ -9,7 +9,7 @@ class AutoProcess(State):
 
    lock = T.Lock()
 
-   def __init__(self, update, cleanup = nub, frequency = 1, onError = nub):
+   def __init__(self, update, cleanup = nub, frequency = 1, onError = show):
       super(AutoProcess, self).__init__()
       self.update = update
       self.frequency = frequency
@@ -20,16 +20,18 @@ class AutoProcess(State):
       self.setAwait()
 
    def start(self, threadName = "proc"):
-      self._process.name = threadName
-      self.setRunning()
-      self._process.start()
+      with self.lock:
+         self._process.name = threadName
+         self.setRunning()
+         self._process.start()
 
    def join(self):
       self._process.join()
       self.setSuccess()
 
    def kill(self):
-      self.setSuccess()
+      with self.lock:
+         self.setSuccess()
 
    def _do(self):
       try:
@@ -39,10 +41,12 @@ class AutoProcess(State):
                self.update(self)
             sleep(self.frequency)
       except Exception as e:
-         self.onError(e)
          self.setFailure(e)
+         with self.lock:
+            self.onError(e)
       finally:
-         self.cleanup()
+         with self.lock:
+            self.cleanup()
          exit(0)
 
 
@@ -50,7 +54,7 @@ class Process(State):
 
    lock = T.Lock()
 
-   def __init__(self, do, cleanup = nub, onError = nub):
+   def __init__(self, do, cleanup = nub, onError = show):
       super(Process, self).__init__()
       self.setAwait()
       self.do = do
@@ -64,28 +68,31 @@ class Process(State):
             with self.lock:
                self.do()
          except Exception as e:
-            self.onError(e)
             self.setFailure(e)
+            with self.lock:
+               self.onError(e)
          finally:
-            self.cleanup()
+            with self.lock:
+               self.cleanup()
             exit(0)
       self._process = T.Thread(target=_do)
+      self._process.setDaemon(True)
 
    def start(self, threadName = "proc"):
-      self._process.setDaemon(True)
-      self._process.name = threadName
-      self._process.start()
-      self.setRunning()
-      return self._process
+      with self.lock:
+         self.setRunning()
+         self._process.name = threadName
+         self._process.start()
+
 
 class TimeOut():
-   def __init__(self, f, time, frequency = 1):
+   def __init__(self, do, time, frequency = 1):
       self.timer = time
       def do(proc):
          if self.timer > 0:
             self.timer -= frequency
          else:
-            f()
+            do()
             proc.kill()
       def onErr(e):
          print e
@@ -94,9 +101,6 @@ class TimeOut():
 
    def kill(self):
       self.proc.kill()
-
-
-
 
 
 def test():
@@ -109,4 +113,3 @@ def test():
    AutoProcess(do).start()
    AutoProcess(do).start()
 
-# test()

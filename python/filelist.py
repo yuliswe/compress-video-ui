@@ -58,11 +58,11 @@ class File(Ui_FileListItem, QWidget):
 
    def updateUI(self, percentage = 0):
       self.fileinfo.setText(naturalsize(self.size)+" "+self.message)
-      if percentage == 0 or percentage == 100:
-         self.progress.hide()
-      else:
+      if self.monitor.isRunning():
          self.progress.show()
          self.progress.setValue(percentage)
+      else:
+         self.progress.hide()
 
    def startProcess(self):
 

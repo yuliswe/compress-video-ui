@@ -16,10 +16,8 @@ class State(object):
       self.state = State.Running()
 
    def setFailure(self, e):
-      print e
       self.state = State.Failure()
       self.exception = e
-      raise e
 
    def setSuccess(self):
       self.state = State.Success()
@@ -39,6 +37,9 @@ class State(object):
    def isAwait(self):
       return isinstance(self.state, State.Await)
 
+
    def getException(self):
-      assert self.isFailure()
+      assert self.isFailure(), \
+         "State: attempted to call getException when the state is " \
+         + str(self.state)
       return self.state.exception

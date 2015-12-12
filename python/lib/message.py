@@ -4,6 +4,7 @@ from PyQt5.QtWidgets import *
 from lib.autoprocess import Process, TimeOut
 from PyQt5.QtCore import pyqtSignal
 from time import sleep
+import inspect
 
 class Message():
    height = 25
@@ -27,5 +28,7 @@ class Message():
 
    def error(self, exception, time = 10):
       print exception
+      # for i in inspect.trace():
+         # print i
       self.show("发生错误: " + str(exception), time)
       raise exception

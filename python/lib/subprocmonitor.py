@@ -8,7 +8,15 @@ from time import sleep
 
 class SubProcMonitor(State):
 
-   def __init__(self, cmdArgs = None, do = nub, cleanup = nub, frequency = 1, pipeOut = False, onError = nub):
+   lock = T.Lock()
+
+   def __init__( self,
+                 cmdArgs = None,
+                 do = nub,
+                 cleanup = nub,
+                 frequency = 1,
+                 pipeOut = False,
+                 onError = show ):
       super(SubProcMonitor, self).__init__()
       self.cmdArgs = cmdArgs
       self.frequency = frequency
@@ -25,13 +33,14 @@ class SubProcMonitor(State):
                "SubProcMonitor: state became "+\
                str(self.state)+ \
                " when the process is "+\
-               str(self.subproc.poll())
+               str(self.subproc)
             if autoproc.isFailure():
                e = autoproc.getException()
                self.onError(e)
                self.setFailure(e)
+            # while the subprocess is running
             if self.subproc.poll() == None:
-               return self.do(self)
+               self.do(self)
             # when the subprocess terminates, the monitor terminates
             elif self.subproc.poll() == 0:
                self.setSuccess()
@@ -49,22 +58,24 @@ class SubProcMonitor(State):
       self.monitor = AutoProcess(_do, self.cleanup, self.frequency, onError=self.onError)
 
    def start(self, stdout=None, threadName = "monitor"):
-      assert not self.isRunning(), \
+      with self.lock:
+         assert not self.isRunning(), \
          "SubProcMonitor: Attempted to start a process twice."
-      self.threadName = threadName
-      self.setRunning()
-      self.subproc = Popen(self.cmdArgs, stdout=PIPE if self.pipeOut else None)
-      self.stdout = self.subproc.stdout
-      self.monitor.start(threadName)
+         self.threadName = threadName
+         self.setRunning()
+         self.subproc = Popen(self.cmdArgs, stdout=PIPE if self.pipeOut else None)
+         self.stdout = self.subproc.stdout
+         self.monitor.start(threadName)
 
    def kill(self):
-      if self.isRunning():
-         self.monitor.kill()
-         if self.subproc.poll() == None:
-            self.subproc.terminate()
-         self.setSuccess()
-         self.cleanup()
-         # if self.stdout: self.stdout.close()
+      with self.lock:
+         if self.isRunning():
+            self.monitor.kill()
+            if self.subproc.poll() == None:
+               self.subproc.terminate()
+            self.setSuccess()
+            self.cleanup()
+            # if self.stdout: self.stdout.close()
 
    def join(self):
       assert self.isRunning(), \
