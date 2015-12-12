@@ -30,8 +30,7 @@ class AutoProcess(State):
       self.setSuccess()
 
    def kill(self):
-      with self.lock:
-         self.setSuccess()
+      self.setSuccess()
 
    def _do(self):
       try:

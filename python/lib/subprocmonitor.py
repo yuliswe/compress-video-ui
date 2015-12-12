@@ -68,14 +68,13 @@ class SubProcMonitor(State):
          self.monitor.start(threadName)
 
    def kill(self):
-      with self.lock:
-         if self.isRunning():
-            self.monitor.kill()
-            if self.subproc.poll() == None:
-               self.subproc.terminate()
-            self.setSuccess()
-            self.cleanup()
-            # if self.stdout: self.stdout.close()
+      if self.isRunning():
+         self.monitor.kill()
+         if self.subproc.poll() == None:
+            self.subproc.terminate()
+         self.setSuccess()
+         self.cleanup()
+         # if self.stdout: self.stdout.close()
 
    def join(self):
       assert self.isRunning(), \

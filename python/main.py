@@ -14,12 +14,6 @@ from os.path import abspath, dirname
 import os
 from lib.message import Message
 
-def addBetween(parent, target, children):
-   for c in children:
-      parent.layout().removeWidget(c)
-      target.layout().addWidget(c)
-      parent.layout().addWidget(target)
-
 
 class MainWindow(W.QMainWindow, Ui_MainWindow):
 
