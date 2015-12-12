@@ -1,4 +1,5 @@
 import traceback
+import threading as T
 
 def memberf(f, ls):
    for x in ls:
@@ -12,3 +13,10 @@ def nub(a=None):
 def showError(e):
    print e
    traceback.print_exc()
+
+
+def assertThreadIs(s):
+   assert T.currentThread().getName() == s, \
+      "Running on a wrong thread -" \
+      + "\n Expected: " + s \
+      + "\n Actual: " + T.currentThread().getName()

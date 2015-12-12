@@ -13,7 +13,7 @@ from control.configfile import ConfigFile
 from os.path import abspath, dirname
 import os
 from lib.message import Message
-
+import threading
 
 class MainWindow(W.QMainWindow, Ui_MainWindow):
 
@@ -82,6 +82,8 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
 
 
 def main():
+   threading.currentThread().setName("main")
+
    appRoot = dirname(abspath(sys.argv[0]))
    print "Running at", appRoot
    os.chdir(appRoot)

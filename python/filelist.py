@@ -66,25 +66,23 @@ class File(Ui_FileListItem, QWidget):
 
    def startProcess(self):
 
-      assert T.current_thread().name == "FileList.startAll", \
-      "File: running on a wrong thread."
+      assertThreadIs("FileList.startAll")
 
       # start a thread to check the progress repeatedly
       def do(monitor):
-         assert T.currentThread().name == "monitor"
+         assertThreadIs("monitor")
 
          line = monitor.stdout.readline()
-         print line
+         print line.strip('\n')
          input = re.search("percent=(\d+)", line)
          if not input: return
 
          self.percentage = int(input.group(1))
 
          self.progress.valueChanged.emit(self.percentage)
-         if self.percentage >= 100:
+         if not self.monitor.isRunning():
             self.progress.valueChanged.emit(self.percentage)
-            self.monitor.kill()
-            self.monitor = None
+            monitor.kill()
 
       def onError(e):
          self.monitor.kill()
@@ -97,8 +95,9 @@ class File(Ui_FileListItem, QWidget):
          args,
          do,
          pipeOut=True,
-         frequency=0.1,
-         onError=onError
+         frequency=1,
+         onError=onError,
+         cleanup=self.killProcess
       )
 
       self.monitor.start("monitor")
@@ -110,8 +109,6 @@ class File(Ui_FileListItem, QWidget):
 
    def killProcess(self):
       # asserts
-      # assert T.current_thread() == T.main_thread() or\
-             # T.current_thread().name == "FileList.startAll"
 
       self._endCalled += 1
       self._assertBalance()
@@ -120,7 +117,6 @@ class File(Ui_FileListItem, QWidget):
       # code
       if not self.monitor.isRunning(): return
       self.monitor.kill()
-      self.monitor = SubProcMonitor()
 
 
    def joinProcess(self):
@@ -135,7 +131,7 @@ class FileList(QListView):
    doneSignal = C.pyqtSignal()
    startSignal = C.pyqtSignal()
    addFileSignal = C.pyqtSignal([str])
-   removeFileSignal = C.pyqtSignal([str])
+   removeFileSignal = C.pyqtSignal([File])
    isRunning = False
 
    gChildH = 74 # child height
@@ -156,6 +152,8 @@ class FileList(QListView):
       self.setFocusPolicy(0)
       self.setFrameShape(0)
       self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)
+      # signals
+      self.removeFileSignal.connect(self.removeFile)
 
    def sizeHint(self):
       return C.QSize(0, len(self.children) * self.gChildH)
@@ -169,7 +167,6 @@ class FileList(QListView):
          "unbalanced startAll killAll by " + \
          str(self._startCalled - self._endCalled)
 
-
    def addFile(self, path):
       if not memberf(lambda x: x.name == path, self.children):
          file = File(self.root, self)
@@ -182,8 +179,7 @@ class FileList(QListView):
          self.addFileSignal.emit(path)
 
    def startAll(self):
-      # assert T.current_thread() == T.main_thread()
-      # print "started"
+      assertThreadIs("main")
 
       self._assertBalance()
       self._startCalled += 1
@@ -209,7 +205,8 @@ class FileList(QListView):
                assert not c.monitor.isAwait(), \
                   "FileList: file still waiting."
                if c.monitor.isSuccess():
-                  self.removeFile(c)
+                  self.children.remove(c)
+                  self.removeFileSignal.emit(c)
             except Exception as e:
                c.killProcess()
                c.message = "(压缩失败)"
@@ -226,18 +223,16 @@ class FileList(QListView):
       self.startSignal.emit()
 
    def removeFile(self, file):
+      assertThreadIs("main")
+      if file in self.children: self.children.remove(file)
       file.killProcess()
-      self.children.remove(file)
-      self.layout().removeWidget(file)
-      self.removeFileSignal.emit(file.name)
-      file.deleteLater()
+      file.close()
 
    def killAll(self):
-      # assert T.current_thread() == T.main_thread()
+
       self._endCalled += 1
       self._assertBalance()
 
-      # print "killed"
       self._shouldKill = True
       for c in self.children:
          if c.monitor.isRunning(): c.killProcess()
