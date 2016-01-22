@@ -62,7 +62,7 @@ class SubProcMonitor(State):
          assert not self.isRunning(), \
          "SubProcMonitor: Attempted to start a process twice."
          self.threadName = threadName
-         self.subproc = Popen(self.cmdArgs, stdout=PIPE if self.pipeOut else None)
+         self.subproc = Popen(self.cmdArgs, stdout=PIPE if self.pipeOut else None, universal_newlines=True)
          self.stdout = self.subproc.stdout
          self.setRunning()
          self.monitor.start(threadName)
