@@ -29,8 +29,8 @@ class Message():
       self.root.notificationArea.hide()
 
    def error(self, exception, time = 10):
-      print "*******"
+      print("*******")
       traceback.print_exc()
-      print "*******"
+      print("*******")
       self.show("发生错误: " + str(exception), time)
       raise exception

@@ -73,7 +73,7 @@ class File(Ui_FileListItem, QWidget):
          assertThreadIs("monitor")
 
          line = monitor.stdout.readline()
-         print line.strip('\n')
+         print(line.strip('\n'))
          input = re.search("percent=(\d+)", line)
          if not input: return
 
@@ -90,7 +90,7 @@ class File(Ui_FileListItem, QWidget):
 
       # args = ['/bin/bash', './bin/testbin']
       args = ['./bin/compress', self.name, self.name, self.root.configSelector.currentConfig()]
-      print args
+      print(args)
       self.monitor = SubProcMonitor(
          args,
          do,

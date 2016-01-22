@@ -78,14 +78,14 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       event.accept()
       try: self.filelist.killAll()
       except AssertionError: pass
-      print "[Application Closed]"
+      print("[Application Closed]")
 
 
 def main():
    threading.currentThread().setName("main")
 
    appRoot = dirname(abspath(sys.argv[0]))
-   print "Running at", appRoot
+   print("Running at", appRoot)
    os.chdir(appRoot)
    try:
       app = W.QApplication(sys.argv)
@@ -93,6 +93,6 @@ def main():
       app.exec_()
    except Exception as e:
       w.message.error(e)
-      print "[Application Error]", e
+      print("[Application Error]", e)
 
 main()

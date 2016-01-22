@@ -11,7 +11,7 @@ def nub(a=None):
    pass
 
 def showError(e):
-   print e
+   print(e)
    traceback.print_exc()
 
 
