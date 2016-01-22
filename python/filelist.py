@@ -88,8 +88,8 @@ class File(Ui_FileListItem, QWidget):
          self.monitor.kill()
          self.root.message.error(e)
 
-      # args = ['/bin/bash', './bin/testbin']
-      args = ['./bin/compress', self.name, self.name, self.root.configSelector.currentConfig()]
+      args = ['/bin/bash', './bin/testbin']
+      # args = ['./bin/compress', self.name, self.name, self.root.configSelector.currentConfig()]
       print(args)
       self.monitor = SubProcMonitor(
          args,
