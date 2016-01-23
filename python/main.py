@@ -3,7 +3,7 @@
 
 import sys
 from PyQt5 import QtWidgets as W
-from PyQt5 import QtCore
+from PyQt5.QtCore import *
 from mainwindow_ui import Ui_MainWindow
 import mainwindow_rc
 import filelist as F
@@ -35,7 +35,7 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
    def dropEvent(self, event):
       event.accept()
       for url in event.mimeData().urls():
-         self.filelist.addFile(url.path())
+         self.filelist.addFile(url.url().replace("file:///", "", 1))
 
    def setupDragHint(self):
       opacity(self.dragHint, 0.2)

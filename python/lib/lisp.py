@@ -1,5 +1,6 @@
 import traceback
 import threading as T
+import sys 
 
 def memberf(f, ls):
    for x in ls:
@@ -20,3 +21,7 @@ def assertThreadIs(s):
       "Running on a wrong thread -" \
       + "\n Expected: " + s \
       + "\n Actual: " + T.currentThread().getName()
+
+def log(s):
+   print(s, file=sys.stderr)
+   

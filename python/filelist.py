@@ -14,6 +14,7 @@ from subprocess import Popen
 from lib.subprocmonitor import *
 import threading as T
 import re
+import os.path as Path
 
 class File(Ui_FileListItem, QWidget):
 
@@ -73,7 +74,7 @@ class File(Ui_FileListItem, QWidget):
          assertThreadIs("monitor")
 
          line = monitor.stdout.readline()
-         print(line.strip('\n'))
+         log(line.strip('\n'))
          input = re.search("percent=(\d+)", line)
          if not input: return
 
@@ -88,9 +89,9 @@ class File(Ui_FileListItem, QWidget):
          self.monitor.kill()
          self.root.message.error(e)
 
-      args = ['/bin/bash', './bin/testbin']
-      # args = ['./bin/compress', self.name, self.name, self.root.configSelector.currentConfig()]
-      print(args)
+      # args = ['bash', './bin/testbin']
+      args = ['./bin/compress', self.name, self.name, self.root.configSelector.currentConfig()]
+      log(args)
       self.monitor = SubProcMonitor(
          args,
          do,
@@ -102,7 +103,7 @@ class File(Ui_FileListItem, QWidget):
 
       self.monitor.start("monitor")
 
-      print("Starts: "+ self.name)
+      log("Starts: "+ self.name)
       self._assertBalance()
       self._startCalled += 1
 
@@ -112,7 +113,7 @@ class File(Ui_FileListItem, QWidget):
 
       self._endCalled += 1
       self._assertBalance()
-      print("Finishes: "+ self.name)
+      log("Finishes: "+ self.name)
 
       # code
       if not self.monitor.isRunning(): return
