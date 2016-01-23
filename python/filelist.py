@@ -218,9 +218,9 @@ class FileList(QListView):
                c.killProcess()
                c.message = "(压缩失败)"
                c.updateUI()
-               try: self.root.message.error(e)
-               except: pass
+               self.root.message.error(e)
                idx += 1
+               raise e
 
       def clean():
          self.killAll()
@@ -242,6 +242,7 @@ class FileList(QListView):
 
       self._shouldKill = True
       for c in self.children:
-         if c.monitor.isRunning(): c.killProcess()
+         if c.monitor.isRunning(): 
+            c.killProcess()
       self.isRunning = False
       self.doneSignal.emit()

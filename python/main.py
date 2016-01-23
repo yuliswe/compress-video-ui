@@ -79,8 +79,7 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
 
    def closeEvent(self, event):
       event.accept()
-      try: self.filelist.killAll()
-      except AssertionError: pass
+      self.filelist.killAll()
       print("[Application Closed]")
 
 
@@ -97,5 +96,6 @@ def main():
    except Exception as e:
       w.message.error(e)
       print("[Application Error]", e)
+      raise e
 
 main()

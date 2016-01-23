@@ -33,4 +33,3 @@ class Message():
       traceback.print_exc()
       log("*******")
       self.show("发生错误: " + str(exception), time)
-      raise exception

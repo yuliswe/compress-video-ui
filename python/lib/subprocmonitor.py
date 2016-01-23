@@ -1,10 +1,12 @@
 from lib.autoprocess import AutoProcess
-from subprocess import Popen, PIPE
+from subprocess import *
 from lib.lisp import *
 from lib.state import State
 import threading as T
 from lib.state import State
 from time import sleep
+from signal import *
+import os as OS
 
 class SubProcMonitor(State):
 
@@ -54,6 +56,7 @@ class SubProcMonitor(State):
             self.kill()
             self.onError(e)
             self.setFailure(e)
+            raise e
 
       self.monitor = AutoProcess(_do, self.cleanup, self.frequency, onError=self.onError)
 
@@ -62,7 +65,12 @@ class SubProcMonitor(State):
          assert not self.isRunning(), \
             "SubProcMonitor: Attempted to start a process twice."
          self.threadName = threadName
-         self.subproc = Popen(self.cmdArgs, stdout=PIPE if self.pipeOut else None, universal_newlines=True)
+         self.subproc = Popen(self.cmdArgs, 
+                              stdout=PIPE if self.pipeOut else None, 
+                              universal_newlines=True,
+                              creationflags=CREATE_NEW_PROCESS_GROUP)
+         assert self.subproc.pid, \
+            "SubProcMonitor: Subprocess could not start."
          self.stdout = self.subproc.stdout
          self.setRunning()
          self.monitor.start(threadName)
@@ -70,8 +78,13 @@ class SubProcMonitor(State):
    def kill(self):
       if self.isRunning():
          self.monitor.kill()
+         if OS.name == 'nt':
+            sig = CTRL_BREAK_EVENT 
+         elif OS.name == 'posix':
+            sig = SIGINT
          if self.subproc.poll() == None:
-            self.subproc.terminate()
+            self.subproc.send_signal(sig)
+            self.subproc.wait()
          self.setSuccess()
          self.cleanup()
          # if self.stdout: self.stdout.close()
