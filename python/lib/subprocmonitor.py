@@ -65,10 +65,14 @@ class SubProcMonitor(State):
          assert not self.isRunning(), \
             "SubProcMonitor: Attempted to start a process twice."
          self.threadName = threadName
+         if OS.name == 'posix':
+            creationflags = 0
+         elif OS.name == 'nt':
+            creationflags = CREATE_NEW_PROCESS_GROUP
          self.subproc = Popen(self.cmdArgs, 
                               stdout=PIPE if self.pipeOut else None, 
                               universal_newlines=True,
-                              creationflags=CREATE_NEW_PROCESS_GROUP)
+                              creationflags=creationflags)
          assert self.subproc.pid, \
             "SubProcMonitor: Subprocess could not start."
          self.stdout = self.subproc.stdout

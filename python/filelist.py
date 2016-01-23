@@ -97,7 +97,7 @@ class File(Ui_FileListItem, QWidget):
          bin = './bin/compress.posix'
       
       args = [bin, self.name, self.name, self.root.configSelector.currentConfig()]
-      log(args)
+      
       self.monitor = SubProcMonitor(
          args,
          do,
@@ -214,13 +214,18 @@ class FileList(QListView):
                if c.monitor.isSuccess():
                   self.children.remove(c)
                   self.removeFileSignal.emit(c)
+               else:
+                  c.message = "压缩失败"
+                  c.updateUI()
+                  idx += 1
+               
             except Exception as e:
+               print(1111,e)
                c.killProcess()
-               c.message = "(压缩失败)"
+               c.message = "压缩失败"
                c.updateUI()
                self.root.message.error(e)
                idx += 1
-               raise e
 
       def clean():
          self.killAll()

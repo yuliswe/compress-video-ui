@@ -1,7 +1,7 @@
 # coding=utf-8
 
 from os import listdir
-from os.path import basename
+from os.path import *
 
 class ConfigFile():
 
@@ -23,7 +23,7 @@ class ConfigFile():
 
    def loadDir(self, path):
       for p in listdir(path):
-         self.loadFile(path+'/'+p)
+         if not p in [".DS_Store"]: self.loadFile(path+'/'+p)
 
    def currentConfig(self):
       return './config/'+self.ui.currentText()
