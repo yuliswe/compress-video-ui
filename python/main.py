@@ -35,7 +35,10 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
    def dropEvent(self, event):
       event.accept()
       for url in event.mimeData().urls():
-         self.filelist.addFile(url.url().replace("file:///", "", 1))
+         if os.name == 'nt':
+            self.filelist.addFile(url.url().replace("file:///", "", 1))
+         elif os.name == 'posix':
+            self.filelist.addFile(url.url())
 
    def setupDragHint(self):
       opacity(self.dragHint, 0.2)
