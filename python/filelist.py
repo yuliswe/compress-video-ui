@@ -15,6 +15,7 @@ from lib.subprocmonitor import *
 import threading as T
 import re
 import os.path as Path
+import os as OS
 
 class File(Ui_FileListItem, QWidget):
 
@@ -90,7 +91,12 @@ class File(Ui_FileListItem, QWidget):
          self.root.message.error(e)
 
       # args = ['bash', './bin/testbin']
-      args = ['./bin/compress', self.name, self.name, self.root.configSelector.currentConfig()]
+      if OS.name == 'nt':
+         bin = './bin/compress.nt'
+      elif OS.name == 'posix':
+         bin = './bin/compress.posix'
+      
+      args = [bin, self.name, self.name, self.root.configSelector.currentConfig()]
       log(args)
       self.monitor = SubProcMonitor(
          args,
