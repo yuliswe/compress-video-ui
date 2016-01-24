@@ -90,16 +90,12 @@ class File(Ui_FileListItem, QWidget):
          self.monitor.kill()
          self.root.message.error(e)
 
-      # args = ['bash', './bin/testbin']
-      if OS.name == 'nt':
-         bin = './bin/compress.nt'
-      elif OS.name == 'posix':
-         bin = './bin/compress.posix'
-      
-      args = [bin, self.name, self.name, self.root.configSelector.currentConfig()]
+      # arg = ['bash', './bin/testbin']
+      arg = ["compress", self.name, self.name, self.root.configSelector.currentConfig()]
+      log("arg: " + "".join(arg))
       
       self.monitor = SubProcMonitor(
-         args,
+         arg,
          do,
          pipeOut=True,
          frequency=1,
