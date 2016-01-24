@@ -33,7 +33,6 @@ class Message():
 
    def error(self, exception, time = 10):
       log("*******")
-      log("Trace:")
-      traceback.print_exc()
+      log(exception)
       log("*******")
       self.show("发生错误: " + str(exception), time)

@@ -220,7 +220,6 @@ class FileList(QListView):
                   idx += 1
                
             except Exception as e:
-               print(1111,e)
                c.killProcess()
                c.message = "压缩失败"
                c.updateUI()

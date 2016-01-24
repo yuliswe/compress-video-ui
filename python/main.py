@@ -14,6 +14,7 @@ from os.path import abspath, dirname
 import os
 from lib.message import Message
 import threading
+from lib.lisp import *
 
 class MainWindow(W.QMainWindow, Ui_MainWindow):
 
@@ -80,14 +81,14 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
    def closeEvent(self, event):
       event.accept()
       self.filelist.killAll()
-      print("[Application Closed]")
+      log("[Application Closed]")
 
 
 def main():
    threading.currentThread().setName("main")
 
    appRoot = dirname(abspath(sys.argv[0]))
-   print("Running at", appRoot)
+   log("Running at " + appRoot)
    os.chdir(appRoot)
    try:
       app = W.QApplication(sys.argv)
@@ -95,7 +96,7 @@ def main():
       app.exec_()
    except Exception as e:
       w.message.error(e)
-      print("[Application Error]", e)
+      log("[Application Error]", e)
       raise e
 
 main()

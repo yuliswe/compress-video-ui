@@ -12,9 +12,8 @@ def nub(a=None):
    pass
 
 def showError(e):
-   print(e)
+   log(e)
    traceback.print_exc()
-
 
 def assertThreadIs(s):
    assert T.currentThread().getName() == s, \

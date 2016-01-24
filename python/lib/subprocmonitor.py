@@ -107,5 +107,6 @@ class SubProcMonitor(State):
          self.setSuccess()
       else:
          e = Exception("SubProcMonitor: subprocess returns "+str(self.subproc.poll()))
+         log(e)
          self.onError(e)
          self.setFailure(e)
