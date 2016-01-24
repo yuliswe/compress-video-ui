@@ -20,6 +20,9 @@ class Ui_MainWindow(object):
         MainWindow.setSizePolicy(sizePolicy)
         MainWindow.setMinimumSize(QtCore.QSize(800, 500))
         MainWindow.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        font = QtGui.QFont()
+        font.setFamily("Heiti SC")
+        MainWindow.setFont(font)
         MainWindow.setAutoFillBackground(False)
         MainWindow.setStyleSheet("#centralWidget {\n"
 "    background-color: white;\n"
@@ -55,6 +58,11 @@ class Ui_MainWindow(object):
         sizePolicy.setHeightForWidth(self.sidebar.sizePolicy().hasHeightForWidth())
         self.sidebar.setSizePolicy(sizePolicy)
         self.sidebar.setMaximumSize(QtCore.QSize(150, 16777215))
+        font = QtGui.QFont()
+        font.setFamily("Heiti SC")
+        font.setBold(True)
+        font.setWeight(75)
+        self.sidebar.setFont(font)
         self.sidebar.setFocusPolicy(QtCore.Qt.NoFocus)
         self.sidebar.setAutoFillBackground(False)
         self.sidebar.setStyleSheet("#sidebar::item:selected {\n"
@@ -83,7 +91,7 @@ class Ui_MainWindow(object):
         self.sidebar.setDragDropOverwriteMode(False)
         self.sidebar.setDragDropMode(QtWidgets.QAbstractItemView.DropOnly)
         self.sidebar.setAlternatingRowColors(False)
-        self.sidebar.setTextElideMode(QtCore.Qt.ElideNone)
+        self.sidebar.setTextElideMode(QtCore.Qt.ElideMiddle)
         self.sidebar.setMovement(QtWidgets.QListView.Static)
         self.sidebar.setFlow(QtWidgets.QListView.TopToBottom)
         self.sidebar.setProperty("isWrapping", False)

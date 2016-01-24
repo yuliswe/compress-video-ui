@@ -31,6 +31,11 @@
     <height>16777215</height>
    </size>
   </property>
+  <property name="font">
+   <font>
+    <family>Heiti SC</family>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>压缩不好都是我们的错 － 战xx视频压缩工具</string>
   </property>
@@ -106,6 +111,13 @@
         <height>16777215</height>
        </size>
       </property>
+      <property name="font">
+       <font>
+        <family>Heiti SC</family>
+        <weight>75</weight>
+        <bold>true</bold>
+       </font>
+      </property>
       <property name="focusPolicy">
        <enum>Qt::NoFocus</enum>
       </property>
@@ -161,7 +173,7 @@
        <bool>false</bool>
       </property>
       <property name="textElideMode">
-       <enum>Qt::ElideNone</enum>
+       <enum>Qt::ElideMiddle</enum>
       </property>
       <property name="movement">
        <enum>QListView::Static</enum>
