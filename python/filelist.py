@@ -162,7 +162,7 @@ class FileList(QListView):
       return C.QSize(0, len(self.children) * self.gChildH)
 
    def _debug(self):
-      for i in range(0,10):
+      for i in range(0,2):
          self.addFile("sample_" + str(i))
 
    def _assertBalance(self):
