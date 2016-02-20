@@ -242,7 +242,6 @@ class FileList(QListView):
 
       self._shouldKill = True
       for c in self.children:
-         if c.monitor.isRunning(): 
-            c.killProcess()
+         c.killProcess()
       self.isRunning = False
       
