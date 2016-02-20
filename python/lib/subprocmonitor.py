@@ -10,12 +10,10 @@ import os as OS
 
 class SubProcMonitor(State):
 
-   lock = T.Lock()
-
    def __init__( self,
                  cmdArgs = None,
                  do = nub,
-                 cleanup = nub,
+                 final = nub,
                  frequency = 1,
                  pipeOut = False,
                  onError = showError ):
@@ -23,11 +21,11 @@ class SubProcMonitor(State):
       self.cmdArgs = cmdArgs
       self.frequency = frequency
       self.do = do
-      self.cleanup = cleanup
+      self.final = final
       self.pipeOut = pipeOut
       self.onError = onError
       # start a thread to check the subprocess repeatedly
-      def _do(autoproc):
+      def update(autoproc):
          try:
             assert T.current_thread().name == self.threadName, \
                "SubProcMonitor: wrong thread."
@@ -37,9 +35,7 @@ class SubProcMonitor(State):
                " when the process is "+\
                str(self.subproc)
             if autoproc.isFailure():
-               e = autoproc.getException()
-               self.onError(e)
-               self.setFailure(e)
+               raise autoproc.getException()
             # while the subprocess is running
             if self.subproc.poll() == None:
                self.do(self)
@@ -47,66 +43,51 @@ class SubProcMonitor(State):
             elif self.subproc.poll() == 0:
                self.setSuccess()
                autoproc.kill()
-               self.cleanup()
             else:
-               e = Exception("SubProcMonitor: subprocess returns "+str(self.subproc.poll()))
-               self.onError(e)
-               self.setFailure(e)
+               autoproc.kill()
+               raise Exception("SubProcMonitor: subprocess returns "+str(self.subproc.poll()))
          except Exception as e:
-            self.kill()
-            self.onError(e)
+            if self.subproc.poll() == None: self.kill()
             self.setFailure(e)
             raise e
-
-      self.monitor = AutoProcess(_do, self.cleanup, self.frequency, onError=self.onError)
+            
+      self.autoproc = AutoProcess(update=update, final=self.final, frequency=self.frequency, onError=self.onError)
 
    def start(self, stdout=None, threadName = "monitor"):
-      with self.lock:
-         assert not self.isRunning(), \
-            "SubProcMonitor: Attempted to start a process twice."
-         self.threadName = threadName
-         if OS.name == 'posix':
-            creationflags = 0
-         elif OS.name == 'nt':
-            creationflags = CREATE_NEW_PROCESS_GROUP
-         self.subproc = Popen(self.cmdArgs, 
-                              stdout=PIPE if self.pipeOut else None, 
-                              universal_newlines=True,
-                              creationflags=creationflags)
-         assert self.subproc.pid, \
-            "SubProcMonitor: Subprocess could not start."
-         self.stdout = self.subproc.stdout
-         self.setRunning()
-         self.monitor.start(threadName)
+      assert self.isAwait(), \
+         "SubProcMonitor: Attempted to use a process twice, please allocate a new ProcMonitor."
+      self.threadName = threadName
+      if OS.name == 'posix':
+         creationflags = 0
+      elif OS.name == 'nt':
+         creationflags = CREATE_NEW_PROCESS_GROUP
+      self.subproc = Popen(self.cmdArgs, 
+                           stdout=PIPE if self.pipeOut else None, 
+                           universal_newlines=True,
+                           creationflags=creationflags)
+      assert self.subproc.pid, \
+         "SubProcMonitor: Subprocess could not start."
+      self.stdout = self.subproc.stdout
+      self.setRunning()
+      self.autoproc.start(threadName)
 
    def kill(self):
-      if self.isRunning():
-         self.monitor.kill()
+      if not self.isRunning():
+         warn("SubProcMonitor.kill: SubProcMonitor is "+self.show()+".")
+      else:
          if OS.name == 'nt':
             sig = CTRL_BREAK_EVENT 
          elif OS.name == 'posix':
             sig = SIGINT
-         if self.subproc.poll() == None:
-            self.subproc.send_signal(sig)
-            self.subproc.wait()
-         self.setSuccess()
-         self.cleanup()
-         # if self.stdout: self.stdout.close()
-
+         self.subproc.send_signal(sig)
+         self.subproc.wait()
+         
    def join(self):
       assert self.isRunning(), \
          "SubProcMonitor: attempted to join a process that's not running."
       self.subproc.wait()
-      self.monitor.kill()
-      assert not self.monitor.isRunning(), \
-         "SubProcMonitor: monitor still running."
+      self.autoproc.join()
       assert not self.subproc.poll() == None, \
          "SubProcMonitor: subprocess still running."
-      self.cleanup()
-      if self.subproc.poll() == 0:
-         self.setSuccess()
-      else:
-         e = Exception("SubProcMonitor: subprocess returns "+str(self.subproc.poll()))
-         log(e)
-         self.onError(e)
-         self.setFailure(e)
+      assert not self.autoproc.isRunning(), \
+         "SubProcMonitor: autoproc still running."

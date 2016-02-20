@@ -1,7 +1,7 @@
 #coding=utf-8
 
 from PyQt5.QtWidgets import *
-from lib.autoprocess import Process, TimeOut
+from lib.autoprocess import TimeOut
 from PyQt5.QtCore import pyqtSignal
 from time import sleep
 import inspect
@@ -33,6 +33,6 @@ class Message():
 
    def error(self, exception, time = 10):
       log("*******")
-      log(exception)
+      showError(exception)
       log("*******")
       self.show("发生错误: " + str(exception), time)

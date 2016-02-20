@@ -12,7 +12,7 @@ def nub(a=None):
    pass
 
 def showError(e):
-   log(e)
+   error(str(e))
    traceback.print_exc()
 
 def assertThreadIs(s):
@@ -23,4 +23,10 @@ def assertThreadIs(s):
 
 def log(s):
    print(s, file=sys.stderr)
+   
+def warn(s):
+   log("Warning - Thread "+ T.currentThread().name+": "+s)
+   
+def error(s):
+   log("Error - Thread "+ T.currentThread().name+": "+s)
    
