@@ -18,7 +18,6 @@ class AutoProcess(State):
       self._process.setDaemon(True)
 
    def start(self, threadName = "proc"):
-      log('autoproc starts '+threadName)
       if not self.isAwait():
          warn("AutoProcess.start: process is "+self.show()+".")
       else:
@@ -51,7 +50,6 @@ class AutoProcess(State):
          self.onError(e)
       finally:
          self.final()
-         log("exit")
          exit(0)
 
 
@@ -70,7 +68,8 @@ class TimeOut():
       self.proc.start('timeout')
 
    def kill(self):
-      self.proc.kill()
+      if self.proc.isRunning():
+         self.proc.kill()
 
 
 def test():

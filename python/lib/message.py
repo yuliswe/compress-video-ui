@@ -22,7 +22,8 @@ class Message():
       self.root.notification.setText(text)
       self.root.notificationArea.show()
       self.timer = time
-      if self.timeOut: self.timeOut.kill()
+      if self.timeOut: 
+         self.timeOut.kill() 
       self.timeOut = TimeOut(self.hide, time)
 
    def hide(self):

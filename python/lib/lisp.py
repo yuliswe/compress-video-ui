@@ -22,11 +22,11 @@ def assertThreadIs(s):
       + "\n Actual: " + T.currentThread().getName()
 
 def log(s):
-   print(s, file=sys.stderr)
+   print("Log - Thread "+ T.currentThread().name+": "+s, file=sys.stderr)
    
 def warn(s):
-   log("Warning - Thread "+ T.currentThread().name+": "+s)
+   print("Warning - Thread "+ T.currentThread().name+": "+s, file=sys.stderr)
    
 def error(s):
-   log("Error - Thread "+ T.currentThread().name+": "+s)
+   print("Error - Thread "+ T.currentThread().name+": "+s, file=sys.stderr)
    

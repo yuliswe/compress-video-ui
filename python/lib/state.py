@@ -38,10 +38,13 @@ class State(object):
       return isinstance(self.state, State.Await)
 
    def show(self):
-      return str(self.state)
+      if self.isFailure():
+         return str(self.state)+":"+str(self.getException());
+      else:
+         return str(self.state);
 
    def getException(self):
       assert self.isFailure(), \
          "State: attempted to call getException when the state is " \
          + str(self.state)
-      return self.state.exception
+      return self.exception
