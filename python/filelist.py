@@ -75,7 +75,7 @@ class File(Ui_FileListItem, QWidget):
          assertThreadIs("monitor")
 
          line = monitor.stdout.readline()
-         log(line.strip('\n'))
+         print(line, end='', file=sys.stderr)
          input = re.search("percent=(\d+)", line)
          if not input: return
 
@@ -97,7 +97,7 @@ class File(Ui_FileListItem, QWidget):
          cmdArgs=arg,
          do=do,
          pipeOut=True,
-         frequency=1,
+         frequency=0,
          onError=self.root.message.error,
          final=final
       )
