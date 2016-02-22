@@ -56,13 +56,15 @@ class File(Ui_FileListItem, QWidget):
       self.message = ""
       self.progress.reset()
       self.progress.hide()
-      self.updateUI(0)
+      self.percentage = 0;
+      self.updateUI()
 
-   def updateUI(self, percentage = 0):
+   def updateUI(self):
       self.fileinfo.setText(naturalsize(self.size)+" "+self.message)
       if self.monitor and self.monitor.isRunning():
          self.progress.show()
-         self.progress.setValue(percentage)
+         self.progress.setFormat("%.1f%%" % self.percentage)
+         self.progress.setValue(self.percentage)
       else:
          self.progress.hide()
 
@@ -73,18 +75,12 @@ class File(Ui_FileListItem, QWidget):
       # start a thread to check the progress repeatedly
       def do(monitor):
          assertThreadIs("monitor")
-
          line = monitor.stdout.readline()
          print(line, end='', file=sys.stderr)
-         input = re.search("percent=(\d+)", line)
+         input = re.search("percent=(\d+\\.?\d*)", line)
          if not input: return
-
-         self.percentage = int(input.group(1))
-
+         self.percentage = float(input.group(1))
          self.progress.valueChanged.emit(self.percentage)
-         if not self.monitor.isRunning():
-            self.progress.valueChanged.emit(self.percentage)
-            monitor.kill()
             
       def final():
          self._endCalled += 1
