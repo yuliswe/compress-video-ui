@@ -15,43 +15,33 @@ class SubProcMonitor(State):
                  do = nub,
                  final = nub,
                  frequency = 1,
-                 pipeOut = False,
-                 onError = showError ):
+                 pipeOut = False):
       super(SubProcMonitor, self).__init__()
       self.cmdArgs = cmdArgs
       self.frequency = frequency
       self.do = do
       self.final = final
       self.pipeOut = pipeOut
-      self.onError = onError
       # start a thread to check the subprocess repeatedly
       def update(autoproc):
          try:
-            assert T.current_thread().name == self.threadName, \
-               "SubProcMonitor: wrong thread."
-            assert self.isRunning(), \
-               "SubProcMonitor: state became "+\
-               str(self.state)+ \
-               " when the process is "+\
-               str(self.subproc)
-            if autoproc.isFailure():
-               raise autoproc.getException()
             # while the subprocess is running
-            if self.subproc.poll() == None:
+            code = self.subproc.poll()
+            if code == None:
                self.do(self)
             # when the subprocess terminates, the monitor terminates
-            elif self.subproc.poll() == 0:
-               self.setSuccess()
-               autoproc.kill()
             else:
-               autoproc.kill()
-               raise Exception("SubProcMonitor: subprocess returns "+str(self.subproc.poll()))
+               if code == 0:
+                  self.setSuccess()
+                  autoproc.kill()
+               else:
+                  raise Exception("SubProcMonitor: subprocess returns "+str(self.subproc.poll()))
          except Exception as e:
             if self.subproc.poll() == None: self.kill()
             self.setFailure(e)
             raise e
             
-      self.autoproc = AutoProcess(update=update, final=self.final, frequency=self.frequency, onError=self.onError)
+      self.autoproc = AutoProcess(update=update, final=self.final, frequency=self.frequency)
 
    def start(self, stdout=None, threadName = "monitor"):
       assert self.isAwait(), \
@@ -75,6 +65,7 @@ class SubProcMonitor(State):
       if not self.isRunning():
          warn("SubProcMonitor.kill: SubProcMonitor is "+self.show()+".")
       else:
+         self.setFailure("killed")
          if OS.name == 'nt':
             sig = CTRL_BREAK_EVENT 
          elif OS.name == 'posix':
@@ -83,11 +74,12 @@ class SubProcMonitor(State):
          self.subproc.wait()
          
    def join(self):
-      assert self.isRunning(), \
-         "SubProcMonitor: attempted to join a process that's not running."
-      self.subproc.wait()
-      self.autoproc.join()
-      assert not self.subproc.poll() == None, \
-         "SubProcMonitor: subprocess still running."
-      assert not self.autoproc.isRunning(), \
-         "SubProcMonitor: autoproc still running."
+      if self.isRunning():
+         self.subproc.wait()
+         if self.autoproc.isRunning(): self.autoproc.join()
+         assert not self.subproc.poll() == None, \
+            "SubProcMonitor: subprocess still running."
+         assert not self.autoproc.isRunning(), \
+            "SubProcMonitor: autoproc still running."
+      else:
+         warn("SubProcMonitor: attempted to join a process that's not running.")

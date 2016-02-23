@@ -5,8 +5,9 @@ from lib.autoprocess import TimeOut
 from PyQt5.QtCore import pyqtSignal
 from time import sleep
 import inspect
-from lib.lisp import *
+from lib import lisp
 import traceback
+import sys 
 
 class Message():
    height = 25
@@ -24,7 +25,7 @@ class Message():
       self.timer = time
       if self.timeOut: 
          self.timeOut.kill() 
-      self.timeOut = TimeOut(self.hide, time)
+      # self.timeOut = TimeOut(self.hide, time)
 
    def hide(self):
       self.root.notificationArea.hide()
@@ -33,7 +34,8 @@ class Message():
       return self.show(text, time)
 
    def error(self, exception, time = 10):
-      log("*******")
-      showError(exception)
-      log("*******")
+      print("*******", file=sys.stderr)
+      lisp.error(exception)
+      traceback.print_exc()
+      print("*******", file=sys.stderr)
       self.show("发生错误: " + str(exception), time)

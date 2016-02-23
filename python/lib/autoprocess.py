@@ -7,12 +7,11 @@ from lib.state import State
 
 class AutoProcess(State):
 
-   def __init__(self, update, final = nub, frequency = 1, count = None, onError = showError):
+   def __init__(self, update, final = nub, frequency = 1, count = None):
       super(AutoProcess, self).__init__()
       self.update = update
       self.frequency = frequency
       self.final = final
-      self.onError = onError
       self.count = count
       self._process = T.Thread(target=self._do)
       self._process.setDaemon(True)
@@ -26,11 +25,11 @@ class AutoProcess(State):
          self._process.start()
 
    def join(self):
-      if not self.isRunning():
-         warn("AutoProcess.join: process is "+self.show()+".")
-      else:
+      if self.isRunning():
          self._process.join()
          self.setSuccess()
+      else:
+         warn("AutoProcess.join: process is "+self.show()+".")
 
    def kill(self):
       if not self.isRunning():
@@ -46,8 +45,9 @@ class AutoProcess(State):
             if self.count: self.count -= 1
             sleep(self.frequency)
       except Exception as e:
-         self.setFailure(e)
-         self.onError(e)
+         self.setFailure(str(e))
+         error(str(e))
+         raise e
       finally:
          self.final()
          exit(0)
@@ -63,8 +63,7 @@ class TimeOut():
             do()
             proc.kill()
       self.proc = AutoProcess(update=update, 
-                              frequency=frequency, 
-                              onError=showError)
+                              frequency=frequency)
       self.proc.start('timeout')
 
    def kill(self):

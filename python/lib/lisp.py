@@ -11,10 +11,6 @@ def memberf(f, ls):
 def nub(a=None):
    pass
 
-def showError(e):
-   error(str(e))
-   traceback.print_exc()
-
 def assertThreadIs(s):
    assert T.currentThread().getName() == s, \
       "Running on a wrong thread -" \
@@ -22,11 +18,11 @@ def assertThreadIs(s):
       + "\n Actual: " + T.currentThread().getName()
 
 def log(s):
-   print("Log - Thread "+ T.currentThread().name+": "+s, file=sys.stderr)
+   print("Log - Thread "+ T.currentThread().name+": "+str(s), file=sys.stderr)
    
 def warn(s):
-   print("Warning - Thread "+ T.currentThread().name+": "+s, file=sys.stderr)
+   print("Warning - Thread "+ T.currentThread().name+": "+str(s), file=sys.stderr)
    
 def error(s):
-   print("Error - Thread "+ T.currentThread().name+": "+s, file=sys.stderr)
+   print("Error - Thread "+ T.currentThread().name+": "+str(s), file=sys.stderr)
    

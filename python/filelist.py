@@ -94,7 +94,6 @@ class File(Ui_FileListItem, QWidget):
          do=do,
          pipeOut=True,
          frequency=0,
-         onError=self.root.message.error,
          final=final
       )
 
@@ -213,6 +212,7 @@ class FileList(QListView):
                c.updateUI()
                self.root.message.error(e)
                idx += 1
+               raise e
                
       def final():
          self._endCalled += 1
@@ -220,7 +220,6 @@ class FileList(QListView):
 
       AutoProcess(update=do, 
                   count=1, 
-                  onError=self.root.message.error, 
                   final=final).start("FileList.startAll")
       self.startSignal.emit()
       self.isRunning = False
