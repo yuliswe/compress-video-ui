@@ -7,97 +7,68 @@ from lib.state import State
 
 class AutoProcess(State):
 
-   lock = T.Lock()
-
-   def __init__(self, update, cleanup = nub, frequency = 1, onError = showError):
+   def __init__(self, update, final = nub, frequency = 1, count = None):
       super(AutoProcess, self).__init__()
       self.update = update
       self.frequency = frequency
-      self.cleanup = cleanup
-      self.onError = onError
+      self.final = final
+      self.count = count
       self._process = T.Thread(target=self._do)
       self._process.setDaemon(True)
-      self.setAwait()
 
    def start(self, threadName = "proc"):
-      with self.lock:
+      if not self.isAwait():
+         warn("AutoProcess.start: process is "+self.show()+".")
+      else:
          self._process.name = threadName
          self.setRunning()
          self._process.start()
 
    def join(self):
-      self._process.join()
-      self.setSuccess()
+      if self.isRunning():
+         self._process.join()
+         self.setSuccess()
+      else:
+         warn("AutoProcess.join: process is "+self.show()+".")
 
    def kill(self):
-      self.setSuccess()
+      if not self.isRunning():
+         warn("AutoProcess.kill: process is "+self.show()+".")
+      else:
+         self.setFailure("killed")
 
    def _do(self):
       try:
          assert T.currentThread().name == self._process.name
-         while self.isRunning():
-            with self.lock:
-               self.update(self)
+         while self.isRunning() and (self.count == None or self.count > 0):
+            self.update(self)
+            if self.count: self.count -= 1
             sleep(self.frequency)
       except Exception as e:
-         self.setFailure(e)
-         with self.lock:
-            self.onError(e)
+         self.setFailure(str(e))
+         error(str(e))
+         raise e
       finally:
-         with self.lock:
-            self.cleanup()
+         self.final()
          exit(0)
-
-
-class Process(State):
-
-   lock = T.Lock()
-
-   def __init__(self, do, cleanup = nub, onError = showError):
-      super(Process, self).__init__()
-      self.setAwait()
-      self.do = do
-      self.cleanup = cleanup
-      self.onError = onError
-      def _do():
-         try:
-            # assert
-            assert T.currentThread().name == self._process.name
-            # code
-            with self.lock:
-               self.do()
-         except Exception as e:
-            self.setFailure(e)
-            with self.lock:
-               self.onError(e)
-         finally:
-            with self.lock:
-               self.cleanup()
-            exit(0)
-      self._process = T.Thread(target=_do)
-      self._process.setDaemon(True)
-
-   def start(self, threadName = "proc"):
-      with self.lock:
-         self.setRunning()
-         self._process.name = threadName
-         self._process.start()
 
 
 class TimeOut():
    def __init__(self, do, time, frequency = 1):
       self.timer = time
-      def _do(proc):
+      def update(proc):
          if self.timer > 0:
             self.timer -= frequency
          else:
             do()
             proc.kill()
-      self.proc = AutoProcess(_do, nub, frequency, onError=showError)
-      self.proc.start()
+      self.proc = AutoProcess(update=update, 
+                              frequency=frequency)
+      self.proc.start('timeout')
 
    def kill(self):
-      self.proc.kill()
+      if self.proc.isRunning():
+         self.proc.kill()
 
 
 def test():
@@ -107,6 +78,6 @@ def test():
       i = i + 1
       if i > 5:
          autoproc.kill()
-   AutoProcess(do).start()
-   AutoProcess(do).start()
+   AutoProcess(do).start("test")
+   AutoProcess(do).start("test")
 

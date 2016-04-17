@@ -2,14 +2,14 @@
   "crf": 18,
   "frameRate": {
     "tag": "Max",
-    "contents": 25
+    "contents": 30
   },
   "height": {
     "tag": "Keep",
     "contents": []
   },
-  "suffix": ".mp4",
-  "prefix": "h264_",
+  "suffix": "_h264.mp4",
+  "prefix": "",
   "width": {
     "tag": "Keep",
     "contents": []

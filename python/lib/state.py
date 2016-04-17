@@ -1,13 +1,13 @@
 class State(object):
 
    class Await():
-      """State"""
+      pass
    class Success():
       stdout = ""
    class Failure():
       pass
    class Running():
-      """State"""
+      pass
 
    def __init__(self):
       self.state = State.Await()
@@ -22,8 +22,8 @@ class State(object):
    def setSuccess(self):
       self.state = State.Success()
 
-   def setAwait(self):
-      self.state = State.Await()
+   # def setAwait(self):
+   #    self.state = State.Await()
 
    def isRunning(self):
       return isinstance(self.state, State.Running)
@@ -37,9 +37,14 @@ class State(object):
    def isAwait(self):
       return isinstance(self.state, State.Await)
 
+   def show(self):
+      if self.isFailure():
+         return str(self.state)+":"+str(self.getException());
+      else:
+         return str(self.state);
 
    def getException(self):
       assert self.isFailure(), \
          "State: attempted to call getException when the state is " \
          + str(self.state)
-      return self.state.exception
+      return self.exception
