@@ -70,7 +70,7 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
 
    def setupFileListArea(self):
       self.filelist = F.FileList(self, self.hasfile)
-      self.filelist._debug()
+      # self.filelist._debug()
 
    def closeEvent(self, event):
       event.accept()

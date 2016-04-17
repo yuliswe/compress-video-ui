@@ -175,8 +175,8 @@ class Ui_MainWindow(object):
 "    font-size: 13px;\n"
 "}")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(":/stop.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
         icon1.addPixmap(QtGui.QPixmap(":/start.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(":/stop.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.startButton.setIcon(icon1)
         self.startButton.setIconSize(QtCore.QSize(20, 20))
         self.startButton.setCheckable(True)
@@ -297,7 +297,7 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         self.sidebar.setCurrentRow(0)
-        self.filelistArea.setCurrentIndex(1)
+        self.filelistArea.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):

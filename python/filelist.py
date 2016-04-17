@@ -34,7 +34,8 @@ class File(Ui_FileListItem, QWidget):
       super(File, self).__init__()
       self.root = root
       self.setupUi(self)
-      parent.layout().insertWidget(0, self)
+      parentL = parent.layout()
+      parentL.insertWidget(parentL.count() - 1, self)
       self.progress.valueChanged.connect(self.updateUI)
       self.initUI()
       #set up deleteFileButton
@@ -165,9 +166,7 @@ class FileList(QListView):
          file.id = self._unique
          file.name = path
          file.size = Path.getsize(path) if Path.exists(path) else 0
-         log(path)
-         log(Path.exists(path))
-         self.children.insert(0,file)
+         self.children.append(file)
          file.initUI()
          self.addFileSignal.emit(path)
 
