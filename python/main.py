@@ -39,7 +39,7 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
          if os.name == 'nt':
             self.filelist.addFile(url.url().replace("file:///", "", 1))
          elif os.name == 'posix':
-            self.filelist.addFile(url.url())
+            self.filelist.addFile(url.url().replace("file:///", "/", 1))
 
    def setupDragHint(self):
       opacity(self.dragHint, 0.2)

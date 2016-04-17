@@ -15,7 +15,6 @@ from lib.subprocmonitor import *
 import threading as T
 import re
 import os.path as Path
-import os as OS
 
 class File(Ui_FileListItem, QWidget):
 
@@ -165,7 +164,9 @@ class FileList(QListView):
          self._unique += 1
          file.id = self._unique
          file.name = path
-         file.size = 0
+         file.size = Path.getsize(path) if Path.exists(path) else 0
+         log(path)
+         log(Path.exists(path))
          self.children.insert(0,file)
          file.initUI()
          self.addFileSignal.emit(path)
