@@ -145,12 +145,13 @@ class FileList(QListView):
       self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.MinimumExpanding)
       # signals
       self.removeFileSignal.connect(self.removeFile)
-
+      self.addFileSignal.connect(lambda:root.filelistArea.setCurrentIndex(1))
+      
    def sizeHint(self):
       return C.QSize(0, len(self.children) * self.gChildH)
 
    def _debug(self):
-      for i in range(0,1):
+      for i in range(0,10):
          self.addFile("sample_" + str(i))
 
    def _assertBalance(self):
@@ -226,12 +227,13 @@ class FileList(QListView):
 
    def removeFile(self, file):
       assertThreadIs("main")
-      if file in self.children: self.children.remove(file)
+      self.children.remove(file)
       file.killProcess()
       file.close()
+      if not self.children:
+         self.root.filelistArea.setCurrentIndex(0)
 
    def killAll(self):
-
       self._endCalled += 1
       self._assertBalance()
 

@@ -19,13 +19,13 @@ class Message():
       self.root = root
       self.hide()
 
-   def show(self, text, time = 5):
+   def show(self, text, time = 3):
       self.root.notification.setText(text)
       self.root.notificationArea.show()
       self.timer = time
       if self.timeOut: 
          self.timeOut.kill() 
-      # self.timeOut = TimeOut(self.hide, time)
+      self.timeOut = TimeOut(self.hide, time)
 
    def hide(self):
       self.root.notificationArea.hide()

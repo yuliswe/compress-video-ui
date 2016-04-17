@@ -242,6 +242,11 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.addWidget(self.dragHint)
         self.filelistArea.addWidget(self.nofile)
         self.hasfile = QtWidgets.QWidget()
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.hasfile.sizePolicy().hasHeightForWidth())
+        self.hasfile.setSizePolicy(sizePolicy)
         self.hasfile.setStyleSheet("QScrollArea {\n"
 "    border: none;\n"
 "    margin: 0;\n"
@@ -256,7 +261,7 @@ class Ui_MainWindow(object):
         self.filelistArea.addWidget(self.hasfile)
         self.verticalLayout.addWidget(self.filelistArea)
         self.notificationArea = QtWidgets.QWidget(self.mainWidget)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.notificationArea.sizePolicy().hasHeightForWidth())
