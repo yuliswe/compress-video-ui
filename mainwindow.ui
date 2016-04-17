@@ -395,6 +395,12 @@ QToolButton {
               <normaloff>:/start.png</normaloff>
               <normalon>:/stop.png</normalon>:/start.png</iconset>
             </property>
+            <property name="iconSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
             <property name="checkable">
              <bool>true</bool>
             </property>

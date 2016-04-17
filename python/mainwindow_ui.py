@@ -175,9 +175,10 @@ class Ui_MainWindow(object):
 "    font-size: 13px;\n"
 "}")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(":/start.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         icon1.addPixmap(QtGui.QPixmap(":/stop.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        icon1.addPixmap(QtGui.QPixmap(":/start.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.startButton.setIcon(icon1)
+        self.startButton.setIconSize(QtCore.QSize(20, 20))
         self.startButton.setCheckable(True)
         self.startButton.setChecked(False)
         self.startButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
