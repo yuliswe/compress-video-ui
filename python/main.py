@@ -57,10 +57,12 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
          self.startButton.setText("开始")
          self.message.show("任务结束")
       def onClick():
-         if self.startButton.isChecked():
+         if self.startButton.isChecked() and self.filelist.children:
             self.filelist.startAll()
-         else:
+         elif (not self.startButton.isChecked()) and self.filelist.children:
             self.filelist.killAll()
+         else:
+            self.startButton.setChecked(False)
 
       self.filelist.startSignal.connect(on)
       self.filelist.doneSignal.connect(off)

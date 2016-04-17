@@ -167,6 +167,7 @@ class Ui_MainWindow(object):
         spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_2.addItem(spacerItem)
         self.startButton = QtWidgets.QToolButton(self.controlBar)
+        self.startButton.setCursor(QtGui.QCursor(QtCore.Qt.ArrowCursor))
         self.startButton.setFocusPolicy(QtCore.Qt.NoFocus)
         self.startButton.setStyleSheet("#startButton {\n"
 "    padding: 0;\n"
@@ -174,12 +175,13 @@ class Ui_MainWindow(object):
 "    font-size: 13px;\n"
 "}")
         icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap(":/stop.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
         icon1.addPixmap(QtGui.QPixmap(":/start.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon1.addPixmap(QtGui.QPixmap(":/stop.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
         self.startButton.setIcon(icon1)
         self.startButton.setCheckable(True)
         self.startButton.setChecked(False)
         self.startButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
+        self.startButton.setAutoRaise(True)
         self.startButton.setObjectName("startButton")
         self.horizontalLayout_2.addWidget(self.startButton)
         self.verticalLayout.addWidget(self.controlBar)

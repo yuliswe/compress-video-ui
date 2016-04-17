@@ -374,6 +374,9 @@ QToolButton {
           </item>
           <item>
            <widget class="QToolButton" name="startButton">
+            <property name="cursor">
+             <cursorShape>ArrowCursor</cursorShape>
+            </property>
             <property name="focusPolicy">
              <enum>Qt::NoFocus</enum>
             </property>
@@ -400,6 +403,9 @@ QToolButton {
             </property>
             <property name="toolButtonStyle">
              <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
