@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'mainwindow.ui'
+# Form implementation generated from reading ui file './mainwindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.5.1
 #
@@ -57,7 +57,8 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.sidebar.sizePolicy().hasHeightForWidth())
         self.sidebar.setSizePolicy(sizePolicy)
-        self.sidebar.setMaximumSize(QtCore.QSize(150, 16777215))
+        self.sidebar.setMinimumSize(QtCore.QSize(90, 0))
+        self.sidebar.setMaximumSize(QtCore.QSize(16777215, 16777215))
         font = QtGui.QFont()
         font.setFamily("Heiti SC")
         font.setBold(True)
@@ -72,35 +73,43 @@ class Ui_MainWindow(object):
 "#sidebar::item {\n"
 "    color: rgba(255, 255, 255, 1);\n"
 "    background-color: transparent;\n"
-"    height: 50px;\n"
+"    padding: 5px;\n"
+"    width: 100%;\n"
 "}\n"
 "\n"
 "#sidebar {\n"
 "    border: none;\n"
 "    background-color: rgb(255, 104, 132);\n"
-"    max-width:150;\n"
 "    text-align: center;\n"
 "}")
         self.sidebar.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.sidebar.setFrameShadow(QtWidgets.QFrame.Plain)
-        self.sidebar.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustIgnored)
+        self.sidebar.setLineWidth(0)
+        self.sidebar.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.sidebar.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.sidebar.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
         self.sidebar.setAutoScroll(False)
         self.sidebar.setAutoScrollMargin(0)
         self.sidebar.setProperty("showDropIndicator", False)
         self.sidebar.setDragEnabled(False)
         self.sidebar.setDragDropOverwriteMode(False)
-        self.sidebar.setDragDropMode(QtWidgets.QAbstractItemView.DropOnly)
+        self.sidebar.setDragDropMode(QtWidgets.QAbstractItemView.NoDragDrop)
         self.sidebar.setAlternatingRowColors(False)
+        self.sidebar.setIconSize(QtCore.QSize(50, 50))
         self.sidebar.setTextElideMode(QtCore.Qt.ElideMiddle)
         self.sidebar.setMovement(QtWidgets.QListView.Static)
         self.sidebar.setFlow(QtWidgets.QListView.TopToBottom)
         self.sidebar.setProperty("isWrapping", False)
-        self.sidebar.setResizeMode(QtWidgets.QListView.Fixed)
+        self.sidebar.setResizeMode(QtWidgets.QListView.Adjust)
         self.sidebar.setLayoutMode(QtWidgets.QListView.Batched)
+        self.sidebar.setViewMode(QtWidgets.QListView.IconMode)
+        self.sidebar.setModelColumn(0)
+        self.sidebar.setUniformItemSizes(False)
         self.sidebar.setWordWrap(False)
         self.sidebar.setSelectionRectVisible(False)
         self.sidebar.setObjectName("sidebar")
         item = QtWidgets.QListWidgetItem()
+        item.setText("Bilibili标准")
         item.setTextAlignment(QtCore.Qt.AlignCenter)
         font = QtGui.QFont()
         font.setFamily("Microsoft Sans Serif")
@@ -108,10 +117,13 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         item.setFont(font)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/bilibili.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        item.setIcon(icon)
         brush = QtGui.QBrush(QtGui.QColor(0, 0, 0))
         brush.setStyle(QtCore.Qt.NoBrush)
         item.setBackground(brush)
-        item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsDragEnabled|QtCore.Qt.ItemIsDropEnabled|QtCore.Qt.ItemIsUserCheckable|QtCore.Qt.ItemIsEnabled)
+        item.setFlags(QtCore.Qt.ItemIsSelectable|QtCore.Qt.ItemIsEnabled)
         self.sidebar.addItem(item)
         item = QtWidgets.QListWidgetItem()
         item.setTextAlignment(QtCore.Qt.AlignCenter)
@@ -161,10 +173,10 @@ class Ui_MainWindow(object):
 "    margin:0;\n"
 "    font-size: 13px;\n"
 "}")
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/stop.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
-        icon.addPixmap(QtGui.QPixmap(":/start.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.startButton.setIcon(icon)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(":/stop.png"), QtGui.QIcon.Normal, QtGui.QIcon.On)
+        icon1.addPixmap(QtGui.QPixmap(":/start.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.startButton.setIcon(icon1)
         self.startButton.setCheckable(True)
         self.startButton.setChecked(False)
         self.startButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
@@ -276,6 +288,7 @@ class Ui_MainWindow(object):
         MainWindow.setCentralWidget(self.centralWidget)
 
         self.retranslateUi(MainWindow)
+        self.sidebar.setCurrentRow(0)
         self.filelistArea.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
@@ -285,8 +298,6 @@ class Ui_MainWindow(object):
         self.sidebar.setSortingEnabled(False)
         __sortingEnabled = self.sidebar.isSortingEnabled()
         self.sidebar.setSortingEnabled(False)
-        item = self.sidebar.item(0)
-        item.setText(_translate("MainWindow", "Bilibili标准"))
         item = self.sidebar.item(1)
         item.setText(_translate("MainWindow", "自定义"))
         self.sidebar.setSortingEnabled(__sortingEnabled)
@@ -297,3 +308,13 @@ class Ui_MainWindow(object):
         self.notification.setText(_translate("MainWindow", "完成 C:movie.flv"))
 
 import mainwindow_rc
+
+if __name__ == "__main__":
+    import sys
+    app = QtWidgets.QApplication(sys.argv)
+    MainWindow = QtWidgets.QMainWindow()
+    ui = Ui_MainWindow()
+    ui.setupUi(MainWindow)
+    MainWindow.show()
+    sys.exit(app.exec_())
+

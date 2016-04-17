@@ -45,6 +45,7 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       opacity(self.dragHint, 0.2)
 
    def setupSidebar(self):
+      self.centralWidget.layout()
       self.sidebar.setCurrentRow(0)
 
    def setupStartButton(self):
