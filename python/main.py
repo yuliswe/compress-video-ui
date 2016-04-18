@@ -25,10 +25,11 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       self.setupSidebar()
       self.setupFileListArea()
       self.setupStartButton()
-      self.show()
       self.setAcceptDrops(True)
       self.configSelector = ConfigFile(self, self.configSelector)
       self.message = Message(self)
+      # self.setWindowFlags(Qt.FramelessWindowHint)
+      self.show()
 
    def dragEnterEvent(self, event):
       event.accept()
