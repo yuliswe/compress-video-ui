@@ -21,14 +21,21 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
    def __init__(self):
       super(MainWindow, self).__init__()
       self.setupUi(self)
+      self.show()
       self.setupDragHint()
       self.setupSidebar()
       self.setupFileListArea()
       self.setupStartButton()
-      self.show()
       self.setAcceptDrops(True)
       self.configSelector = ConfigFile(self, self.configSelector)
-      self.message = Message(self)
+      # self.setWindowFlags(Qt.FramelessWindowHint)
+      self.setupMessage()
+      self.checkUpdate()
+
+   def resizeEvent(self, event):
+      # event.ignore()
+      self.NotificationArea.resizeEvent(event)
+      self.CenterWidgetUpper.resizeEvent(event)
 
    def dragEnterEvent(self, event):
       event.accept()
@@ -46,22 +53,39 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
 
    def setupSidebar(self):
       pass
+
+   def setupMessage(self):
+      self.Message = Message(self)
+      def sizeHint():
+         sidebarWidth = self.Sidebar.width()
+         windowWidth = self.MainWidget.width()
+         return QSize(windowWidth - sidebarWidth, self.Message.height)
+      def resizeEvent(event):
+         self.NotificationArea.adjustSize()
+         self.NotificationArea.move(0, self.MainWidget.height() - self.NotificationArea.height())
+      self.NotificationArea.sizeHint = sizeHint
+      self.NotificationArea.resizeEvent = resizeEvent
+      self.NotificationArea.adjustSize()
+                  
+   def checkUpdate(self):
+      self.Message.show("检查更新...")
       
    def setupStartButton(self):
       def on():
          self.startButton.setChecked(True)
          self.startButton.setText("终止")
-         self.message.show("任务开始")
+         self.Message.show("任务开始")
       def off():
          self.startButton.setChecked(False)
          self.startButton.setText("开始")
-         self.message.show("任务结束")
+         self.Message.show("任务结束")
       def onClick():
          if self.startButton.isChecked() and self.filelist.children:
             self.filelist.startAll()
          elif (not self.startButton.isChecked()) and self.filelist.children:
             self.filelist.killAll()
          else:
+            self.Message.show("当前没有任务")
             self.startButton.setChecked(False)
 
       self.filelist.startSignal.connect(on)
@@ -69,8 +93,17 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       self.startButton.clicked.connect(onClick)
 
    def setupFileListArea(self):
+      def sizeHint():
+         sidebarWidth = self.Sidebar.width()
+         windowWidth = self.MainWidget.width()
+         windowHeight = self.MainWidget.height()
+         return QSize(windowWidth - sidebarWidth, windowHeight)
+      def resizeEvent(event):
+         self.CenterWidgetUpper.adjustSize()
+      self.CenterWidgetUpper.sizeHint = sizeHint
+      self.CenterWidgetUpper.resizeEvent = resizeEvent
+      self.CenterWidgetUpper.adjustSize()
       self.filelist = F.FileList(self, self.hasfile)
-      # self.filelist._debug()
 
    def closeEvent(self, event):
       event.accept()

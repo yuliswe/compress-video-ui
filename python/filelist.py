@@ -227,7 +227,8 @@ class FileList(QListView):
 
    def removeFile(self, file):
       assertThreadIs("main")
-      self.children.remove(file)
+      if file in self.children:
+         self.children.remove(file)
       file.killProcess()
       file.close()
       if not self.children:
