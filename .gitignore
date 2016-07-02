@@ -4,3 +4,5 @@ python/build
 *.pyc
 python/dist
 *.autosave
+/dist
+/build

@@ -10,7 +10,7 @@ class ConfigFile():
    def __init__(self, root, ui):
       self.root = root
       self.ui = ui
-      self.loadDir('./config')
+      self.loadDir('../config')
       self.updateUI()
 
    def updateUI(self):
@@ -26,4 +26,4 @@ class ConfigFile():
          if not p in [".DS_Store"]: self.loadFile(path+'/'+p)
 
    def currentConfig(self):
-      return './config/'+self.ui.currentText()
+      return '../config/'+self.ui.currentText()
