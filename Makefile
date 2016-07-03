@@ -20,6 +20,6 @@ copy-bin:
 	cp `which compress-video-update-exe` ./bin/compress-video-update.exe
 	
 pyqt:
-	pyuic5 -o ./qt/mainwindow_ui.py -x ./mainwindow.ui
-	pyuic5 -o ./qt/filelistitem_ui.py -x ./plugin/filelistitem.ui
-	pyrcc5 -o ./qt/mainwindow_rc.py ./resource/mainwindow.qrc
+	pyuic5 -o ./python/mainwindow_ui.py -x ./mainwindow.ui
+	pyuic5 -o ./python/filelistitem_ui.py -x ./plugin/filelistitem.ui
+	pyrcc5 -o ./python/mainwindow_rc.py ./resource/mainwindow.qrc
