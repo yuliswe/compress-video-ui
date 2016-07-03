@@ -2,15 +2,18 @@
 
 from os import listdir
 from os.path import *
+import Control.Global
+
 
 class ConfigFile():
-
    configs = []
+   configDir = ""
 
    def __init__(self, root, ui):
       self.root = root
       self.ui = ui
-      self.loadDir('../config')
+      self.configDir = Control.Global.MAIN_OPTIONS.cfgDir
+      self.loadDir(self.configDir)
       self.updateUI()
 
    def updateUI(self):
@@ -26,4 +29,4 @@ class ConfigFile():
          if not p in [".DS_Store"]: self.loadFile(path+'/'+p)
 
    def currentConfig(self):
-      return '../config/'+self.ui.currentText()
+      return self.configDir + self.ui.currentText()

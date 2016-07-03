@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/local/bin/python3
 # coding=utf-8
 
 import sys
@@ -9,12 +9,14 @@ import mainwindow_rc
 import filelist as F
 import types
 from lib.qtopacity import opacity
-from control.configfile import ConfigFile
-from os.path import abspath, dirname
+from Control.configfile import ConfigFile
 import os
+import os.path as path
 from lib.message import Message
 import threading
 from lib.lisp import *
+import argparse
+import Control.Global as G
 
 class MainWindow(W.QMainWindow, Ui_MainWindow):
 
@@ -114,9 +116,9 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
 def main():
    threading.currentThread().setName("main")
 
-   appRoot = dirname(abspath(sys.argv[0]))
-   log("Running at " + appRoot)
-   os.chdir(appRoot)
+   G.MAIN_OPTIONS = G.parseOptions(sys.argv[1:])
+   # appRoot = dirname(abspath([0]))
+   # os.chdir(appRoot)
    try:
       app = W.QApplication(sys.argv)
       w = MainWindow()

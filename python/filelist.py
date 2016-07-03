@@ -15,6 +15,7 @@ from lib.subprocmonitor import *
 import threading as T
 import re
 import os.path as Path
+import Control.Global
 
 class File(Ui_FileListItem, QWidget):
 
@@ -85,8 +86,10 @@ class File(Ui_FileListItem, QWidget):
       def final():
          self._endCalled += 1
 
-      # arg = ['bash', './bin/testbin']
-      arg = ["compress", self.name, self.name, self.root.configSelector.currentConfig()]
+      arg = [Control.Global.MAIN_OPTIONS.compressBin, 
+             self.name, 
+             self.name, 
+             self.root.configSelector.currentConfig()]
       log("Arguments: " + " ".join(arg))
       
       self.monitor = SubProcMonitor(
@@ -211,7 +214,7 @@ class FileList(QListView):
                c.killProcess()
                c.message = "压缩失败"
                c.updateUI()
-               self.root.message.error(e)
+               self.root.Message.error(e)
                idx += 1
                raise e
                
