@@ -1,0 +1,29 @@
+{
+  "crf": 18,
+  "frameRate": {
+    "tag": "Max",
+    "contents": 30
+  },
+  "height": {
+    "tag": "Keep",
+    "contents": []
+  },
+  "suffix": "_h264.mp4",
+  "prefix": "",
+  "width": {
+    "tag": "Keep",
+    "contents": []
+  },
+  "frames": {
+    "tag": "Keep",
+    "contents": []
+  },
+  "bitRate": {
+    "tag": "Max",
+    "contents": 2000
+  },
+  "audioBitRate": {
+    "tag": "Max",
+    "contents": 128
+  }
+}

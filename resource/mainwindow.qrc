@@ -5,5 +5,7 @@
         <file>pause.png</file>
         <file>file.png</file>
         <file>stop.png</file>
+        <file>trash.png</file>
+        <file>bilibili.png</file>
     </qresource>
 </RCC>
