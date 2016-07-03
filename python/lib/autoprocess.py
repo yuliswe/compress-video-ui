@@ -50,7 +50,7 @@ class AutoProcess(State):
          raise e
       finally:
          self.final()
-         exit(0)
+         sys.exit(0)
 
 
 class TimeOut():
