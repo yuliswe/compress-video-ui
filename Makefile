@@ -8,5 +8,5 @@ run:
 	./dist/main/main
 	
 clean:
-	rm -r ./dist
+	rm -rf ./dist
 	
