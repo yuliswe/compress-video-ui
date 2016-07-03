@@ -16,6 +16,7 @@ from lib.message import Message
 import threading
 from lib.lisp import *
 import argparse
+from Control.Update import *
 import Control.Global as G
 
 class MainWindow(W.QMainWindow, Ui_MainWindow):
@@ -32,7 +33,7 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       self.configSelector = ConfigFile(self, self.configSelector)
       # self.setWindowFlags(Qt.FramelessWindowHint)
       self.setupMessage()
-      self.checkUpdate()
+      checkUpdate(self)
 
    def resizeEvent(self, event):
       # event.ignore()
@@ -68,10 +69,7 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       self.NotificationArea.sizeHint = sizeHint
       self.NotificationArea.resizeEvent = resizeEvent
       self.NotificationArea.adjustSize()
-                  
-   def checkUpdate(self):
-      self.Message.show("检查更新...")
-      
+
    def setupStartButton(self):
       def on():
          self.startButton.setChecked(True)

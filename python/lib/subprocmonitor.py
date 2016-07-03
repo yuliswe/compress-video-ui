@@ -10,18 +10,20 @@ import os as OS
 
 class SubProcMonitor(State):
 
-   def __init__( self,
-                 cmdArgs = None,
-                 do = nub,
-                 final = nub,
-                 frequency = 1,
-                 pipeOut = False):
+   def __init__(self,
+                cmdArgs = None,
+                do = nub,
+                final = nub,
+                frequency = 1,
+                pipeOut = True,
+                pipeErr = True):
       super(SubProcMonitor, self).__init__()
       self.cmdArgs = cmdArgs
       self.frequency = frequency
       self.do = do
       self.final = final
       self.pipeOut = pipeOut
+      self.pipeErr = pipeErr
       # start a thread to check the subprocess repeatedly
       def update(autoproc):
          try:
@@ -35,15 +37,15 @@ class SubProcMonitor(State):
                   self.setSuccess()
                   autoproc.kill()
                else:
-                  raise Exception("SubProcMonitor: subprocess returns "+str(self.subproc.poll()))
+                  raise Exception("SubProcMonitor: subprocess exits with "+str(self.subproc.poll()))
          except Exception as e:
             if self.subproc.poll() == None: self.kill()
             self.setFailure(e)
             raise e
             
-      self.autoproc = AutoProcess(update=update, final=self.final, frequency=self.frequency)
+      self.autoproc = AutoProcess(update=update, final=lambda proc:self.final(self), frequency=self.frequency)
 
-   def start(self, stdout=None, threadName = "monitor"):
+   def start(self, threadName = "monitor"):
       assert self.isAwait(), \
          "SubProcMonitor: Attempted to use a process twice, please allocate a new ProcMonitor."
       self.threadName = threadName
@@ -53,11 +55,13 @@ class SubProcMonitor(State):
          creationflags = CREATE_NEW_PROCESS_GROUP
       self.subproc = Popen(self.cmdArgs, 
                            stdout=PIPE if self.pipeOut else None, 
+                           stderr=PIPE if self.pipeErr else None, 
                            universal_newlines=True,
                            creationflags=creationflags)
       assert self.subproc.pid, \
          "SubProcMonitor: Subprocess could not start."
       self.stdout = self.subproc.stdout
+      self.stderr = self.subproc.stderr
       self.setRunning()
       self.autoproc.start(threadName)
 
