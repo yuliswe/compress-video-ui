@@ -1,6 +1,6 @@
 default:
 	make clean
-	pyinstaller python/main.py
+	pyinstaller python/main.py --name app
 	mkdir ./dist/config
 	
 run:
@@ -9,4 +9,5 @@ run:
 	
 clean:
 	rm -rf ./dist
+	rm -rf ./build
 	
