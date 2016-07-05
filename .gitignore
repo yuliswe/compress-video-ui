@@ -8,5 +8,5 @@ python/dist
 /build
 *.spec
 *.exe
-python/mainwindow_rc.py
-python/mainwindow_ui.py
+*_rc.py
+*_ui.py
