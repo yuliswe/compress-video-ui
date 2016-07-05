@@ -15,8 +15,8 @@ class SubProcMonitor(State):
                 do = nub,
                 final = nub,
                 frequency = 1,
-                pipeOut = True,
-                pipeErr = True):
+                pipeOut = False,
+                pipeErr = False):
       super(SubProcMonitor, self).__init__()
       self.cmdArgs = cmdArgs
       self.frequency = frequency
@@ -37,7 +37,12 @@ class SubProcMonitor(State):
                   self.setSuccess()
                   autoproc.kill()
                else:
-                  raise Exception("SubProcMonitor: subprocess exits with "+str(self.subproc.poll()))
+                  errMsg = "SubProcMonitor: subprocess exits with %s.\n" % str(self.subproc.poll())
+                  if self.pipeOut:
+                     errMsg += "stdout:\n%s\n" % self.subproc.stdout.read()
+                  if self.pipeErr:
+                     errMsg += "stderr:\n%s\n" % self.subproc.stderr.read()
+                  raise Exception(errMsg)
          except Exception as e:
             if self.subproc.poll() == None: self.kill()
             self.setFailure(e)
