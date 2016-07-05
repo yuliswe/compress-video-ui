@@ -83,13 +83,13 @@ class File(Ui_FileListItem, QWidget):
          self.percentage = float(input.group(1))
          self.progress.valueChanged.emit(self.percentage)
             
-      def final():
+      def final(proc):
          self._endCalled += 1
 
       arg = [Control.Global.MAIN_OPTIONS.compressBin, 
              self.name, 
              self.name, 
-             self.root.configSelector.currentConfig()]
+             self.root.configSelector.currentPreset()]
       log("Arguments: " + " ".join(arg))
       
       self.monitor = SubProcMonitor(
@@ -218,7 +218,7 @@ class FileList(QListView):
                idx += 1
                raise e
                
-      def final():
+      def final(proc):
          self._endCalled += 1
          self.doneSignal.emit()
 

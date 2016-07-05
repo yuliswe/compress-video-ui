@@ -1,8 +1,0 @@
-echo "processing"
-i=0
-while [ ${i} -lt 101 ]; do
-   echo "total=100 current=${i} percent=${i}"
-   sleep 0.01
-   ((i++))
-done
-echo "done"

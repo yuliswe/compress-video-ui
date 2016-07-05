@@ -9,19 +9,21 @@ import mainwindow_rc
 import filelist as F
 import types
 from lib.qtopacity import opacity
-from Control.configfile import ConfigFile
 import os
 import os.path as path
 from lib.message import Message
 import threading
 from lib.lisp import *
 import argparse
+from Control.Preset import *
+from Control.Update import *
 import Control.Global as G
 
 class MainWindow(W.QMainWindow, Ui_MainWindow):
 
-   def __init__(self):
+   def __init__(self, app):
       super(MainWindow, self).__init__()
+      self.App = app
       self.setupUi(self)
       self.show()
       self.setupDragHint()
@@ -29,10 +31,10 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       self.setupFileListArea()
       self.setupStartButton()
       self.setAcceptDrops(True)
-      self.configSelector = ConfigFile(self, self.configSelector)
+      self.configSelector = PresetFile(self, self.configSelector)
       # self.setWindowFlags(Qt.FramelessWindowHint)
       self.setupMessage()
-      self.checkUpdate()
+      UpdateChecker(self)
 
    def resizeEvent(self, event):
       # event.ignore()
@@ -68,10 +70,7 @@ class MainWindow(W.QMainWindow, Ui_MainWindow):
       self.NotificationArea.sizeHint = sizeHint
       self.NotificationArea.resizeEvent = resizeEvent
       self.NotificationArea.adjustSize()
-                  
-   def checkUpdate(self):
-      self.Message.show("检查更新...")
-      
+
    def setupStartButton(self):
       def on():
          self.startButton.setChecked(True)
@@ -121,7 +120,7 @@ def main():
    # os.chdir(appRoot)
    try:
       app = W.QApplication(sys.argv)
-      w = MainWindow()
+      w = MainWindow(app)
       app.exec_()
    except Exception as e:
       w.message.error(e)

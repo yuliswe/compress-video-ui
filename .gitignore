@@ -7,3 +7,6 @@ python/dist
 /dist
 /build
 *.spec
+*.exe
+python/mainwindow_rc.py
+python/mainwindow_ui.py

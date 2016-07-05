@@ -49,7 +49,7 @@ class AutoProcess(State):
          error(str(e))
          raise e
       finally:
-         self.final()
+         self.final(self)
          sys.exit(0)
 
 

@@ -1,4 +1,0 @@
-pyuic5 -o ./python/mainwindow_ui.py -x ./mainwindow.ui
-pyuic5 -o ./python/filelistitem_ui.py -x ./plugin/filelistitem.ui
-pyrcc5 -o ./python/mainwindow_rc.py ./resource/mainwindow.qrc
-python3 ./python/main.py
