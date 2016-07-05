@@ -35,7 +35,6 @@ class SubProcMonitor(State):
             else:
                if code == 0:
                   self.setSuccess()
-                  autoproc.kill()
                else:
                   errMsg = "SubProcMonitor: subprocess exits with %s.\n" % str(self.subproc.poll())
                   if self.pipeOut:
@@ -47,6 +46,8 @@ class SubProcMonitor(State):
             if self.subproc.poll() == None: self.kill()
             self.setFailure(e)
             raise e
+         finally:
+            autoproc.kill()
             
       self.autoproc = AutoProcess(update=update, final=lambda proc:self.final(self), frequency=self.frequency)
 

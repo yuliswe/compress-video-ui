@@ -25,7 +25,7 @@ build:
 	rm main.spec
 	
 run:
-	cd dist && ./app/ui/main --preset-dir ./config --compress-bin ./app/compress-video.exe --update-bin ./update/compress-video-update.exe --update-cfg ./update/compress-video-update.cfg
+	cd dist && ./app/ui/main --preset-dir ./preset --compress-bin ./app/compress-video.exe --update-bin ./update/compress-video-update.exe --update-cfg ./update/compress-video-update.cfg
 	
 clean:
 	rm -rf ./dist
@@ -37,7 +37,7 @@ test:
 	echo "test" > ./dist/LICENSE
 	cp -rf ./test/preset ./dist/
 	cp -rf ./test/compress-video-update.cfg ./dist/update/compress-video-update.cfg
-	cd dist && ../python/main.py --preset-dir ./preset --compress-bin ./app/compress-video.exe --update-bin ./update/compress-video-update.exe --update-cfg ./update/compress-video-update.cfg
+	cd dist && python3 ../python/main.py --preset-dir ./preset --compress-bin ./app/compress-video.exe --update-bin ./update/compress-video-update.exe --update-cfg ./update/compress-video-update.cfg
 	
 copy-bin:
 	cp `which compress-video-exe` ./dist/app/compress-video.exe

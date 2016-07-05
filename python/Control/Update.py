@@ -24,14 +24,14 @@ class UpdateChecker(QObject):
       updateProcess.start()
       
    def promptUpdate(self, monitor):
-      err = monitor.stderr.read()
-      log(err)
-      if err.find("Application needs an update") != -1:
+      msg = monitor.stderr.read() + monitor.stdout.read()
+      log(msg)
+      if msg.find("Application needs an update") != -1:
          self.Message.show("查找到新版本")
          self.SignalUpdateNeeded.emit()
-      elif err.find("Application is up-to-date") != -1:
+      elif msg.find("Application is up-to-date") != -1:
          pass
-      elif err.find("Connection refused") != -1:
+      elif msg.find("Connection refused") != -1:
          self.Message.show("无法连接到网络", 120)
    
    
