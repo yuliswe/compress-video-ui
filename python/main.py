@@ -120,7 +120,7 @@ def main():
    # os.chdir(appRoot)
    
    print("Running at %s" % os.getcwd())
-   os.environ['PATH'] = "%s%s/bin" % (os.pathsep, os.getcwd())
+   os.environ['PATH'] += "%s%s/bin" % (os.pathsep, os.getcwd())
    print("PATH = %s" % os.environ['PATH'])
    
    try:
