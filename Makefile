@@ -6,6 +6,8 @@
 .PHONY: copy-pyqt
 .PHONY: run
 	
+PATH:="$(PATH):$(shell pwd)/dist/bin"
+	
 default:
 	make build
 	make test
@@ -17,7 +19,8 @@ build:
 	mkdir ./dist/preset/
 	mkdir ./dist/app/
 	mkdir ./dist/update/
-	mv ./dist/main ./dist/app/ui
+	mkdir ./dist/bin/
+	mv ./dist/main/* -t ./dist/app
 	touch ./dist/LICENSE
 	touch ./dist/update/VERSION
 	make copy-bin
@@ -26,7 +29,7 @@ build:
 	cp launcher/launcher.bat dist/launcher.bat
 	
 run:
-	cd dist && ./app/ui/main --preset-dir ./preset --compress-bin ./app/compress-video.exe --update-bin ./update/compress-video-update.exe --update-cfg ./update/compress-video-update.cfg
+	cd dist && ./app/main --preset-dir ./preset --update-cfg ./update/compress-video-update.cfg
 	
 clean:
 	rm -rf ./dist
@@ -38,11 +41,13 @@ test:
 	echo "test" > ./dist/LICENSE
 	cp -rf ./test/preset ./dist/
 	cp -rf ./test/compress-video-update.cfg ./dist/update/compress-video-update.cfg
-	cd dist && python3 ../python/main.py --preset-dir ./preset --compress-bin ./app/compress-video.exe --update-bin ./update/compress-video-update.exe --update-cfg ./update/compress-video-update.cfg
+	cd dist && python3 ../python/main.py --preset-dir ./preset --update-cfg ./update/compress-video-update.cfg
 	
 copy-bin:
-	cp `which compress-video-exe` ./dist/app/compress-video.exe
-	cp `which compress-video-update-exe` ./dist/update/compress-video-update.exe
+	cp `which compress-video-exe` ./dist/bin/compress-video.exe
+	cp `which compress-video-update-exe` ./dist/bin/compress-video-update.exe
+	cp `which ffprobe` ./dist/bin/ffprobe.exe
+	cp `which ffmpeg` ./dist/bin/ffmpeg.exe
 	
 pyqt:
 	pyuic5 -o ./python/mainwindow_ui.py -x ./mainwindow.ui

@@ -118,6 +118,11 @@ def main():
    G.MAIN_OPTIONS = G.parseOptions(sys.argv[1:])
    # appRoot = dirname(abspath([0]))
    # os.chdir(appRoot)
+   
+   print("Running at %s" % os.getcwd())
+   os.environ['PATH'] = "%s%s/bin" % (os.pathsep, os.getcwd())
+   print("PATH = %s" % os.environ['PATH'])
+   
    try:
       app = W.QApplication(sys.argv)
       w = MainWindow(app)
