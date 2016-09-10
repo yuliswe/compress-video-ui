@@ -20,7 +20,7 @@ build:
 	mkdir ./dist/app/
 	mkdir ./dist/update/
 	mkdir ./dist/bin/
-	mv ./dist/main/* -t ./dist/app
+	mv ./dist/main/* ./dist/app
 	touch ./dist/LICENSE
 	touch ./dist/update/VERSION
 	make copy-bin
