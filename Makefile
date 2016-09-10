@@ -6,8 +6,6 @@
 .PHONY: copy-pyqt
 .PHONY: run
 	
-PATH:="$(PATH):$(shell pwd)/dist/bin"
-	
 default:
 	make build
 	make test

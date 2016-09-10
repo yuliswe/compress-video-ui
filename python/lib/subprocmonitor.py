@@ -33,6 +33,7 @@ class SubProcMonitor(State):
                self.do(self)
             # when the subprocess terminates, the monitor terminates
             else:
+               autoproc.kill()
                if code == 0:
                   self.setSuccess()
                else:
@@ -45,9 +46,8 @@ class SubProcMonitor(State):
          except Exception as e:
             if self.subproc.poll() == None: self.kill()
             self.setFailure(e)
-            raise e
-         finally:
             autoproc.kill()
+            raise e
             
       self.autoproc = AutoProcess(update=update, final=lambda proc:self.final(self), frequency=self.frequency)
 
