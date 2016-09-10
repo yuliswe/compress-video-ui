@@ -23,6 +23,7 @@ build:
 	make copy-bin
 	rm -rf ./build
 	rm main.spec
+	cp launcher/launcher.bat dist/launcher.bat
 	
 run:
 	cd dist && ./app/ui/main --preset-dir ./preset --compress-bin ./app/compress-video.exe --update-bin ./update/compress-video-update.exe --update-cfg ./update/compress-video-update.cfg
