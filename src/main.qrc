@@ -12,5 +12,7 @@
         <file>qml/HistoryTaskView.qml</file>
         <file>qml/MainWindowView.qml</file>
         <file>qml/FileDelegate.qml</file>
+        <file>img/pause.png</file>
+        <file>img/trash.png</file>
     </qresource>
 </RCC>

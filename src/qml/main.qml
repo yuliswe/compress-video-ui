@@ -15,18 +15,21 @@ ApplicationWindow {
     color: "white"
     property int currentView: 0
     readonly property string navHoverColor: "#2DAD8F";
-    readonly property string navColor: "#3DB599";
+    readonly property string themeColor: "#3DB599";
+    readonly property string navColor: mainWindow.themeColor;
     readonly property string navSelectColor: "#2DAD8F";
-    property var currentTasks: [
-        {filename: "file1", status: 0, progress: 0, filesize: "15MB", img: "", eta: ""},
-        {filename: "file1", status: 0, progress: 0, filesize: "15MB", img: "", eta: ""},
-        {filename: "file1", status: 0, progress: 0, filesize: "15MB", img: "", eta: ""},
-        {filename: "file1", status: 0, progress: 0, filesize: "15MB", img: "", eta: ""}
-    ]
-    property var historyTasks: [
-        {filename: "file2", status: 0, progress: 0, filesize: "15MB", img: "", eta: ""},
-        {filename: "file2", status: 0, progress: 0, filesize: "15MB", img: "", eta: ""},
-        {filename: "file2", status: 0, progress: 0, filesize: "15MB", img: "", eta: ""},
-        {filename: "file2", status: 0, progress: 0, filesize: "15MB", img: "", eta: ""}
-    ]
+    ListModel {
+        id: currentTasksModel
+        ListElement {filename: "一二三四五六七八九十"; status: 0; percentage: 0; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "file1"; status: 0; percentage: 0.5; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "file1"; status: 0; percentage: 0.4; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "file1"; status: 0; percentage: 0.3; filesize: "15MB"; img: ""; eta: ""}
+    }
+    ListModel {
+        id: historyTasksModel
+        ListElement {filename: "一二三四五六七八九十"; status: 0; percentage: 20; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "file2"; status: 0; percentage: 0.45; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "file2"; status: 0; percentage: 0.74; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "file2"; status: 0; percentage: 0.3; filesize: "15MB"; img: ""; eta: ""}
+    }
 }

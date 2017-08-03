@@ -20,19 +20,18 @@ Item {
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
+        function whichModel() {
+            var tb = [
+                        currentTasksModel,
+                        historyTasksModel
+                    ];
+            return tb[mainWindow.currentView];
+        }
         Column {
             anchors.fill: parent;
             topPadding: 10;
             Repeater {
-                id: repeater
-                function whichModel() {
-                    var tb = [
-                                mainWindow.currentTasks,
-                                mainWindow.historyTasks
-                            ];
-                    return tb[mainWindow.currentView];
-                }
-                model: repeater.whichModel()
+                model: tasks.whichModel()
                 delegate: FileDelegate {}
             }
         }
