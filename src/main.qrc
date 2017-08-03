@@ -8,7 +8,9 @@
         <file>qml/DropFileView.qml</file>
         <file>img/current-tasks.png</file>
         <file>img/drop-file.png</file>
-        <file>qml/globals.js</file>
         <file>img/video-await.png</file>
+        <file>qml/HistoryTaskView.qml</file>
+        <file>qml/MainWindowView.qml</file>
+        <file>qml/FileDelegate.qml</file>
     </qresource>
 </RCC>
