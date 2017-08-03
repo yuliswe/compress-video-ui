@@ -1,8 +1,16 @@
-default:
+osx:
 	cd src && qmake -o makefile main.pro && make && rm makefile
 	./release/main.app/Contents/MacOS/main
+
+win:
+	cd src && qmake.exe main.pro -spec win32-g++ -o makefile && make
+
 qmlscene:
 	qmlscene ./src/qml/main.qml
+
+clean:
+	cd src && rm makefile* && rm .qmake*
+	rm -r debug release src/debug src/release
 # run:
 # 	make default
 # 	./graphics/main.app/Contents/MacOS/main

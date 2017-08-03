@@ -1,6 +1,14 @@
-<!DOCTYPE RCC>
-<RCC version="1.0">
-<qresource>
-    <file>qml/main.qml</file>
-</qresource>
+<RCC>
+    <qresource prefix="/">
+        <file>qml/main.qml</file>
+        <file>qml/AddTaskView.qml</file>
+        <file>qml/ControlBar.qml</file>
+        <file>qml/CurrentTaskView.qml</file>
+        <file>qml/AddTaskWindow.qml</file>
+        <file>qml/DropFileView.qml</file>
+        <file>img/current-tasks.png</file>
+        <file>img/drop-file.png</file>
+        <file>qml/globals.js</file>
+        <file>img/video-await.png</file>
+    </qresource>
 </RCC>

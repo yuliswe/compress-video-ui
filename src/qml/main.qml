@@ -1,60 +1,94 @@
 import QtQuick 2.0
 import QtQuick.Controls 2.0
+import QtQml 2.0
+import QtQuick.Layouts 1.3
 
 ApplicationWindow {
-    id: mainWindow
-    flags: Qt.FramelessWindowHint
-    visible: true
-    header: Rectangle {
-        border.color: "black"
-        border.width: 1
-        width: 50
-        height: 50
+    AddTaskWindow {
+        id: addTaskWindow
     }
-    signal setMouseCursor(int type);
-    minimumHeight: 400
-    minimumWidth: 600
-    MouseArea {
-        anchors.fill: parent
-        property var clickPos: "0,0"
-        property var mode: ""
-        property var count: 0
-        hoverEnabled: true
-        onPressed: {
-            clickPos = Qt.point(mouse.x,mouse.y)
-            mainWindow.color = "green"
-            mode = "drag"
-        }
-        onReleased: {
-            mode = ""
-            mainWindow.color = "white"
-        }
-        onExited: {
-            mode = ""
-            mainWindow.color = "white"
-        }
-        onPositionChanged: {
-            // monitor resize
-            var resizeRight = Math.abs(mouse.x - mainWindow.width) < 30;
-            var resizeBottom = Math.abs(mouse.y - mainWindow.height) < 80;
-            if (resizeRight && resizeBottom) {
-                mode = "resizeDiagnal"
-                setMouseCursor(Qt.SizeFDiagCursor);
-            } else if (resizeRight) {
-                mode = "resizeRight"
-                setMouseCursor(Qt.SizeHorCursor);
-            } else if (resizeBottom) {
-                mode = "resizeBottom"
-                setMouseCursor(Qt.SizeVerCursor);
-            } else {
-                mainWindow.color = "white"
-                setMouseCursor(Qt.ArrowCursor);
+    id: mainWindow
+    visible: true
+    flags: Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowSystemMenuHint | Qt.WindowMinimizeButtonHint | Qt.WindowCloseButtonHint
+    // signal setMouseCursor(int type);
+    minimumHeight: 500
+    minimumWidth: 800
+    color: "white"
+    property int currentView: 0
+    readonly property string navHoverColor: "#2DAD8F";
+    readonly property string navColor: "#3DB599";
+    readonly property string navSelectColor: "#2DAD8F";
+    Rectangle {
+        id: nav
+        width: 100
+        anchors.top: mainWindow.top
+        anchors.bottom: mainWindow.bottom
+        height: mainWindow.height
+        color: "#41a785"
+        Column {
+            width: parent.width
+            height: parent.height
+            Repeater {
+                id: repeater
+                model: [
+                    {text: "当前任务", img: "/img/current-tasks.png"},
+                    {text: "已完成", img: ""},
+                    {text: "设置", img: ""}
+                ]
+                delegate: Rectangle {
+                    id: button
+                    width: parent.width
+                    height: 35
+                    color: index == mainWindow.currentView ? mainWindow.navSelectColor : "transparent"
+                    Row {
+                        id: rowLayout
+                        spacing: 5
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
+                        Label {
+                            id: label
+                            text: modelData.text
+                            font.pointSize: 9
+                            color: "white"
+                            font.family: "DengXian"
+                            Layout.alignment:  Qt.AlignVCenter | Qt.AlignHCenter
+                        }
+                    }
+                    MouseArea {
+                        anchors.fill: parent;
+                        hoverEnabled: true;
+                        onClicked: {
+                            mainWindow.currentView = index;
+                            for (var i = 0; i < repeater.count; i++) {
+                                if (i !== index) {
+                                    repeater.itemAt(i).color = "transparent";
+                                } else {
+                                    repeater.itemAt(i).color = mainWindow.navSelectColor;
+                                }
+                            }
+                        }
+                        onEntered: {
+                            if (mainWindow.currentView !== index) {
+                                button.color = mainWindow.navHoverColor;
+                            }
+                        }
+                        onExited: {
+                            if (mainWindow.currentView !== index) {
+                                button.color = "transparent";
+                            }
+                        }
+                    }
+                }
             }
-            if (mode == "drag") {
-                var delta = Qt.point(mouse.x-clickPos.x, mouse.y-clickPos.y)
-                mainWindow.x += delta.x
-                mainWindow.y += delta.y
-            }
+        }
+    }
+    Rectangle {
+        anchors.top: parent.top
+        anchors.bottom: parent.bottom
+        anchors.left: nav.right
+        anchors.right: parent.right
+        CurrentTaskView {
+            visible: mainWindow.currentView == 0;
         }
     }
 }

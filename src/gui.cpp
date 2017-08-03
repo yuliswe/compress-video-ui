@@ -13,8 +13,8 @@ int GUI::start(int argc, char** argv){
     QQmlApplicationEngine engine;
     engine.load(QUrl("qrc:/qml/main.qml"));
     QObject* root = engine.rootObjects().first();
-    QObject::connect(root, SIGNAL(setMouseCursor(int)),
-                     this, SLOT(setMouseCursor(int)));
+    // QObject::connect(root, SIGNAL(setMouseCursor(int)),
+                    //  this, SLOT(setMouseCursor(int)));
     return this->app->exec();
 };
 
