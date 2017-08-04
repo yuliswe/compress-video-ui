@@ -2,6 +2,13 @@ import QtQuick 2.7
 import QtQuick.Controls 2.2
 
 Item {
+    ConfirmDialog {
+        id: confirmDialog
+        displayText: "确认要终止转换 \"" + filename + "\" 吗?"
+        onAccepted: {
+            tasks.whichModel().remove(index, 1);
+        }
+    }
     height: 64;
     anchors.left: parent.left;
     anchors.right: parent.right;
@@ -92,40 +99,12 @@ Item {
                 onClicked: {
                     switch (status) {
                     case 0: addTasksModel.remove(index, 1); break;
-                    case 1:
-                    case 2: confirm.open(); break;
+                    case 1: currentTasksModel.remove(index, 1); break;
+                    case 2: confirmDialog.open(); break;
                     case 3: historyTasksModel.remove(index, 1); break;
                     }
                 }
             }
         }
-    }
-    Dialog {
-        id: confirm
-        parent: mainWindow.overlay
-        implicitHeight: 100;
-        implicitWidth: 400;
-        standardButtons: Dialog.Ok | Dialog.Cancel;
-        leftMargin: parent.width / 2 - width / 2
-        topMargin: parent.height / 2 - height / 2 - 30
-        header: Text {
-            text: "确认要取消转换 \"" + filename + "\" 吗?"
-            font.family: "DengXian"
-            font.pixelSize: 12
-            anchors.left: parent.left
-            anchors.leftMargin: 20
-            anchors.top: parent.top
-            anchors.topMargin: 20
-        }
-        // Qt bug: <Unknown File>: QML VisualDataModel: Error creating delegate
-        // due to setting a custom background
-        background: Rectangle {
-            border.width: 1;
-            border.color: mainWindow.themeColor;
-        }
-        onAccepted: {
-            tasks.whichModel().remove(index, 1);
-        }
-        onRejected: {}
     }
 }

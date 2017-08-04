@@ -26,12 +26,9 @@ Rectangle {
         Repeater {
             id: repeater
             model: [
-                {text: "bilibili", img: "../img/bilibili.png", color: mainWindow.themeColor},
-                {text: "bilibili", img: ""},
-                {text: "bilibili", img: ""},
-                {text: "bilibili", img: ""},
-                {text: "bilibili", img: ""},
-                {text: "bilibili", img: ""}
+                {text: "Acfun", img: "../img/acfun.png", color: mainWindow.themeColor},
+                {text: "Bilibili", img: "../img/bilibili.png", color: mainWindow.themeColor},
+                {text: "优酷", img: "../img/youku.png", color: mainWindow.themeColor},
             ]
             delegate: Rectangle {
                 id: button
@@ -63,6 +60,8 @@ Rectangle {
                     horizontalAlignment: Text.horizontalAlignment
                     anchors.top: img.bottom
                     anchors.horizontalCenter: parent.horizontalCenter
+                    font.family: "DengXian"
+                    font.pixelSize: 12;
                 }
                 MouseArea {
                     hoverEnabled: true;

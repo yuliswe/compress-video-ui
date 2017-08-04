@@ -23,9 +23,10 @@ Item {
         visible: addTasksModel.count == 0;
         Text {
             text: "拖入视频文件"
-            anchors.rightMargin: -60
+            anchors.verticalCenterOffset: -10
+            anchors.rightMargin: -40
             font.family: "DengXian"
-            font.pixelSize: 30
+            font.pixelSize: 27
             verticalAlignment: Qt.AlignVCenter;
             horizontalAlignment: Qt.AlignRight;
             id: hint
@@ -40,7 +41,7 @@ Item {
             anchors.verticalCenterOffset: 0
             anchors.leftMargin: 20
             width: 64;
-            anchors.verticalCenter: parent.verticalCenter
+            anchors.verticalCenter: hint.verticalCenter
             anchors.left: hint.right
             source: "../img/drop-file.png"
         }
@@ -65,13 +66,6 @@ Item {
                 verticalAlignment: Text.AlignVCenter
                 elide: Text.ElideRight
             }
-            //        background: Rectangle {
-            //            implicitWidth: 80;
-            //            implicitHeight: 20;
-            //            color: white;
-            //            border.color: start.down ? "#17a81a" : "#2167bf"
-            //            border.width: start.hovered ? 1 : 2
-            //        }
             onClicked: {
                 var arr = []
                 for (var i = 0; i < addTasksModel.count; i++) {

@@ -16,5 +16,8 @@
         <file>img/arrow.png</file>
         <file>img/bilibili.png</file>
         <file>qml/FileList.qml</file>
+        <file>img/youku.png</file>
+        <file>img/acfun.png</file>
+        <file>qml/ConfirmDialog.qml</file>
     </qresource>
 </RCC>

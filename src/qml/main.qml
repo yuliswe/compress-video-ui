@@ -2,9 +2,8 @@ import QtQuick 2.7
 import QtQuick.Controls 2.2
 
 ApplicationWindow {
-    AddTaskWindow {
-        id: addTaskWindow
-    }
+    AddTaskWindow { id: addTaskWindow }
+    ConfirmDialog { id: confirmDialog }
     MainWindowView {}
     id: mainWindow
     visible: true

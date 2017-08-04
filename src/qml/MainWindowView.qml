@@ -34,25 +34,6 @@ Item {
                         anchors.right: parent.right
                         anchors.leftMargin: 25
                         anchors.verticalCenter: parent.verticalCenter
-//                        Item {
-//                            Image {
-//                                id: img
-//                                source: "../img/current-tasks.png";
-//                                sourceSize.width: 16;
-//                                sourceSize.height: 16;
-//                                width: 16;
-//                                height: 16;
-//                                visible: false;
-//                            }
-
-//                            ColorOverlay {
-//                                anchors.fill: img
-//                                source: img
-//                                color: "white"
-//                            }
-//                            width: 16
-//                            height: 16;
-//                        }
                         Label {
                             id: label
                             text: modelData.text
@@ -86,7 +67,6 @@ Item {
                         opacity: 1
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.left: parent.right
-//                        anchors.rightMargin: 10;
                         visible: currentView == index
                     }
                     MouseArea {
