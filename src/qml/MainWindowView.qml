@@ -104,9 +104,10 @@ Item {
         anchors.right: parent.right
         CurrentTaskView {
             visible: mainWindow.currentView == 0;
+            fileListModel: currentTasksModel
         }
         HistoryTaskView {
-            visible: mainWindow.currentView == 1;
+            visible: mainWindow.currentView == 1
         }
     }
 }

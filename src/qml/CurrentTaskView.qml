@@ -2,6 +2,8 @@ import QtQuick 2.7
 import QtQuick.Controls 2.2
 
 Item {
+    id: currentTaskView
+    property var fileListModel: [];
     anchors.fill: parent;
     Rectangle {
         anchors.top: parent.top
@@ -10,6 +12,7 @@ Item {
         anchors.bottom: tasks.top;
         ControlBar {
             anchors.fill: parent;
+            fileListModel: currentTaskView.fileListModel
         }
     }
     Rectangle {
@@ -20,20 +23,14 @@ Item {
         anchors.left: parent.left
         anchors.bottom: parent.bottom
         anchors.bottomMargin: 0
-        function whichModel() {
-            var tb = [
-                        currentTasksModel,
-                        historyTasksModel
-                    ];
-            return tb[mainWindow.currentView];
-        }
         FileList {
+            id: fileList
             anchors.fill: parent;
-            model: mainWindow.currentView <= 1 ? tasks.whichModel() : []
+            model: currentTaskView.fileListModel
         }
         Item {
             anchors.fill: parent;
-            visible: mainWindow.currentView <= 1 && tasks.whichModel().count === 0;
+            visible: currentTaskView.fileListModel.count === 0;
             Item {
                 anchors.fill: parent;
                 Text {

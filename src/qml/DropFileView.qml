@@ -9,8 +9,8 @@ Item {
             addTasksModel.append(drop.urls.map(function(url) {
                 return {
                     filename: url,
-                    status: 0,
-                    percentage: 0.3,
+                    fileStatus: mainWindow.enumFileToBeAdded,
+                    percentage: 0,
                     filesize: "15MB",
                     img: "",
                     eta: ""
@@ -59,7 +59,7 @@ Item {
 
             contentItem: Text {
                 color: "black"
-                text: "开始转换"
+                text: "添加到当前任务"
                 font.family: "DengXian"
                 opacity: enabled ? 1.0 : 0.3
                 horizontalAlignment: Text.AlignHCenter
@@ -69,10 +69,13 @@ Item {
             onClicked: {
                 var arr = []
                 for (var i = 0; i < addTasksModel.count; i++) {
+                    addTasksModel.setProperty(i, "fileStatus", mainWindow.enumFileInQueue);
                     arr.push(addTasksModel.get(i));
                 }
                 currentTasksModel.append(arr);
                 addTasksModel.clear();
+                addTaskWindow.close();
+                mainWindow.currentView = 0;
             }
         }
         FileList {

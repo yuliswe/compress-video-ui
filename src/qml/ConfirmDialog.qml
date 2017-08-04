@@ -5,12 +5,6 @@ Dialog {
     id: confirmDialog
     property string displayText: "";
     parent: mainWindow.overlay
-    function showDialog(text, callback) {
-        confirmDialog.displayText = text;
-        console.log(text);
-        confirmDialog.open();
-        confirmDialog.onAccepted = callback;
-    }
     implicitHeight: 100;
     implicitWidth: 400;
     standardButtons: Dialog.Ok | Dialog.Cancel;

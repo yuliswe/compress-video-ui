@@ -3,9 +3,24 @@ import QtQuick.Controls 2.2
 
 Rectangle {
     id: controlBar;
+    ConfirmDialog {
+        id: confirmDialog
+        displayText: "确认要终止所有任务? 转换到一半的视频将需要重新转换。"
+        onAccepted: {
+            for (var i = 0; i < currentTasksModel.count; i++) {
+                currentTasksModel.setProperty(i, "fileStatus", mainWindow.enumFileUserStop);
+            }
+        }
+    }
+    property var fileListModel: [];
     anchors.fill: parent;
     function newTaskButton() {
         addTaskWindow.pop();
+    }
+    function stopAllButton() {
+        if (fileListModel.count > 0) {
+            confirmDialog.open();
+        }
     }
     color: "transparent"
     Rectangle {
@@ -24,7 +39,7 @@ Rectangle {
             model: [
                 {text: "添加视频", img: "", visibleView: [0,1], callback: "newTaskButton", hoverColor: mainWindow.themeColor },
                 {text: "开始转换", img: "", visibleView: [0], hoverColor: mainWindow.themeColor },
-                {text: "全部终止", img: "", visibleView: [0], hoverColor: "#C71018" },
+                {text: "全部终止", img: "", visibleView: [0], callback: "stopAllButton", hoverColor: "#C71018" },
                 {text: "清除记录", img: "", visibleView: [1], hoverColor: "#C71018" }
             ]
             delegate: Item {
@@ -33,7 +48,6 @@ Rectangle {
                 anchors.top: parent.top;
                 anchors.bottom: parent.bottom;
                 function isVisible() {
-                    console.log(mainWindow.currentView);
                     return modelData.visibleView.indexOf(mainWindow.currentView) !== -1;
                 }
                 visible: button.isVisible();

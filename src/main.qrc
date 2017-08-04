@@ -19,5 +19,11 @@
         <file>img/youku.png</file>
         <file>img/acfun.png</file>
         <file>qml/ConfirmDialog.qml</file>
+        <file>img/history-tasks.png</file>
+        <file>img/video-convert.png</file>
+        <file>img/video-done.png</file>
+        <file>img/video-error.png</file>
+        <file>img/video-warning.png</file>
+        <file>img/video-add.png</file>
     </qresource>
 </RCC>

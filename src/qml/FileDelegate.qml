@@ -2,11 +2,13 @@ import QtQuick 2.7
 import QtQuick.Controls 2.2
 
 Item {
+    id: fileDelegate
+    property var fileListModel: [];
     ConfirmDialog {
         id: confirmDialog
         displayText: "确认要终止转换 \"" + filename + "\" 吗?"
         onAccepted: {
-            tasks.whichModel().remove(index, 1);
+           fileListModel.remove(index, 1);
         }
     }
     height: 64;
@@ -19,17 +21,19 @@ Item {
         Image {
             id: img
             function whichImg() {
-                var tb = [
-                            "../img/video-await.png",
-                            "../img/video-await.png",
-                            "../img/video-await.png",
-                        ];
-                return tb[status];
+                switch (fileStatus) {
+                case mainWindow.enumFileInQueue: return "../img/video-await.png";
+                case mainWindow.enumFileInProgress: return "../img/video-convert.png";
+                case mainWindow.enumFileToBeAdded: return "../img/video-add.png";
+                case mainWindow.enumFileDone: return "../img/video-done.png";
+                case mainWindow.enumFileError: return "../img/video-error.png";
+                case mainWindow.enumFileUserStop: return "../img/video-warning.png";
+                }
             }
             fillMode: Image.PreserveAspectFit
             sourceSize.height: 128;
             sourceSize.width: 128;
-            source: whichImg();
+            source: img.whichImg();
             anchors.bottom: parent.bottom;
             anchors.left: parent.left;
             anchors.verticalCenter: parent.verticalCenter;
@@ -59,7 +63,7 @@ Item {
             id: progressBar
             anchors.rightMargin: 20
             anchors.leftMargin: 20
-            visible: status == 2;
+            visible: fileStatus == 2;
             anchors.bottom: filenameLabel.bottom
             anchors.right: trash.left
             value: percentage
@@ -73,7 +77,7 @@ Item {
             anchors.top: progressBar.bottom
             anchors.topMargin: 5;
             font.family: "DengXian"
-            visible: status == 2;
+            visible: fileStatus == 2;
         }
         Image {
             id: trash
@@ -97,11 +101,16 @@ Item {
                     trash.opacity = 0.5;
                 }
                 onClicked: {
-                    switch (status) {
-                    case 0: addTasksModel.remove(index, 1); break;
-                    case 1: currentTasksModel.remove(index, 1); break;
-                    case 2: confirmDialog.open(); break;
-                    case 3: historyTasksModel.remove(index, 1); break;
+//                    switch (fileStatus) {
+//                    case 0: addTasksModel.remove(index, 1); break;
+//                    case 1: currentTasksModel.remove(index, 1); break;
+//                    case 2: confirmDialog.open(); break;
+//                    case 3: historyTasksModel.remove(index, 1); break;
+//                    }
+                    if (fileStatus === mainWindow.enumFileInProgress) {
+                        confirmDialog.open();
+                    } else {
+                        fileDelegate.fileListModel.remove(index, 1);
                     }
                 }
             }
