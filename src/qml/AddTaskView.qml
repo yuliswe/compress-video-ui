@@ -1,6 +1,7 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.2
 import QtQuick.Layouts 1.3
+import QtGraphicalEffects 1.0
 
 Rectangle {
     id: addTask
@@ -25,7 +26,7 @@ Rectangle {
         Repeater {
             id: repeater
             model: [
-                {text: "bilibili", img: ""},
+                {text: "bilibili", img: "../img/bilibili.png", color: mainWindow.themeColor},
                 {text: "bilibili", img: ""},
                 {text: "bilibili", img: ""},
                 {text: "bilibili", img: ""},
@@ -36,27 +37,45 @@ Rectangle {
                 id: button
                 Layout.fillHeight: true;
                 Layout.fillWidth: true;
-                Layout.minimumHeight: 50;
-                Layout.minimumWidth: 50;
+                Layout.minimumHeight: 128;
+                Layout.minimumWidth: 128;
                 Layout.margins: 30
                 Image {
+                    id: img
                     source: modelData.img
+                    sourceSize.width: 64;
+                    sourceSize.height: 64;
+                    height: 64;
+                    width: 64;
+                    anchors.horizontalCenter: parent.horizontalCenter
+                    anchors.verticalCenter: parent.verticalCenter
+                    anchors.verticalCenterOffset: -10
+                    visible: false
+                }
+                ColorOverlay {
+                    anchors.fill: img
+                    source: img
+                    color: modelData.color || "transparent"
                 }
                 Label {
                     id: label
                     text: modelData.text
+                    horizontalAlignment: Text.horizontalAlignment
+                    anchors.top: img.bottom
+                    anchors.horizontalCenter: parent.horizontalCenter
                 }
                 MouseArea {
                     hoverEnabled: true;
                     anchors.fill: parent;
                     onEntered: {
-                        button.color = "lightgrey";
+                        button.color = "#efefef";
                     }
                     onExited: {
                         button.color = "transparent";
                     }
                     onClicked: {
                         addTask.selectedStandard = modelData.text;
+                        addTasksModel.clear();
                     }
                 }
             }

@@ -6,15 +6,15 @@
         <file>qml/CurrentTaskView.qml</file>
         <file>qml/AddTaskWindow.qml</file>
         <file>qml/DropFileView.qml</file>
-        <file>img/current-tasks.png</file>
         <file>img/drop-file.png</file>
         <file>img/video-await.png</file>
         <file>qml/HistoryTaskView.qml</file>
         <file>qml/MainWindowView.qml</file>
         <file>qml/FileDelegate.qml</file>
-        <file>img/pause.png</file>
         <file>img/trash.png</file>
         <file>img/empty.png</file>
         <file>img/arrow.png</file>
+        <file>img/bilibili.png</file>
+        <file>qml/FileList.qml</file>
     </qresource>
 </RCC>

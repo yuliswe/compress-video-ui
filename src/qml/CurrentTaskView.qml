@@ -27,19 +27,13 @@ Item {
                     ];
             return tb[mainWindow.currentView];
         }
-        ListView {
+        FileList {
             anchors.fill: parent;
-            model: tasks.whichModel()
-            boundsBehavior: Flickable.StopAtBounds
-            clip: true
-            delegate: FileDelegate {}
-            ScrollBar.vertical: ScrollBar {
-                policy: ScrollBar.AlwaysOn
-            }
+            model: mainWindow.currentView <= 1 ? tasks.whichModel() : []
         }
         Item {
             anchors.fill: parent;
-            visible: tasks.whichModel().count === 0;
+            visible: mainWindow.currentView <= 1 && tasks.whichModel().count === 0;
             Item {
                 anchors.fill: parent;
                 Text {
