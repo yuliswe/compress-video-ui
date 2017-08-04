@@ -20,16 +20,26 @@ ApplicationWindow {
     readonly property string navSelectColor: "#2DAD8F";
     ListModel {
         id: currentTasksModel
-        ListElement {filename: "一二三四五六七八九十"; status: 0; percentage: 0; filesize: "15MB"; img: ""; eta: ""}
-        ListElement {filename: "file1"; status: 0; percentage: 0.5; filesize: "15MB"; img: ""; eta: ""}
-        ListElement {filename: "file1"; status: 0; percentage: 0.4; filesize: "15MB"; img: ""; eta: ""}
-        ListElement {filename: "file1"; status: 0; percentage: 0.3; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "一二三四五六七八九十一二三四五六七八九十"; status: 2; percentage: 0; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "一二三四五六七八九十一二三四五六七八九十"; status: 1; percentage: 0.5; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "一二三四五六七八九十一二三四五六七八九十"; status: 1; percentage: 0.4; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "一二三四五六七八九十一二三四五六七八九十"; status: 1; percentage: 0.3; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "一二三四五六七八九十一二三四五六七八九十"; status: 1; percentage: 0.3; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "一二三四五六七八九十一二三四五六七八九十"; status: 1; percentage: 0.3; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "一二三四五六七八九十一二三四五六七八九十"; status: 1; percentage: 0.3; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "一二三四五六七八九十一二三四五六七八九十"; status: 1; percentage: 0.3; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "一二三四五六七八九十一二三四五六七八九十"; status: 1; percentage: 0.3; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "一二三四五六七八九十一二三四五六七八九十"; status: 1; percentage: 0.3; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "一二三四五六七八九十一二三四五六七八九十"; status: 1; percentage: 0.3; filesize: "15MB"; img: ""; eta: ""}
     }
     ListModel {
         id: historyTasksModel
-        ListElement {filename: "一二三四五六七八九十"; status: 0; percentage: 20; filesize: "15MB"; img: ""; eta: ""}
-        ListElement {filename: "file2"; status: 0; percentage: 0.45; filesize: "15MB"; img: ""; eta: ""}
-        ListElement {filename: "file2"; status: 0; percentage: 0.74; filesize: "15MB"; img: ""; eta: ""}
-        ListElement {filename: "file2"; status: 0; percentage: 0.3; filesize: "15MB"; img: ""; eta: ""}
+    }
+    ListModel {
+        id: addTasksModel
+        ListElement {filename: "一二三四五六七八九十一二三四五六七八九十"; status: 0; percentage: 20; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "一二三四五六七八九十一二三四五六七八九十"; status: 0; percentage: 0.45; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "一二三四五六七八九十一二三四五六七八九十"; status: 0; percentage: 0.74; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {filename: "一二三四五六七八九十一二三四五六七八九十"; status: 0; percentage: 0.3; filesize: "15MB"; img: ""; eta: ""}
     }
 }

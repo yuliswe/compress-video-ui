@@ -1,5 +1,6 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.2
+import QtGraphicalEffects 1.0
 
 Item {
     anchors.fill: parent;
@@ -17,26 +18,76 @@ Item {
                 id: repeater
                 model: [
                     {text: "当前任务", img: "/img/current-tasks.png"},
-                    {text: "已完成", img: ""},
+                    {text: "已经完成", img: ""},
                     {text: "设置", img: ""}
                 ]
                 delegate: Rectangle {
                     id: button
-                    width: parent.width
+                    anchors.left: parent.left;
+                    anchors.right: parent.right;
                     height: 35
                     color: index == mainWindow.currentView ? mainWindow.navSelectColor : "transparent"
                     Row {
-                        id: rowLayout
+                        id: row
                         spacing: 5
-                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        anchors.leftMargin: 25
                         anchors.verticalCenter: parent.verticalCenter
+//                        Item {
+//                            Image {
+//                                id: img
+//                                source: "../img/current-tasks.png";
+//                                sourceSize.width: 16;
+//                                sourceSize.height: 16;
+//                                width: 16;
+//                                height: 16;
+//                                visible: false;
+//                            }
+
+//                            ColorOverlay {
+//                                anchors.fill: img
+//                                source: img
+//                                color: "white"
+//                            }
+//                            width: 16
+//                            height: 16;
+//                        }
                         Label {
                             id: label
                             text: modelData.text
                             font.pointSize: 9
                             color: "white"
                             font.family: "DengXian"
+                            verticalAlignment: Text.AlignVCenter
                         }
+//                        Label {
+//                            id: count
+//                            text: "9"
+//                            font.pointSize: 6
+//                            color: "white"
+//                            horizontalAlignment: Text.AlignHCenter
+//                            verticalAlignment: Text.AlignVCenter
+//                            width: 15;
+//                            height: 13;
+//                            background: Rectangle {
+//                                color: "grey"
+//                                radius: 5
+//                            }
+//                            visible: true;
+//                        }
+                    }
+                    Rectangle {
+//                        radius: 0.5 * width
+                        width: 10
+                        height: width
+                        transform: Rotation { angle: 45 }
+                        color: "white"
+                        opacity: 1
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.left: parent.right
+//                        anchors.rightMargin: 10;
+                        visible: currentView == index
                     }
                     MouseArea {
                         anchors.fill: parent;

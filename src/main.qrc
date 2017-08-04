@@ -14,5 +14,7 @@
         <file>qml/FileDelegate.qml</file>
         <file>img/pause.png</file>
         <file>img/trash.png</file>
+        <file>img/empty.png</file>
+        <file>img/arrow.png</file>
     </qresource>
 </RCC>

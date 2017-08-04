@@ -33,9 +33,9 @@ Rectangle {
         anchors.leftMargin: 15
         anchors.left: img.right
         font.family: "DengXian"
-        font.pixelSize: 10
+        font.pixelSize: 11
         elide: Text.ElideMiddle
-        anchors.right: progressBar.left
+        anchors.right: progressBar.visible ? progressBar.left : trash.left
     }
     Label {
         id: filesizeLabel
@@ -50,7 +50,7 @@ Rectangle {
         id: progressBar
         anchors.rightMargin: 20
         anchors.leftMargin: 20
-        visible: true
+        visible: status == 2;
         anchors.bottom: filenameLabel.bottom
         anchors.right: trash.left
         value: percentage
@@ -64,6 +64,7 @@ Rectangle {
         anchors.top: progressBar.bottom
         anchors.topMargin: 5;
         font.family: "DengXian"
+        visible: status == 2;
     }
     Image {
         id: trash
@@ -87,7 +88,12 @@ Rectangle {
                 trash.opacity = 0.5;
             }
             onClicked: {
-                confirm.open();
+                switch (status) {
+                case 0: addTasksModel.remove(index, 1); break;
+                case 1:
+                case 2: confirm.open(); break;
+                case 3: historyTasksModel.remove(index, 1); break;
+                }
             }
         }
     }
