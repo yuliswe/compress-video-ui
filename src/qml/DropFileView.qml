@@ -8,10 +8,10 @@ Item {
             console.log(drop.urls);
             addTasksModel.append(drop.urls.map(function(url) {
                 return {
-                    filename: url,
+                    fileUrl: url,
                     fileStatus: mainWindow.enumFileToBeAdded,
                     percentage: 0,
-                    filesize: "15MB",
+                    fileSize: "15MB",
                     img: "",
                     eta: ""
                 };

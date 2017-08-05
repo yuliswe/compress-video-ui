@@ -6,7 +6,7 @@ Item {
     property var fileListModel: [];
     ConfirmDialog {
         id: confirmDialog
-        displayText: "确认要终止转换 \"" + filename + "\" 吗?"
+        displayText: "确认要终止转换 \"" + fileUrl + "\" 吗?"
         onAccepted: {
            fileListModel.remove(index, 1);
         }
@@ -39,8 +39,8 @@ Item {
             anchors.verticalCenter: parent.verticalCenter;
         }
         Label {
-            id: filenameLabel
-            text: filename
+            id: fileUrlLabel
+            text: fileUrl
             anchors.top: parent.top
             anchors.topMargin: 12
             anchors.leftMargin: 15
@@ -51,8 +51,8 @@ Item {
             anchors.right: progressBar.visible ? progressBar.left : trash.left
         }
         Label {
-            id: filesizeLabel
-            text: filesize
+            id: fileSizeLabel
+            text: fileSize
             anchors.bottomMargin: 15
             anchors.leftMargin: 15
             anchors.left: img.right
@@ -64,7 +64,7 @@ Item {
             anchors.rightMargin: 20
             anchors.leftMargin: 20
             visible: fileStatus == 2;
-            anchors.bottom: filenameLabel.bottom
+            anchors.bottom: fileUrlLabel.bottom
             anchors.right: trash.left
             value: percentage
             width: 400
@@ -101,15 +101,10 @@ Item {
                     trash.opacity = 0.5;
                 }
                 onClicked: {
-//                    switch (fileStatus) {
-//                    case 0: addTasksModel.remove(index, 1); break;
-//                    case 1: currentTasksModel.remove(index, 1); break;
-//                    case 2: confirmDialog.open(); break;
-//                    case 3: historyTasksModel.remove(index, 1); break;
-//                    }
                     if (fileStatus === mainWindow.enumFileInProgress) {
                         confirmDialog.open();
                     } else {
+                        mainWindow.signalDeleteCurrentTask(fileUrl);
                         fileDelegate.fileListModel.remove(index, 1);
                     }
                 }

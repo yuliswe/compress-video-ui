@@ -2,17 +2,36 @@
 #include <QQmlApplicationEngine>
 #include <QtQml>
 #include <QCursor>
+#include "file.h"
 
-class GUI : public QObject {
+class AbstractGUI : public QObject {
+        Q_OBJECT
 
-    Q_OBJECT
+    signals:
+        void signalDataChanged(QVariant data);
 
-    private: QApplication* app;
+    protected:
+        QApplication* app;
+        FileList currentTasksModel;
+        FileList historyTasksModel;
 
-    public: GUI();
-    public: ~GUI();
+    public slots:
+        virtual void onDeleteCurrentTask(QString url) = 0;
 
-    public: int start(int argc, char** argv);
-
-    public slots: void setMouseCursor(int type);
+    public:
+        int start(int argc, char** argv);
+        QVariant getQMLData();
+        void notifyDataChanges();
+        AbstractGUI();
+        virtual ~AbstractGUI();
 };
+
+
+class GUI : public AbstractGUI {
+        Q_OBJECT
+
+    public slots:
+//        void setMouseCursor(int type);
+        virtual void onDeleteCurrentTask(QString url);
+};
+

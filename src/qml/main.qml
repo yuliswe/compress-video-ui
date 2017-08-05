@@ -1,7 +1,16 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.2
+//import cpp 1.0
 
 ApplicationWindow {
+    // signals
+    signal signalDeleteCurrentTask(string fileUrl);
+    signal dataChanged(variant data);
+
+    function onDataChanged() {
+        console.log(data)
+    }
+
     AddTaskWindow { id: addTaskWindow }
     ConfirmDialog { id: confirmDialog }
     MainWindowView {}
@@ -25,13 +34,21 @@ ApplicationWindow {
     readonly property int enumFileError: 5;
     ListModel {
         id: currentTasksModel
-        ListElement {filename: "一二三四五六七八九十一二三四五六七八九十0"; fileStatus: 2; percentage: 0; filesize: "15MB"; img: ""; eta: ""}
-        ListElement {filename: "一二三四五六七八九十一二三四五六七八九十1"; fileStatus: 1; percentage: 0.5; filesize: "15MB"; img: ""; eta: ""}
+        ListElement {fileUrl: "一二三四五六七八九十一二三四五六七八九十0"; fileStatus: 2; percentage: 0; fileSize: "15MB"; img: ""; eta: ""}
+        ListElement {fileUrl: "一二三四五六七八九十一二三四五六七八九十1"; fileStatus: 1; percentage: 0.5; fileSize: "15MB"; img: ""; eta: ""}
     }
     ListModel {
         id: historyTasksModel
     }
     ListModel {
         id: addTasksModel
+    }
+    // slots
+    Connections {
+        target: cpp
+        onSignalDataChanged: {
+            console.log(JSON.stringify(data));
+
+        }
     }
 }
