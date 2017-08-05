@@ -14,9 +14,7 @@ class AbstractGUI : public QObject {
         QApplication* app;
         FileList currentTasksModel;
         FileList historyTasksModel;
-
-    public slots:
-        virtual void onDeleteCurrentTask(QString url) = 0;
+        FileList newTasksModel;
 
     public:
         int start(int argc, char** argv);
@@ -24,6 +22,11 @@ class AbstractGUI : public QObject {
         void notifyDataChanges();
         AbstractGUI();
         virtual ~AbstractGUI();
+
+    public slots:
+        virtual void onDeleteCurrentTask(QString url);
+        virtual void onMoveNewTasksToCurrent();
+        virtual void onAddNewTasks(QVariant urls);
 };
 
 
@@ -32,6 +35,5 @@ class GUI : public AbstractGUI {
 
     public slots:
 //        void setMouseCursor(int type);
-        virtual void onDeleteCurrentTask(QString url);
 };
 

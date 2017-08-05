@@ -14,9 +14,7 @@ Rectangle {
     }
     property var fileListModel: [];
     anchors.fill: parent;
-    function newTaskButton() {
-        addTaskWindow.pop();
-    }
+    function newTaskButton() {}
     function stopAllButton() {
         if (fileListModel.count > 0) {
             confirmDialog.open();
@@ -34,63 +32,57 @@ Rectangle {
     Row {
         id: row
         anchors.fill: parent;
-        Repeater {
-            id: repeater
-            model: [
-                {text: "添加视频", img: "", visibleView: [0,1], callback: "newTaskButton", hoverColor: mainWindow.themeColor },
-                {text: "开始转换", img: "", visibleView: [0], hoverColor: mainWindow.themeColor },
-                {text: "全部终止", img: "", visibleView: [0], callback: "stopAllButton", hoverColor: "#C71018" },
-                {text: "清除记录", img: "", visibleView: [1], hoverColor: "#C71018" }
-            ]
-            delegate: Item {
-                id: button
-                width: 75
-                anchors.top: parent.top;
-                anchors.bottom: parent.bottom;
-                function isVisible() {
-                    return modelData.visibleView.indexOf(mainWindow.currentView) !== -1;
-                }
-                visible: button.isVisible();
-//                anchors.verticalCenter: parent.verticalCenter
-//                color: "transparent"
-//                Image {
-//                    visible: true
-//                    source: modelData.img
-//                    anchors.verticalCenter: parent.verticalCenter
-//                }
-                Label {
-                    text: modelData.text
-                    visible: true
-                    font.family: "DengXian"
-                    verticalAlignment: Qt.AlignVCenter;
-                    horizontalAlignment: Qt.AlignHCenter;
-                    anchors.fill: parent;
-                    font.pixelSize: 11;
-                }
-                Rectangle {
-                    id: buttonLine
-                    anchors.left: parent.left;
-                    anchors.right: parent.right
-                    anchors.bottom: button.bottom;
-                    height: 2
-                    color: "transparent"
-                    opacity: 0.8
-                    z: 2
-                }
-                MouseArea {
-                    anchors.fill: parent;
-                    hoverEnabled: true;
-                    onEntered: {
-                        buttonLine.color = modelData.hoverColor;
-                    }
-                    onExited: {
-                        buttonLine.color = "transparent";
-                    }
-                    onClicked: {
-                        modelData.callback && controlBar[modelData.callback]();
+//        Repeater {
+//            id: repeater
+//            model: [
+//                {text: "添加视频", img: "", visibleView: [0,1], callback: "newTaskButton", hoverColor: mainWindow.themeColor },
+//                {text: "开始转换", img: "", visibleView: [0], hoverColor: mainWindow.themeColor },
+//                {text: "全部终止", img: "", visibleView: [0], callback: "stopAllButton", hoverColor: "#C71018" },
+//                {text: "清除记录", img: "", visibleView: [1], hoverColor: "#C71018" }
+//            ]
+//            delegate:
+//        }
+        ControlBarButton {
+            text: "添加视频"
+            visible: mainWindow.currentView == 0 || mainWindow.currentView == 1
+            hoverColor: mainWindow.themeColor
+            callback: newTaskWindow.pop;
+        }
+        ControlBarButton {
+            text: "开始转换"
+            visible: {
+                for (var i = 0; i < currentTaskView.count; i++) {
+                    if (currentTaskView[i].status === mainWindow.enumFileInProgress) {
+                        return false;
                     }
                 }
+                return mainWindow.currentView == 0;
             }
+            hoverColor: mainWindow.themeColor
+//            callback: {
+//                newTaskWindow.pop();
+//            }
+        }
+        ControlBarButton {
+            text: "全部终止"
+            visible: {
+                for (var i = 0; i < currentTaskView.count; i++) {
+                    if (currentTaskView[i].status === mainWindow.enumFileInProgress) {
+                        return mainWindow.currentView == 0;
+                    }
+                }
+                return false;
+            }
+            hoverColor: mainWindow.dangerColor
+//            callback: newTaskWindow.pop;
+        }
+        ControlBarButton {
+            text: "清除记录"
+            visible: mainWindow.currentView == 1
+            hoverColor: mainWindow.dangerColor
+//            callback: {
+//                newTaskWindow.pop();
+//            }
         }
     }
 }

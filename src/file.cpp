@@ -6,28 +6,39 @@
 #include <QDebug>
 #include <QJsonObject>
 #include <QJsonValue>
+#include <QFile>
+
 using namespace std;
 
 File::File() {}
+File::File(QString url, FileStatus status) {
+    this->url = url;
+    this->status = status;
+    QFile tmp(url);
+//    tmp.open(QIODevice::ReadOnly);
+//    qDebug() << "open" << url << "exists?" << tmp.exists() << endl;
+    this->size = tmp.size();
+    qDebug() << tmp.size() << this->size << endl;
+}
 File::~File() {}
 File File::fromQVariant(QVariant v) {
     QJsonValue obj = v.toJsonValue();
     qDebug() << "File:toJsonObject => " << obj << endl;
     File file;
-//    file.name = obj.find("fileUrl").value().toString();
-//    file.size = obj.find("fileSize").value().toInt();
-//    file.status = obj.find("fileStatus").value().toInt();
-//    file.progress = obj.find("progress").value().toDouble();
-//    qDebug() << "File:file => " << obj.find("fileUrl").value() << endl;
+    //    file.name = obj.find("fileUrl").value().toString();
+    //    file.size = obj.find("fileSize").value().toInt();
+    //    file.status = obj.find("fileStatus").value().toInt();
+    //    file.progress = obj.find("progress").value().toDouble();
+    //    qDebug() << "File:file => " << obj.find("fileUrl").value() << endl;
     return file;
 }
 
 QVariant File::toQVariant() const {
     QVariantMap m;
-    m.insert("fileUrl", this->name);
+    m.insert("fileUrl", this->url);
     m.insert("fileSize", this->size);
-    m.insert("fileStatus", this->status);
-    m.insert("progress", this->progress);
+    m.insert("fileStatus", static_cast<int>(this->status));
+    m.insert("percentage", this->progress);
     return m;
 }
 

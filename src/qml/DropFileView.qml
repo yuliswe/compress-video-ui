@@ -6,21 +6,12 @@ Item {
         anchors.fill: parent;
         onDropped: {
             console.log(drop.urls);
-            addTasksModel.append(drop.urls.map(function(url) {
-                return {
-                    fileUrl: url,
-                    fileStatus: mainWindow.enumFileToBeAdded,
-                    percentage: 0,
-                    fileSize: "15MB",
-                    img: "",
-                    eta: ""
-                };
-            }));
+            signalAddNewTasks(drop.urls);
         }
     }
     Item {
         anchors.fill: parent;
-        visible: addTasksModel.count == 0;
+        visible: newTasksModel.count == 0;
         Text {
             text: "拖入视频文件"
             anchors.verticalCenterOffset: -10
@@ -48,7 +39,7 @@ Item {
     }
     Item {
         anchors.fill: parent;
-        visible: addTasksModel.count > 0;
+        visible: newTasksModel.count > 0;
         Button {
             id: start
             anchors.right: parent.right;
@@ -68,13 +59,13 @@ Item {
             }
             onClicked: {
                 var arr = []
-                for (var i = 0; i < addTasksModel.count; i++) {
-                    addTasksModel.setProperty(i, "fileStatus", mainWindow.enumFileInQueue);
-                    arr.push(addTasksModel.get(i));
+                for (var i = 0; i < newTasksModel.count; i++) {
+                    newTasksModel.setProperty(i, "fileStatus", mainWindow.enumFileInQueue);
+                    arr.push(newTasksModel.get(i).url);
                 }
-                currentTasksModel.append(arr);
-                addTasksModel.clear();
-                addTaskWindow.close();
+                signalMoveNewTasksToCurrent();
+                newTasksModel.clear();
+                newTaskWindow.close();
                 mainWindow.currentView = 0;
             }
         }
@@ -85,7 +76,7 @@ Item {
             anchors.right: parent.right;
             anchors.bottom: start.top;
             anchors.bottomMargin: 5;
-            model: addTasksModel;
+            model: newTasksModel;
         }
     }
 }

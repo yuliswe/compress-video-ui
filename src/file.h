@@ -4,16 +4,28 @@
 #include <QString>
 #include <QVariant>
 #include <QByteArray>
+#include <QUrl>
 
 using namespace std;
 
+enum FileStatus {
+    ToBeAdded,
+    InQueue,
+    InProgess,
+    Done,
+    UserStopped,
+    Error
+};
+
 class File {
     public:
-        QString name;
-        QString size;
-        QString status;
-        double progress;
+        QString url = "";
+        QString name = "";
+        unsigned size = 0;
+        FileStatus status;
+        double progress = 0;
         File();
+        File(QString url, FileStatus status);
         ~File();
         static File fromQVariant(QVariant);
         QVariant toQVariant() const;

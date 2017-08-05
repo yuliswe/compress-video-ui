@@ -4,7 +4,7 @@ import QtQuick.Layouts 1.3
 import QtGraphicalEffects 1.0
 
 Rectangle {
-    id: addTask
+    id: newTask
     property var selectedStandard: false;
     Label {
         text: "选择要转换到的标准"
@@ -73,8 +73,7 @@ Rectangle {
                         button.color = "transparent";
                     }
                     onClicked: {
-                        addTask.selectedStandard = modelData.text;
-                        addTasksModel.clear();
+                        newTask.selectedStandard = modelData.text;
                     }
                 }
             }

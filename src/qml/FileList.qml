@@ -11,7 +11,7 @@ ListView {
         fileListModel: fileList.model
     }
     ScrollBar.vertical: ScrollBar {
-        policy: ScrollBar.AlwaysOn
+        policy: ScrollBar.AsNeeded
     }
 }
 

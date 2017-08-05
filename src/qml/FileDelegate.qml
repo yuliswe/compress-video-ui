@@ -8,7 +8,7 @@ Item {
         id: confirmDialog
         displayText: "确认要终止转换 \"" + fileUrl + "\" 吗?"
         onAccepted: {
-           fileListModel.remove(index, 1);
+            fileListModel.remove(index, 1);
         }
     }
     height: 64;
@@ -52,7 +52,16 @@ Item {
         }
         Label {
             id: fileSizeLabel
-            text: fileSize
+            text: {
+                var size = fileSize
+                if (size < 1024) { return Math.round(size) + " B" }
+                size = size / 1024
+                if (size < 1024) { return Math.round(size) + " KB" }
+                size = size / 1024
+                if (size < 1024) { return Math.round(size) + " MB" }
+                size = size / 1024
+                if (size < 1024) { return Math.round(size) + " GB" }
+            }
             anchors.bottomMargin: 15
             anchors.leftMargin: 15
             anchors.left: img.right

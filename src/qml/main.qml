@@ -5,13 +5,10 @@ import QtQuick.Controls 2.2
 ApplicationWindow {
     // signals
     signal signalDeleteCurrentTask(string fileUrl);
-    signal dataChanged(variant data);
+    signal signalMoveNewTasksToCurrent();
+    signal signalAddNewTasks(variant fileUrls);
 
-    function onDataChanged() {
-        console.log(data)
-    }
-
-    AddTaskWindow { id: addTaskWindow }
+    NewTaskWindow { id: newTaskWindow }
     ConfirmDialog { id: confirmDialog }
     MainWindowView {}
     id: mainWindow
@@ -24,6 +21,7 @@ ApplicationWindow {
     property int currentView: 0
     readonly property string navHoverColor: "#2DAD8F";
     readonly property string themeColor: "#3DB599";
+    readonly property string dangerColor: "#C71018";
     readonly property string navColor: mainWindow.themeColor;
     readonly property string navSelectColor: "#2DAD8F";
     readonly property int enumFileToBeAdded: 0;
@@ -34,21 +32,24 @@ ApplicationWindow {
     readonly property int enumFileError: 5;
     ListModel {
         id: currentTasksModel
-        ListElement {fileUrl: "一二三四五六七八九十一二三四五六七八九十0"; fileStatus: 2; percentage: 0; fileSize: "15MB"; img: ""; eta: ""}
-        ListElement {fileUrl: "一二三四五六七八九十一二三四五六七八九十1"; fileStatus: 1; percentage: 0.5; fileSize: "15MB"; img: ""; eta: ""}
     }
     ListModel {
         id: historyTasksModel
     }
     ListModel {
-        id: addTasksModel
+        id: newTasksModel
     }
     // slots
     Connections {
         target: cpp
         onSignalDataChanged: {
-            console.log(JSON.stringify(data));
-
+            console.log("onSignalDataChanged", JSON.stringify(data));
+            currentTasksModel.clear();
+            currentTasksModel.append(data.currentTasksModel);
+            historyTasksModel.clear();
+            historyTasksModel.append(data.historyTasksModel);
+            newTasksModel.clear();
+            newTasksModel.append(data.newTasksModel);
         }
     }
 }

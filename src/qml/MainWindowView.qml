@@ -26,7 +26,7 @@ Item {
                     anchors.left: parent.left;
                     anchors.right: parent.right;
                     height: 35
-                    color: index == mainWindow.currentView ? mainWindow.navSelectColor : "transparent"
+                    color: index === mainWindow.currentView ? mainWindow.navSelectColor : "transparent"
                     Row {
                         id: row
                         spacing: 5
@@ -108,6 +108,7 @@ Item {
         }
         HistoryTaskView {
             visible: mainWindow.currentView == 1
+            fileListModel: historyTasksModel
         }
     }
 }
