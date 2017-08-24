@@ -12,6 +12,15 @@ Debug:UI_DIR = ../debug/.ui
 
 CONFIG += qt
 QT += widgets qml
-SOURCES = *.cpp
-HEADERS = *.h
+SOURCES = \
+    main.cpp \
+    gui.cpp \
+    file.cpp \
+    worker.cpp
+
+HEADERS = \
+    gui.h \
+    file.h \
+    worker.h
+
 RESOURCES = main.qrc

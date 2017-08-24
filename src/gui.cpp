@@ -6,9 +6,9 @@
 
 using namespace std;
 
-int AbstractGUI::start(int argc, char** argv){
+GUI::GUI(int argc, char** argv) {
     qDebug() << "Application started" << endl;
-    this->app = new QApplication(argc, argv);
+    QApplication app(argc, argv);
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("cpp", this);
     engine.load(QUrl("qrc:/qml/main.qml"));
@@ -19,16 +19,19 @@ int AbstractGUI::start(int argc, char** argv){
                      this, SLOT(onMoveNewTasksToCurrent()));
     QObject::connect(qml, SIGNAL(signalAddNewTasks(QVariant)),
                      this, SLOT(onAddNewTasks(QVariant)));
+    QObject::connect(qml, SIGNAL(signalStartCurrentTasks()),
+                     this, SLOT(onStartCurrentTasks()));
+    emit this->workerThread.start();
     notifyDataChanges();
-    return this->app->exec();
+    app.exec();
 }
 
-AbstractGUI::AbstractGUI() {}
-AbstractGUI::~AbstractGUI() {
-    delete this->app;
+GUI::~GUI() {
+    emit this->workerThread.quit();
+    this->workerThread.wait();
 }
 
-QVariant AbstractGUI::getQMLData() {
+QVariant GUI::getQMLData() {
     QVariant newData;
     QVariant cur = this->currentTasksModel.toQVariant();
     QVariant his = this->historyTasksModel.toQVariant();
@@ -40,19 +43,19 @@ QVariant AbstractGUI::getQMLData() {
     return m;
 }
 
-void AbstractGUI::notifyDataChanges() {
+void GUI::notifyDataChanges() {
     emit this->signalDataChanged(this->getQMLData());
 }
 
-//void AbstractGUI::setMouseCursor(int type) {
+//void GUI::setMouseCursor(int type) {
 //    this->app->setOverrideCursor(QCursor(static_cast<Qt::CursorShape>(type)));
 //}
 
-void AbstractGUI::onDeleteCurrentTask(QString url) {
+void GUI::onDeleteCurrentTask(QString url) {
     qDebug() << "C++ deletes currentTask url" << url << endl;
 }
 
-void AbstractGUI::onAddNewTasks(QVariant urls) {
+void GUI::onAddNewTasks(QVariant urls) {
     QList<QUrl> urlList = urls.value<QList<QUrl>>();
     FileList newFileList;
     for (auto url : urlList) {
@@ -63,7 +66,7 @@ void AbstractGUI::onAddNewTasks(QVariant urls) {
     this->notifyDataChanges();
 }
 
-void AbstractGUI::onMoveNewTasksToCurrent() {
+void GUI::onMoveNewTasksToCurrent() {
     for (QList<File>::iterator task = this->newTasksModel.begin();
          task != this->newTasksModel.end();
          task++) {
@@ -72,4 +75,27 @@ void AbstractGUI::onMoveNewTasksToCurrent() {
     this->currentTasksModel.append(this->newTasksModel);
     this->newTasksModel.clear();
     this->notifyDataChanges();
+}
+
+
+void GUI::onStartCurrentTasks() {
+    qDebug() << "onStartCurrentTasks" << endl;
+    QString a = "dummy";
+    QList<QString> ls;
+    ls.push_back(a);
+    emit this->workerThread.startTasks(ls);
+//    if (this->workerThread.isRunning()) {
+//        qDebug() << "Worker is already running" << endl;
+//        return;
+//    }
+//    for (QList<File>::iterator task = this->currentTasksModel.begin();
+//         task != this->currentTasksModel.end();
+//         task++) {
+//        task->status = FileStatus::InProgess;
+//    }
+    this->notifyDataChanges();
+}
+
+
+void GUI::onStopCurrentTasks() {
 }

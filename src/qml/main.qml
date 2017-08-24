@@ -7,6 +7,7 @@ ApplicationWindow {
     signal signalDeleteCurrentTask(string fileUrl);
     signal signalMoveNewTasksToCurrent();
     signal signalAddNewTasks(variant fileUrls);
+    signal signalStartCurrentTasks();
 
     NewTaskWindow { id: newTaskWindow }
     ConfirmDialog { id: confirmDialog }

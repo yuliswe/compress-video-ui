@@ -3,7 +3,7 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-    GUI g;
-    return g.start(argc, argv);
+    GUI gui(argc, argv);
+    return 0;
 }
 

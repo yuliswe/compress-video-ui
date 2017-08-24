@@ -59,9 +59,7 @@ Rectangle {
                 return mainWindow.currentView == 0;
             }
             hoverColor: mainWindow.themeColor
-//            callback: {
-//                newTaskWindow.pop();
-//            }
+            callback: signalStartCurrentTasks
         }
         ControlBarButton {
             text: "全部终止"
