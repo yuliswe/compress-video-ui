@@ -13,29 +13,16 @@
 class GUI : public QObject {
         Q_OBJECT
 
-    signals:
-        void signalDataChanged(QVariant data);
-
-    protected:
-        WorkerThread workerThread;
-        FileList currentTasksModel;
-        FileList historyTasksModel;
-        FileList newTasksModel;
+//    signals:
+//        void signalQMLDataChanged(QVariant data);
 
     public:
-        QVariant getQMLData();
-        void notifyDataChanges();
         GUI(int argc, char** argv);
+        WorkerThread workerThread;
         virtual ~GUI();
 
     public slots:
-        virtual void onRemoveCurrentTask(QString url, QString standard);
-        virtual void onMoveNewTasksToCurrent();
-        virtual void onAddNewTasks(QVariant urls, QString standard);
-        virtual void onStartCurrentTasks();
-        virtual void onStopCurrentTasks();
         virtual void onAboutToQuit();
-        virtual void onProgressChanged(QJsonArray obj);
 };
 
 #endif

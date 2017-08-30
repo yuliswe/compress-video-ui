@@ -18,6 +18,7 @@ class WorkerThread : public QThread {
         signalStartTasks(QList<File>);
         signalStopTasks(QList<File>);
         signalProgressChanged(QJsonArray);
+        signalQMLDataChanged(QVariant data);
 
     public slots:
         void onStartWorker();
@@ -25,8 +26,18 @@ class WorkerThread : public QThread {
         void onStartTasks(QList<File>);
         void onStopTasks(QList<File>);
         void onReadyRead();
+        void onRemoveCurrentTask(QString url, QString standard);
+        void onMoveNewTasksToCurrent();
+        void onAddNewTasks(QVariant urls, QString standard);
+        void onStartCurrentTasks();
+        void onStopCurrentTasks();
+        void onProgressChanged(QJsonArray obj);
 
     public:
+        FileList currentTasksModel;
+        FileList historyTasksModel;
+        FileList newTasksModel;
+
         QMap<QString, QProcess> processes;
         QProcess worker;
         bool keepRunning = true;
@@ -34,6 +45,8 @@ class WorkerThread : public QThread {
         ~WorkerThread();
         void run();
         void invoke(QString cmd, QStringList args);
+        QVariant getQMLData();
+        void notifyDataChanges();
 };
 
 #endif // WORKER_H

@@ -2,5 +2,6 @@
 release/
 .vscode/
 debug/
+build/
 resource/
 *.autosave

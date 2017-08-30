@@ -68,8 +68,8 @@ ApplicationWindow {
     // slots
     Connections {
         target: cpp
-        onSignalDataChanged: {
-            console.log("onSignalDataChanged", JSON.stringify(data));
+        onSignalQMLDataChanged: {
+            console.log("onSignalQMLDataChanged", JSON.stringify(data));
             currentTasksModel.clear();
             currentTasksModel.append(data.currentTasksModel);
             historyTasksModel.clear();
