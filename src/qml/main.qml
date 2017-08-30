@@ -4,10 +4,11 @@ import QtQuick.Controls 2.2
 
 ApplicationWindow {
     // signals
-    signal signalDeleteCurrentTask(string fileUrl);
+    signal signalRemoveCurrentTask(string fileUrl, string fileStandard);
     signal signalMoveNewTasksToCurrent();
-    signal signalAddNewTasks(variant fileUrls);
+    signal signalAddNewTasks(variant fileUrls, string fileStandard);
     signal signalStartCurrentTasks();
+    signal signalStopCurrentTasks();
 
     NewTaskWindow { id: newTaskWindow }
     ConfirmDialog { id: confirmDialog }
@@ -19,7 +20,7 @@ ApplicationWindow {
     minimumHeight: 500
     minimumWidth: 800
     color: "white"
-    property int currentView: 0
+    // global constants
     readonly property string navHoverColor: "#2DAD8F";
     readonly property string themeColor: "#3DB599";
     readonly property string dangerColor: "#C71018";
@@ -31,6 +32,30 @@ ApplicationWindow {
     readonly property int enumFileDone: 3;
     readonly property int enumFileUserStop: 4;
     readonly property int enumFileError: 5;
+    readonly property int enumStandardBilibili: 0;
+    readonly property int enumStandardAcFun: 1;
+    readonly property int enumStandardYouku: 2;
+    // global vars
+    property int currentView: 0
+    property int inProgressCount: {
+        var count = 0;
+        for (var i = 0; i < currentTasksModel.count; i++) {
+            if (currentTasksModel.get(i).fileStatus === mainWindow.enumFileInProgress) {
+                count++;
+            }
+        }
+        return count;
+    }
+    property int inQueueCount: {
+        var count = 0;
+        for (var i = 0; i < currentTasksModel.count; i++) {
+            if (currentTasksModel.get(i).fileStatus === mainWindow.enumFileInQueue) {
+                count++;
+            }
+        }
+        return count;
+    }
+    property int currentTasksCount: currentTasksModel.count;
     ListModel {
         id: currentTasksModel
     }

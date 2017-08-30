@@ -11,10 +11,14 @@ using namespace std;
 enum FileStatus {
     ToBeAdded,
     InQueue,
-    InProgess,
+    InProgress,
     Done,
     UserStopped,
     Error
+};
+
+enum FileStandard {
+    Bilibili
 };
 
 class File {
@@ -23,9 +27,10 @@ class File {
         QString name = "";
         unsigned size = 0;
         FileStatus status;
+        QString standard;
         double progress = 0;
         File();
-        File(QString url, FileStatus status);
+        File(QString url, QString fileStandard, FileStatus status);
         ~File();
         static File fromQVariant(QVariant);
         QVariant toQVariant() const;

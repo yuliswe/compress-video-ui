@@ -11,9 +11,10 @@
 using namespace std;
 
 File::File() {}
-File::File(QString url, FileStatus status) {
+File::File(QString url, QString std, FileStatus status) {
     this->url = url;
     this->status = status;
+    this->standard = std;
     QFile tmp(url);
 //    tmp.open(QIODevice::ReadOnly);
 //    qDebug() << "open" << url << "exists?" << tmp.exists() << endl;
@@ -38,12 +39,13 @@ QVariant File::toQVariant() const {
     m.insert("fileUrl", this->url);
     m.insert("fileSize", this->size);
     m.insert("fileStatus", static_cast<int>(this->status));
+    m.insert("fileStandard", this->standard);
     m.insert("percentage", this->progress);
     return m;
 }
 
 QByteArray File::toJSON() const {
-    this->toQVariant().toJsonDocument().toJson();
+    return this->toQVariant().toJsonDocument().toJson();
 }
 
 QDebug operator<<(QDebug o, const File f) {

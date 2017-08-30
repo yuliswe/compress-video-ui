@@ -5,6 +5,7 @@
 #include <QQmlApplicationEngine>
 #include <QtQml>
 #include <QCursor>
+#include <QJsonObject>
 #include <QSemaphore>
 #include "file.h"
 #include "worker.h"
@@ -28,11 +29,13 @@ class GUI : public QObject {
         virtual ~GUI();
 
     public slots:
-        virtual void onDeleteCurrentTask(QString url);
+        virtual void onRemoveCurrentTask(QString url, QString standard);
         virtual void onMoveNewTasksToCurrent();
-        virtual void onAddNewTasks(QVariant urls);
+        virtual void onAddNewTasks(QVariant urls, QString standard);
         virtual void onStartCurrentTasks();
         virtual void onStopCurrentTasks();
+        virtual void onAboutToQuit();
+        virtual void onProgressChanged(QJsonArray obj);
 };
 
 #endif

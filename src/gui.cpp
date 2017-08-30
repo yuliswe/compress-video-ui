@@ -3,6 +3,8 @@
 #include <iostream>
 #include <QString>
 #include <QDebug>
+#include <QJsonObject>
+#include <QJsonArray>
 
 using namespace std;
 
@@ -13,22 +15,67 @@ GUI::GUI(int argc, char** argv) {
     engine.rootContext()->setContextProperty("cpp", this);
     engine.load(QUrl("qrc:/qml/main.qml"));
     QObject* qml = engine.rootObjects().first();
-    QObject::connect(qml, SIGNAL(signalDeleteCurrentTask(QString)),
-                     this, SLOT(onDeleteCurrentTask(QString)));
+    QObject::connect(qml, SIGNAL(signalRemoveCurrentTask(QString, QString)),
+                     this, SLOT(onRemoveCurrentTask(QString, QString)));
     QObject::connect(qml, SIGNAL(signalMoveNewTasksToCurrent()),
                      this, SLOT(onMoveNewTasksToCurrent()));
-    QObject::connect(qml, SIGNAL(signalAddNewTasks(QVariant)),
-                     this, SLOT(onAddNewTasks(QVariant)));
+    QObject::connect(qml, SIGNAL(signalAddNewTasks(QVariant, QString)),
+                     this, SLOT(onAddNewTasks(QVariant, QString)));
     QObject::connect(qml, SIGNAL(signalStartCurrentTasks()),
                      this, SLOT(onStartCurrentTasks()));
-    emit this->workerThread.start();
-    notifyDataChanges();
+    QObject::connect(qml, SIGNAL(signalStopCurrentTasks()),
+                     this, SLOT(onStopCurrentTasks()));
+    QObject::connect(&this->workerThread, WorkerThread::signalProgressChanged,
+                     this, GUI::onProgressChanged);
+    emit this->workerThread.signalStartWorker();
+    this->notifyDataChanges();
+    QObject::connect(&app, SIGNAL(aboutToQuit()),
+                     this, SLOT(onAboutToQuit()));
     app.exec();
 }
 
-GUI::~GUI() {
-    emit this->workerThread.quit();
-    this->workerThread.wait();
+GUI::~GUI() {}
+
+void GUI::onAboutToQuit() {
+    emit this->workerThread.signalStopWorker();
+}
+
+FileStatus readFileStatus(QString fs) {
+    FileStatus s;
+    if (fs == "InQueue") {
+        s = FileStatus::InQueue;
+    } else if (fs == "InProgress") {
+        s = FileStatus::InProgress;
+    } else if (fs == "Done") {
+        s = FileStatus::Done;
+    } else if (fs == "Error") {
+        s = FileStatus::Error;
+    } else if (fs == "UserStopped") {
+        s = FileStatus::UserStopped;
+    } else {
+        s = FileStatus::Error;
+    }
+    return s;
+}
+
+void GUI::onProgressChanged(QJsonArray obj) {
+    qDebug() << obj << endl;
+    for (QList<File>::iterator task = this->currentTasksModel.begin();
+         task != this->currentTasksModel.end();
+         task++) {
+        for (QJsonArray::iterator newData = obj.begin();
+             newData != obj.end();
+             newData++) {
+            QJsonObject obj = newData->toObject();
+            QString url = obj["url"].toString();
+            QString standard = obj["standard"].toString();
+            if (task->url == url && task->standard == standard) {
+                task->status = readFileStatus(obj["status"].toString());
+                task->progress = obj["percentage"].toDouble();
+            }
+        }
+    }
+    emit this->notifyDataChanges();
 }
 
 QVariant GUI::getQMLData() {
@@ -51,15 +98,25 @@ void GUI::notifyDataChanges() {
 //    this->app->setOverrideCursor(QCursor(static_cast<Qt::CursorShape>(type)));
 //}
 
-void GUI::onDeleteCurrentTask(QString url) {
-    qDebug() << "C++ deletes currentTask url" << url << endl;
+void GUI::onRemoveCurrentTask(QString url, QString standard) {
+    QList<File> args;
+    for (QList<File>::iterator task = this->currentTasksModel.begin();
+         task != this->currentTasksModel.end();
+         task++) {
+        if (url == task->url && task->standard == standard) {
+            args << *task;
+            this->currentTasksModel.erase(task);
+        }
+    }
+    emit this->workerThread.signalStopTasks(args);
+    this->notifyDataChanges();
 }
 
-void GUI::onAddNewTasks(QVariant urls) {
+void GUI::onAddNewTasks(QVariant urls, QString standard) {
     QList<QUrl> urlList = urls.value<QList<QUrl>>();
     FileList newFileList;
     for (auto url : urlList) {
-        File f(url.toLocalFile(), FileStatus::ToBeAdded);
+        File f(url.toLocalFile(), standard, FileStatus::ToBeAdded);
         newFileList.push_back(f);
     }
     this->newTasksModel.append(newFileList);
@@ -80,22 +137,18 @@ void GUI::onMoveNewTasksToCurrent() {
 
 void GUI::onStartCurrentTasks() {
     qDebug() << "onStartCurrentTasks" << endl;
-    QString a = "dummy";
-    QList<QString> ls;
-    ls.push_back(a);
-    emit this->workerThread.startTasks(ls);
-//    if (this->workerThread.isRunning()) {
-//        qDebug() << "Worker is already running" << endl;
-//        return;
-//    }
-//    for (QList<File>::iterator task = this->currentTasksModel.begin();
-//         task != this->currentTasksModel.end();
-//         task++) {
-//        task->status = FileStatus::InProgess;
-//    }
+    emit this->workerThread.signalStartTasks(this->currentTasksModel);
     this->notifyDataChanges();
 }
 
 
 void GUI::onStopCurrentTasks() {
+    qDebug() << "onStopCurrentTasks" << endl;
+    emit this->workerThread.signalStopTasks(this->currentTasksModel);
+    for (QList<File>::iterator task = this->currentTasksModel.begin();
+         task != this->currentTasksModel.end();
+         task++) {
+        task->status = FileStatus::UserStopped;
+    }
+    this->notifyDataChanges();
 }

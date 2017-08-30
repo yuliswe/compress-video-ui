@@ -5,18 +5,26 @@
 #include <QDebug>
 #include <QProcess>
 #include <QStringList>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QList>
+#include "file.h"
 
 class WorkerThread : public QThread {
         Q_OBJECT
     signals:
-        startLoop();
-        stopLoop();
-        startTasks(QStringList);
+        signalStartWorker();
+        signalStopWorker();
+        signalStartTasks(QList<File>);
+        signalStopTasks(QList<File>);
+        signalProgressChanged(QJsonArray);
 
     public slots:
-        void onStartLoop();
-        void onStopLoop();
-        void onStartTasks(QStringList);
+        void onStartWorker();
+        void onStopWorker();
+        void onStartTasks(QList<File>);
+        void onStopTasks(QList<File>);
+        void onReadyRead();
 
     public:
         QMap<QString, QProcess> processes;

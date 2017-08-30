@@ -4,13 +4,6 @@ import QtQuick.Controls 2.2
 Item {
     id: fileDelegate
     property var fileListModel: [];
-    ConfirmDialog {
-        id: confirmDialog
-        displayText: "确认要终止转换 \"" + fileUrl + "\" 吗?"
-        onAccepted: {
-            fileListModel.remove(index, 1);
-        }
-    }
     height: 64;
     anchors.left: parent.left;
     anchors.right: parent.right;
@@ -80,7 +73,7 @@ Item {
         }
         Label {
             id: percentLabel
-            text: percentage + "%"
+            text: (Math.floor(percentage * 1000) / 10) + "%"
             anchors.rightMargin: 20
             anchors.right: trash.left
             anchors.top: progressBar.bottom
@@ -111,10 +104,11 @@ Item {
                 }
                 onClicked: {
                     if (fileStatus === mainWindow.enumFileInProgress) {
+                        confirmDialog.fileUrl = this.fileUrl;
+                        confirmDialog.fileStandard = this.fileStandard;
                         confirmDialog.open();
                     } else {
-                        mainWindow.signalDeleteCurrentTask(fileUrl);
-                        fileDelegate.fileListModel.remove(index, 1);
+                        mainWindow.signalRemoveCurrentTask(this.fileUrl, this.fileStandard);
                     }
                 }
             }

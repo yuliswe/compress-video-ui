@@ -5,7 +5,7 @@ import QtGraphicalEffects 1.0
 
 Rectangle {
     id: newTask
-    property var selectedStandard: false;
+    property bool selectedStandard: false;
     Label {
         text: "选择要转换到的标准"
         anchors.top: parent.top
@@ -26,9 +26,9 @@ Rectangle {
         Repeater {
             id: repeater
             model: [
-                {text: "Acfun", img: "../img/acfun.png", color: mainWindow.themeColor},
-                {text: "Bilibili", img: "../img/bilibili.png", color: mainWindow.themeColor},
-                {text: "优酷", img: "../img/youku.png", color: mainWindow.themeColor},
+                {text: "AcFun", img: "../img/acfun.png", color: mainWindow.themeColor, enum: "AcFun"},
+                {text: "Bilibili", img: "../img/bilibili.png", color: mainWindow.themeColor, enum: "Bilibili"},
+                {text: "优酷", img: "../img/youku.png", color: mainWindow.themeColor, enum: "Youku"},
             ]
             delegate: Rectangle {
                 id: button
@@ -74,6 +74,7 @@ Rectangle {
                     }
                     onClicked: {
                         newTask.selectedStandard = modelData.text;
+                        dropFileView.fileStandard = modelData.enum;
                     }
                 }
             }

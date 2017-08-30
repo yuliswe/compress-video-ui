@@ -13,5 +13,14 @@ ListView {
     ScrollBar.vertical: ScrollBar {
         policy: ScrollBar.AsNeeded
     }
+    ConfirmDialog {
+        id: confirmDialog
+        property string fileUrl: "";
+        property string fileStandard: "";
+        displayText: "确认要终止转换 \"" + this.fileUrl + "\"(" + this.fileStandard + ") 吗?"
+        onAccepted: {
+            mainWindow.signalRemoveCurrentTask(this.fileUrl, this.fileStandard);
+        }
+    }
 }
 
