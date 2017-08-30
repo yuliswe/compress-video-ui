@@ -6,7 +6,7 @@ Item {
     DropArea {
         anchors.fill: parent;
         onDropped: {
-            signalAddNewTasks(drop.urls, fileStandard);
+            mainWindow.signalAddNewTasks(drop.urls, fileStandard);
         }
     }
     Item {

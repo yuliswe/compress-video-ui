@@ -15,21 +15,27 @@ GUI::GUI(int argc, char** argv) {
     engine.rootContext()->setContextProperty("cpp", &this->workerThread);
     engine.load(QUrl("qrc:/qml/main.qml"));
     QObject* qml = engine.rootObjects().first();
+
     QObject::connect(qml, SIGNAL(signalRemoveCurrentTask(QString, QString)),
                      &this->workerThread, SLOT(onRemoveCurrentTask(QString, QString)));
+
     QObject::connect(qml, SIGNAL(signalMoveNewTasksToCurrent()),
                      &this->workerThread, SLOT(onMoveNewTasksToCurrent()));
+
     QObject::connect(qml, SIGNAL(signalAddNewTasks(QVariant, QString)),
                      &this->workerThread, SLOT(onAddNewTasks(QVariant, QString)));
-    QObject::connect(qml, SIGNAL(signalStartCurrentTasks()),
+
+    QObject::connect(qml,  SIGNAL(signalStartCurrentTasks()),
                      &this->workerThread, SLOT(onStartCurrentTasks()));
+
     QObject::connect(qml, SIGNAL(signalStopCurrentTasks()),
                      &this->workerThread, SLOT(onStopCurrentTasks()));
-//    QObject::connect(&this->workerThread, SIGNAL(WorkerThread::signalGUIUpdate()),
-//                     this, GUI::signalGUIUpdate);
+
+    QObject::connect(qml, SIGNAL(signalWorkerInvoke(QString, QVariant)),
+                     &this->workerThread, SLOT(onWorkerInvoke(QString, QVariant)));
+
     this->workerThread.signalStartWorker();
-    QObject::connect(&app, SIGNAL(aboutToQuit()),
-                     this, SLOT(onAboutToQuit()));
+    QObject::connect(&app, SIGNAL(aboutToQuit()), this, SLOT(onAboutToQuit()));
     app.exec();
 }
 

@@ -9,6 +9,7 @@ ApplicationWindow {
     signal signalAddNewTasks(variant fileUrls, string fileStandard);
     signal signalStartCurrentTasks();
     signal signalStopCurrentTasks();
+    signal signalWorkerInvoke(string cmd, variant args);
 
     NewTaskWindow { id: newTaskWindow }
     ConfirmDialog { id: confirmDialog }

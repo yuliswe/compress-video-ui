@@ -30,6 +30,7 @@ class WorkerThread : public QThread {
         void onAddNewTasks(QVariant urls, QString standard);
         void onStartCurrentTasks();
         void onStopCurrentTasks();
+        void onWorkerInvoke(QString cmd, QVariant args);
 
     public:
         FileList currentTasksModel;

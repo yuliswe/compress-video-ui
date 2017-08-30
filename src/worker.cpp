@@ -43,21 +43,17 @@ void WorkerThread::onReadyRead() {
     QByteArray bt = this->worker.readLine();
     QJsonDocument doc = QJsonDocument::fromJson(bt);
     QJsonArray arr = doc.array();
-    qDebug() << arr << endl;
-    for (QList<File>::iterator task = this->currentTasksModel.begin();
-         task != this->currentTasksModel.end();
-         task++) {
-        for (QJsonArray::iterator newData = arr.begin();
-             newData != arr.end();
-             newData++) {
-            QJsonObject obj = newData->toObject();
-            QString url = obj["url"].toString();
-            QString standard = obj["standard"].toString();
-            if (task->url == url && task->standard == standard) {
-                task->status = readFileStatus(obj["status"].toString());
-                task->progress = obj["percentage"].toDouble();
-            }
-        }
+    this->currentTasksModel.clear();
+    for (QJsonArray::iterator newData = arr.begin();
+         newData != arr.end();
+         newData++) {
+        QJsonObject obj = newData->toObject();
+        File file;
+        file.url = obj["url"].toString();
+        file.standard = obj["standard"].toString();
+        file.status = readFileStatus(obj["status"].toString());
+        file.progress = obj["percentage"].toDouble();
+        this->currentTasksModel.push_back(file);
     }
     emit this->notifyDataChanges();
 }
@@ -87,6 +83,11 @@ void WorkerThread::onStopTasks(QList<File> files) {
         args << f.url << f.standard;
         this->invoke("stopTask", args);
     }
+}
+
+void WorkerThread::onWorkerInvoke(QString cmd, QVariant args) {
+    QStringList ls = args.value<QStringList>();
+    this->invoke(cmd, ls);
 }
 
 void WorkerThread::invoke(QString cmd, QStringList args) {
@@ -150,9 +151,10 @@ void WorkerThread::onMoveNewTasksToCurrent() {
     for (QList<File>::iterator task = this->newTasksModel.begin();
          task != this->newTasksModel.end();
          task++) {
-        task->status = FileStatus::InQueue;
+        QStringList args;
+        args << task->url << task->standard;
+        this->invoke("queueTask", args);
     }
-    this->currentTasksModel.append(this->newTasksModel);
     this->newTasksModel.clear();
     this->notifyDataChanges();
 }

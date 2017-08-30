@@ -104,11 +104,11 @@ Item {
                 }
                 onClicked: {
                     if (fileStatus === mainWindow.enumFileInProgress) {
-                        confirmDialog.fileUrl = this.fileUrl;
-                        confirmDialog.fileStandard = this.fileStandard;
+                        confirmDialog.fileUrl = fileUrl;
+                        confirmDialog.fileStandard = fileStandard;
                         confirmDialog.open();
                     } else {
-                        mainWindow.signalRemoveCurrentTask(this.fileUrl, this.fileStandard);
+                        mainWindow.signalWorkerInvoke("removeTask", [fileUrl, fileStandard]);
                     }
                 }
             }
