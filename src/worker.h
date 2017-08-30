@@ -17,7 +17,6 @@ class WorkerThread : public QThread {
         signalStopWorker();
         signalStartTasks(QList<File>);
         signalStopTasks(QList<File>);
-        signalProgressChanged(QJsonArray);
         signalQMLDataChanged(QVariant data);
 
     public slots:
@@ -31,7 +30,6 @@ class WorkerThread : public QThread {
         void onAddNewTasks(QVariant urls, QString standard);
         void onStartCurrentTasks();
         void onStopCurrentTasks();
-        void onProgressChanged(QJsonArray obj);
 
     public:
         FileList currentTasksModel;

@@ -47,4 +47,6 @@ class FileList : public QList<File> {
         virtual QVariant toQVariant();
 };
 
+FileStatus readFileStatus(QString fs);
+
 #endif // FILE_H

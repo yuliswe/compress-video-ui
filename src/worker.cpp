@@ -30,11 +30,11 @@ WorkerThread::WorkerThread() {
     QObject::connect(this, signalStartTasks, this, onStartTasks);
     Q_ASSERT(getenv("bin_compress_video_worker"));
     QObject::connect(this, signalStopTasks, this, onStopTasks);
-    qDebug() << "Started " << getenv("bin_compress_video_worker") << endl;
     this->worker.setProcessChannelMode(QProcess::ForwardedErrorChannel);
     this->worker.start(QString(getenv("bin_compress_video_worker")));
     QObject::connect(&this->worker, QProcess::readyRead, this, WorkerThread::onReadyRead);
     this->worker.waitForStarted();
+    qDebug() << "Started" << getenv("bin_compress_video_worker") << endl;
 }
 WorkerThread::~WorkerThread() {
 }
@@ -43,7 +43,23 @@ void WorkerThread::onReadyRead() {
     QByteArray bt = this->worker.readLine();
     QJsonDocument doc = QJsonDocument::fromJson(bt);
     QJsonArray arr = doc.array();
-    emit this->signalProgressChanged(arr);
+    qDebug() << arr << endl;
+    for (QList<File>::iterator task = this->currentTasksModel.begin();
+         task != this->currentTasksModel.end();
+         task++) {
+        for (QJsonArray::iterator newData = arr.begin();
+             newData != arr.end();
+             newData++) {
+            QJsonObject obj = newData->toObject();
+            QString url = obj["url"].toString();
+            QString standard = obj["standard"].toString();
+            if (task->url == url && task->standard == standard) {
+                task->status = readFileStatus(obj["status"].toString());
+                task->progress = obj["percentage"].toDouble();
+            }
+        }
+    }
+    emit this->notifyDataChanges();
 }
 
 void WorkerThread::onStopWorker() {
@@ -87,45 +103,6 @@ void WorkerThread::invoke(QString cmd, QStringList args) {
     this->worker.write(doc.toJson(QJsonDocument::JsonFormat::Compact));
     this->worker.write("\n");
     this->worker.waitForBytesWritten();
-}
-
-
-FileStatus readFileStatus(QString fs) {
-    FileStatus s;
-    if (fs == "InQueue") {
-        s = FileStatus::InQueue;
-    } else if (fs == "InProgress") {
-        s = FileStatus::InProgress;
-    } else if (fs == "Done") {
-        s = FileStatus::Done;
-    } else if (fs == "Error") {
-        s = FileStatus::Error;
-    } else if (fs == "UserStopped") {
-        s = FileStatus::UserStopped;
-    } else {
-        s = FileStatus::Error;
-    }
-    return s;
-}
-
-void WorkerThread::onProgressChanged(QJsonArray obj) {
-    qDebug() << obj << endl;
-    for (QList<File>::iterator task = this->currentTasksModel.begin();
-         task != this->currentTasksModel.end();
-         task++) {
-        for (QJsonArray::iterator newData = obj.begin();
-             newData != obj.end();
-             newData++) {
-            QJsonObject obj = newData->toObject();
-            QString url = obj["url"].toString();
-            QString standard = obj["standard"].toString();
-            if (task->url == url && task->standard == standard) {
-                task->status = readFileStatus(obj["status"].toString());
-                task->progress = obj["percentage"].toDouble();
-            }
-        }
-    }
-    emit this->notifyDataChanges();
 }
 
 QVariant WorkerThread::getQMLData() {

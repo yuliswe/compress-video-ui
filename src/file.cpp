@@ -75,10 +75,27 @@ QVariant FileList::toQVariant() {
     return QVariant(filelist);
 }
 
-
 QDebug operator<<(QDebug o, QList<File> ls) {
     o << ls[0].toQVariant().toJsonDocument().toJson() << endl;
     return o;
+}
+
+FileStatus readFileStatus(QString fs) {
+    FileStatus s;
+    if (fs == "InQueue") {
+        s = FileStatus::InQueue;
+    } else if (fs == "InProgress") {
+        s = FileStatus::InProgress;
+    } else if (fs == "Done") {
+        s = FileStatus::Done;
+    } else if (fs == "Error") {
+        s = FileStatus::Error;
+    } else if (fs == "UserStopped") {
+        s = FileStatus::UserStopped;
+    } else {
+        s = FileStatus::Error;
+    }
+    return s;
 }
 
 //FileList::FileList() {}

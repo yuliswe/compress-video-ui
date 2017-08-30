@@ -27,7 +27,7 @@ GUI::GUI(int argc, char** argv) {
                      &this->workerThread, SLOT(onStopCurrentTasks()));
 //    QObject::connect(&this->workerThread, SIGNAL(WorkerThread::signalGUIUpdate()),
 //                     this, GUI::signalGUIUpdate);
-    emit this->workerThread.signalStartWorker();
+    this->workerThread.signalStartWorker();
     QObject::connect(&app, SIGNAL(aboutToQuit()),
                      this, SLOT(onAboutToQuit()));
     app.exec();
