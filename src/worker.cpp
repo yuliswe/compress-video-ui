@@ -11,51 +11,39 @@
 using namespace std;
 
 void WorkerThread::run() {
-    //        while(this->keepRunning) {
-    //            qDebug() << " working..." << endl;
-    //    //        for (auto i = this->processes.begin();
-    //    //             i != this->processes.end();
-    //    //             i++) {
-    //    //            i->
-    //    //        }
-    //            this->sleep(1);
-    //            qDebug() << this->worker.readAllStandardError() << endl;
-    //            qDebug() << this->worker.readAllStandardOutput() << endl;
-    //        }
+    while(this->keepRunning) {
+        this->sleep(1);
+        emit this->signalWorkerInvoke("report", QStringList());
+    }
 }
 
 WorkerThread::WorkerThread() {
-    QObject::connect(this, signalStopWorker, this, onStopWorker);
-    QObject::connect(this, signalStartWorker, this, onStartWorker);
-    QObject::connect(this, signalStartTasks, this, onStartTasks);
+    QObject::connect(this, &WorkerThread::signalStopWorker, this, &WorkerThread::onStopWorker);
+    QObject::connect(this, &WorkerThread::signalStartWorker, this, &WorkerThread::onStartWorker);
+    QObject::connect(this, &WorkerThread::signalStartTasks, this, &WorkerThread::onStartTasks);
+    QObject::connect(this, &WorkerThread::signalWorkerInvoke, this, &WorkerThread::onWorkerInvoke);
     Q_ASSERT(getenv("bin_compress_video_worker"));
-    QObject::connect(this, signalStopTasks, this, onStopTasks);
+    QObject::connect(this, &WorkerThread::signalStopTasks, this, &WorkerThread::onStopTasks);
     this->worker.setProcessChannelMode(QProcess::ForwardedErrorChannel);
     this->worker.start(QString(getenv("bin_compress_video_worker")));
-    QObject::connect(&this->worker, QProcess::readyRead, this, WorkerThread::onReadyRead);
+    QObject::connect(&this->worker, &QProcess::readyRead, this, &WorkerThread::onReadyRead);
+
     this->worker.waitForStarted();
     qDebug() << "Started" << getenv("bin_compress_video_worker") << endl;
 }
+
 WorkerThread::~WorkerThread() {
+    this->wait();
 }
 
 void WorkerThread::onReadyRead() {
-    QByteArray bt = this->worker.readLine();
+    QByteArray bt;
+    while (this->worker.bytesAvailable() > 0) {
+        bt = this->worker.readLine();
+    }
     QJsonDocument doc = QJsonDocument::fromJson(bt);
     QJsonArray arr = doc.array();
-    this->currentTasksModel.clear();
-    for (QJsonArray::iterator newData = arr.begin();
-         newData != arr.end();
-         newData++) {
-        QJsonObject obj = newData->toObject();
-        File file;
-        file.url = obj["url"].toString();
-        file.standard = obj["standard"].toString();
-        file.status = readFileStatus(obj["status"].toString());
-        file.progress = obj["percentage"].toDouble();
-        this->currentTasksModel.push_back(file);
-    }
-    emit this->notifyDataChanges();
+    emit this->signalQMLDataChanged(doc.toVariant());
 }
 
 void WorkerThread::onStopWorker() {
@@ -119,7 +107,7 @@ QVariant WorkerThread::getQMLData() {
 }
 
 void WorkerThread::notifyDataChanges() {
-    emit this->signalQMLDataChanged(this->getQMLData());
+    //    emit this->signalQMLDataChanged(this->getQMLData());
 }
 
 void WorkerThread::onRemoveCurrentTask(QString url, QString standard) {
@@ -133,7 +121,7 @@ void WorkerThread::onRemoveCurrentTask(QString url, QString standard) {
         }
     }
     emit this->signalStopTasks(args);
-    this->notifyDataChanges();
+    //    this->notifyDataChanges();
 }
 
 void WorkerThread::onAddNewTasks(QVariant urls, QString standard) {
@@ -144,7 +132,7 @@ void WorkerThread::onAddNewTasks(QVariant urls, QString standard) {
         newFileList.push_back(f);
     }
     this->newTasksModel.append(newFileList);
-    this->notifyDataChanges();
+    //    this->notifyDataChanges();
 }
 
 void WorkerThread::onMoveNewTasksToCurrent() {
@@ -156,14 +144,14 @@ void WorkerThread::onMoveNewTasksToCurrent() {
         this->invoke("queueTask", args);
     }
     this->newTasksModel.clear();
-    this->notifyDataChanges();
+    //    this->notifyDataChanges();
 }
 
 
 void WorkerThread::onStartCurrentTasks() {
     qDebug() << "onStartCurrentTasks" << endl;
     emit this->signalStartTasks(this->currentTasksModel);
-    this->notifyDataChanges();
+    //    this->notifyDataChanges();
 }
 
 
@@ -175,5 +163,5 @@ void WorkerThread::onStopCurrentTasks() {
          task++) {
         task->status = FileStatus::UserStopped;
     }
-    this->notifyDataChanges();
+    //    this->notifyDataChanges();
 }

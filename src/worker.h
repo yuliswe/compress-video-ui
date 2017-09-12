@@ -13,11 +13,12 @@
 class WorkerThread : public QThread {
         Q_OBJECT
     signals:
-        signalStartWorker();
-        signalStopWorker();
-        signalStartTasks(QList<File>);
-        signalStopTasks(QList<File>);
-        signalQMLDataChanged(QVariant data);
+        void signalStartWorker();
+        void signalStopWorker();
+        void signalStartTasks(QList<File>);
+        void signalStopTasks(QList<File>);
+        void signalQMLDataChanged(QVariant data);
+        void signalWorkerInvoke(QString cmd, QVariant args);
 
     public slots:
         void onStartWorker();

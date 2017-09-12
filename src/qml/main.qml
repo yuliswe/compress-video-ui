@@ -1,6 +1,6 @@
 import QtQuick 2.7
 import QtQuick.Controls 2.2
-//import cpp 1.0
+import "../js/ramda.js" as R
 
 ApplicationWindow {
     // signals
@@ -27,12 +27,12 @@ ApplicationWindow {
     readonly property string dangerColor: "#C71018";
     readonly property string navColor: mainWindow.themeColor;
     readonly property string navSelectColor: "#2DAD8F";
-    readonly property int enumFileToBeAdded: 0;
-    readonly property int enumFileInQueue: 1;
-    readonly property int enumFileInProgress: 2;
-    readonly property int enumFileDone: 3;
-    readonly property int enumFileUserStop: 4;
-    readonly property int enumFileError: 5;
+    readonly property string enumFileToBeAdded: "Added";
+    readonly property string enumFileQueued: "Queued";
+    readonly property string enumFileInProgress: "InProgress";
+    readonly property string enumFileDone: "Done";
+    readonly property string enumFileUserStop: "UserStopped";
+    readonly property string enumFileError: "Error";
     readonly property int enumStandardBilibili: 0;
     readonly property int enumStandardAcFun: 1;
     readonly property int enumStandardYouku: 2;
@@ -50,7 +50,7 @@ ApplicationWindow {
     property int inQueueCount: {
         var count = 0;
         for (var i = 0; i < currentTasksModel.count; i++) {
-            if (currentTasksModel.get(i).fileStatus === mainWindow.enumFileInQueue) {
+            if (currentTasksModel.get(i).fileStatus === mainWindow.enumFileQueued) {
                 count++;
             }
         }
@@ -67,16 +67,73 @@ ApplicationWindow {
         id: newTasksModel
     }
     // slots
+    function updateModel(model, newModel) {
+        var oldModel = [];
+
+        for (var j = 0; j < model.count; j++) {
+            var obj = model.get(j);
+            oldModel.push(obj);
+        }
+
+        function cmp(a,b) {
+            return a.fileUrl === b.fileUrl && a.fileStandard === b.fileStandard;
+        }
+
+        var toRemove = R.differenceWith(cmp, oldModel, newModel);
+        var toAdd = R.differenceWith(cmp, newModel, oldModel);
+        var toUpdate = R.innerJoin(cmp, newModel, oldModel);
+
+        console.log(oldModel, toAdd, toRemove, toUpdate);
+
+        for (var i = toUpdate.length - 1; i >= 0; i--) {
+//            console.log("index", toUpdate[i].index);
+            var index = R.findIndex(R.partial(cmp, [toUpdate[i]]), oldModel);
+            model.setProperty(index, "fileStatus", toUpdate[i].fileStatus);
+            model.setProperty(index, "percentage", toUpdate[i].percentage);
+        }
+
+        for (var k = toRemove.length - 1; k >= 0; k--) {
+            model.remove(R.findIndex(R.partial(cmp, [toRemove[k]]), oldModel));
+        }
+
+        model.append(toAdd);
+
+        //        for (var i = 0; i < newModel.length; i++) {
+        //            var found = false;
+        //            for (var j = 0; j < model.count; j++) {
+        //                if (model.get(j).fileUrl === newModel[i].fileUrl &&
+        //                    model.get(j).fileStandard === newModel[i].fileStandard) {
+        //                    // update file
+        //                    for (var key in newModel[i]) {
+        //                        model.setProperty(j, key, newModel[i][key]);
+        //                    }
+        //                    found = true;
+        //                    break;
+        //                }
+        //            }
+        //            if (! found) {
+        //                model.insert(0, newModel[i]);
+        //            }
+        //        }
+    }
     Connections {
         target: cpp
         onSignalQMLDataChanged: {
+            if (! data) {return;}
+            // adopt
+            for (var i = 0; i < data.length; i++) {
+                data[i].fileStatus = data[i].status;
+                data[i].fileUrl = data[i].url;
+                data[i].fileStandard = data[i].standard;
+                data[i].fileSize = 0;
+            }
             console.log("onSignalQMLDataChanged", JSON.stringify(data));
-            currentTasksModel.clear();
-            currentTasksModel.append(data.currentTasksModel);
-            historyTasksModel.clear();
-            historyTasksModel.append(data.historyTasksModel);
-            newTasksModel.clear();
-            newTasksModel.append(data.newTasksModel);
+            updateModel(newTasksModel, R.filter(R.propEq("fileStatus", "Added"), data));
+            updateModel(currentTasksModel, R.filter(function(e) {
+                return R.contains(e.fileStatus, ["Queued", "InProgress", "Error", "Done", "UserStopped"]);
+            }, data));
+            console.log("currentTasksModel", JSON.stringify(currentTasksModel.get(0)));
+            //            historyTasksModel.append(data.historyTasksModel);
         }
     }
 }

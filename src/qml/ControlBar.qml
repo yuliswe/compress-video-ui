@@ -41,7 +41,9 @@ Rectangle {
             visible: (mainWindow.inProgressCount !== mainWindow.currentTasksCount)
                      && mainWindow.currentView == 0;
             hoverColor: mainWindow.themeColor
-            callback: signalStartCurrentTasks
+            callback: function () {
+                mainWindow.signalWorkerInvoke("startQueuedTasks", []);
+             }
         }
         ControlBarButton {
             text: "全部终止"

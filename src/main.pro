@@ -1,14 +1,14 @@
 CONFIG += qt
 QT += widgets qml
 SOURCES = \
-    main.cpp \
-    gui.cpp \
     file.cpp \
+    gui.cpp \
+    main.cpp \
     worker.cpp
 
 HEADERS = \
-    gui.h \
     file.h \
+    gui.h \
     worker.h
 
 RESOURCES = main.qrc

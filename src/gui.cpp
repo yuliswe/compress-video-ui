@@ -37,12 +37,15 @@ GUI::GUI(int argc, char** argv) {
     this->workerThread.signalStartWorker();
     QObject::connect(&app, SIGNAL(aboutToQuit()), this, SLOT(onAboutToQuit()));
     app.exec();
+//    emit this->workerThread.signalStopWorker();
+//    this->workerThread.wait();
 }
 
 GUI::~GUI() {}
 
 void GUI::onAboutToQuit() {
     emit this->workerThread.signalStopWorker();
+//    this->workerThread.wait();
 }
 
 //void GUI::setMouseCursor(int type) {

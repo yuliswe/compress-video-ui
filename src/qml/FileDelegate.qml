@@ -15,7 +15,7 @@ Item {
             id: img
             function whichImg() {
                 switch (fileStatus) {
-                case mainWindow.enumFileInQueue: return "../img/video-await.png";
+                case mainWindow.enumFileQueued: return "../img/video-await.png";
                 case mainWindow.enumFileInProgress: return "../img/video-convert.png";
                 case mainWindow.enumFileToBeAdded: return "../img/video-add.png";
                 case mainWindow.enumFileDone: return "../img/video-done.png";
@@ -65,7 +65,7 @@ Item {
             id: progressBar
             anchors.rightMargin: 20
             anchors.leftMargin: 20
-            visible: fileStatus == 2;
+            visible: fileStatus === mainWindow.enumFileInProgress;
             anchors.bottom: fileUrlLabel.bottom
             anchors.right: trash.left
             value: percentage

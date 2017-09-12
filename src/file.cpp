@@ -82,8 +82,8 @@ QDebug operator<<(QDebug o, QList<File> ls) {
 
 FileStatus readFileStatus(QString fs) {
     FileStatus s;
-    if (fs == "InQueue") {
-        s = FileStatus::InQueue;
+    if (fs == "Queued") {
+        s = FileStatus::Queued;
     } else if (fs == "InProgress") {
         s = FileStatus::InProgress;
     } else if (fs == "Done") {

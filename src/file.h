@@ -10,7 +10,7 @@ using namespace std;
 
 enum FileStatus {
     ToBeAdded,
-    InQueue,
+    Queued,
     InProgress,
     Done,
     UserStopped,

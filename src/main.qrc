@@ -26,5 +26,6 @@
         <file>img/video-warning.png</file>
         <file>img/video-add.png</file>
         <file>qml/ControlBarButton.qml</file>
+        <file>js/ramda.js</file>
     </qresource>
 </RCC>

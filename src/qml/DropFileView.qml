@@ -6,12 +6,15 @@ Item {
     DropArea {
         anchors.fill: parent;
         onDropped: {
-            mainWindow.signalAddNewTasks(drop.urls, fileStandard);
+            for (var i = 0; i < drop.urls.length; i++) {
+                var fp = drop.urls[i].toString().replace(/^file:\/\/\//g, "");
+                mainWindow.signalWorkerInvoke("addTask", [fp, fileStandard]);
+            }
         }
     }
     Item {
         anchors.fill: parent;
-        visible: newTasksModel.count == 0;
+        visible: newTasksModel.count === 0;
         Text {
             text: "拖入视频文件"
             anchors.verticalCenterOffset: -10
@@ -58,15 +61,8 @@ Item {
                 elide: Text.ElideRight
             }
             onClicked: {
-                var arr = []
-                for (var i = 0; i < newTasksModel.count; i++) {
-                    newTasksModel.setProperty(i, "fileStatus", mainWindow.enumFileInQueue);
-                    arr.push(newTasksModel.get(i).url);
-                }
-                signalMoveNewTasksToCurrent();
-                newTasksModel.clear();
+                mainWindow.signalWorkerInvoke("queueAddedTasks", []);
                 newTaskWindow.close();
-                mainWindow.currentView = 0;
             }
         }
         FileList {
