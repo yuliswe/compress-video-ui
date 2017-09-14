@@ -7,7 +7,7 @@ Rectangle {
         id: confirmDialog
         displayText: "确认要终止所有任务? 转换到一半的视频将需要重新转换。"
         onAccepted: {
-            mainWindow.signalStopCurrentTasks();
+            mainWindow.signalWorkerInvoke("stopInProgressTasks", []);
         }
     }
     property var fileListModel: [];
@@ -38,12 +38,11 @@ Rectangle {
         }
         ControlBarButton {
             text: "开始转换"
-            visible: (mainWindow.inProgressCount !== mainWindow.currentTasksCount)
-                     && mainWindow.currentView == 0;
+            visible: mainWindow.inProgressCount == 0 && mainWindow.currentView == 0 && currentTasksModel.count > 0;
             hoverColor: mainWindow.themeColor
             callback: function () {
-                mainWindow.signalWorkerInvoke("startQueuedTasks", []);
-             }
+                mainWindow.signalWorkerInvoke("startQueuedOrUserStoppedTasks", []);
+            }
         }
         ControlBarButton {
             text: "全部终止"
@@ -55,9 +54,9 @@ Rectangle {
             text: "清除记录"
             visible: mainWindow.currentView == 1
             hoverColor: mainWindow.dangerColor
-//            callback: {
-//                newTaskWindow.pop();
-//            }
+            //            callback: {
+            //                newTaskWindow.pop();
+            //            }
         }
     }
 }

@@ -19,7 +19,7 @@ ListView {
         property string fileStandard: "";
         displayText: "确认要终止转换 \"" + this.fileUrl + "\"(" + this.fileStandard + ") 吗?"
         onAccepted: {
-            mainWindow.signalWorkerInvoke(this.fileUrl, this.fileStandard);
+            mainWindow.signalWorkerInvoke("removeTask", [this.fileUrl, this.fileStandard]);
         }
     }
 }

@@ -79,7 +79,7 @@ Item {
             anchors.top: progressBar.bottom
             anchors.topMargin: 5;
             font.family: "DengXian"
-            visible: fileStatus == 2;
+            visible: fileStatus === mainWindow.enumFileInProgress;
         }
         Image {
             id: trash
