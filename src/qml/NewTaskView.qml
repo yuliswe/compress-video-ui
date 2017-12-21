@@ -26,9 +26,9 @@ Rectangle {
         Repeater {
             id: repeater
             model: [
-                {text: "AcFun", img: "../img/acfun.png", color: mainWindow.themeColor, enum: "AcFun"},
-                {text: "Bilibili", img: "../img/bilibili.png", color: mainWindow.themeColor, enum: "Bilibili"},
-                {text: "优酷", img: "../img/youku.png", color: mainWindow.themeColor, enum: "Youku"},
+                {text: "AcFun", img: "../img/acfun.png", color: mainWindow.themeColor, enum: "acfun.h264"},
+                {text: "Bilibili", img: "../img/bilibili.png", color: mainWindow.themeColor, enum: "bilibili.h264"},
+                {text: "优酷", img: "../img/youku.png", color: mainWindow.themeColor, enum: "youku.h264"},
             ]
             delegate: Rectangle {
                 id: button

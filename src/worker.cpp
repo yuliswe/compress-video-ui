@@ -22,14 +22,11 @@ WorkerThread::WorkerThread() {
     QObject::connect(this, &WorkerThread::signalStartWorker, this, &WorkerThread::onStartWorker);
     QObject::connect(this, &WorkerThread::signalStartTasks, this, &WorkerThread::onStartTasks);
     QObject::connect(this, &WorkerThread::signalWorkerInvoke, this, &WorkerThread::onWorkerInvoke);
-    Q_ASSERT(getenv("bin_compress_video_worker"));
     QObject::connect(this, &WorkerThread::signalStopTasks, this, &WorkerThread::onStopTasks);
     this->worker.setProcessChannelMode(QProcess::ForwardedErrorChannel);
-    this->worker.start(QString(getenv("bin_compress_video_worker")));
+    this->worker.start(QString("compress-video-worker"));
     QObject::connect(&this->worker, &QProcess::readyRead, this, &WorkerThread::onReadyRead);
-
     this->worker.waitForStarted();
-    qDebug() << "Started" << getenv("bin_compress_video_worker") << endl;
 }
 
 WorkerThread::~WorkerThread() {
