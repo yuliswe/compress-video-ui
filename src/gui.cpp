@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QJsonObject>
 #include <QJsonArray>
-
+#include <QIcon>
 using namespace std;
 
 GUI::GUI(int argc, char** argv) {
@@ -36,6 +36,8 @@ GUI::GUI(int argc, char** argv) {
 
     this->workerThread.signalStartWorker();
     QObject::connect(&app, SIGNAL(aboutToQuit()), this, SLOT(onAboutToQuit()));
+
+    app.setWindowIcon(QIcon("main.png"));
     app.exec();
 //    emit this->workerThread.signalStopWorker();
 //    this->workerThread.wait();

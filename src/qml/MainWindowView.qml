@@ -19,7 +19,7 @@ Item {
                 model: [
                     {text: "当前任务", img: "/img/current-tasks.png"},
                     {text: "已经完成", img: ""},
-                    {text: "设置", img: ""}
+//                    {text: "设置", img: ""}
                 ]
                 delegate: Rectangle {
                     id: button

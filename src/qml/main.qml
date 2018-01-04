@@ -14,6 +14,8 @@ ApplicationWindow {
     NewTaskWindow { id: newTaskWindow }
     ConfirmDialog { id: confirmDialog }
     MainWindowView {}
+    title: "豆浆转码"
+    font.family: "DengXian"
     id: mainWindow
     visible: true
     flags: Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowSystemMenuHint | Qt.WindowMinimizeButtonHint | Qt.WindowCloseButtonHint
@@ -90,10 +92,11 @@ ApplicationWindow {
                 data[i].fileStatus = data[i].status;
                 data[i].fileUrl = data[i].url;
                 data[i].fileStandard = data[i].standard;
-                data[i].fileSize = 0;
+                data[i].fileSize = data[i].size;
                 delete data[i].status;
                 delete data[i].url;
                 delete data[i].standard;
+                delete data[i].size;
             }
             console.log("onSignalQMLDataChanged", JSON.stringify(data));
             updateModel(newTasksModel, R.filter(R.propEq("fileStatus", "Added"), data));

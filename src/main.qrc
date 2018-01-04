@@ -27,5 +27,7 @@
         <file>img/video-add.png</file>
         <file>qml/ControlBarButton.qml</file>
         <file>js/ramda.js</file>
+        <file>img/soup.png</file>
+        <file>img/soup2.png</file>
     </qresource>
 </RCC>

@@ -18,5 +18,5 @@ ApplicationWindow  {
         newTaskView.selectedStandard = false;
         window.visible = true;
     }
-    title: newTaskView.selectedStandard ? ("转换到" + newTaskView.selectedStandard + "格式") : "添加任务"
+    title: newTaskView.selectedStandard ? ("转换到" + newTaskView.selectedStandard + "标准格式") : "添加任务"
 }

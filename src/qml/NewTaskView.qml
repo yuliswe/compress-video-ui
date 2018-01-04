@@ -5,7 +5,7 @@ import QtGraphicalEffects 1.0
 
 Rectangle {
     id: newTask
-    property bool selectedStandard: false;
+    property var selectedStandard: false;
     Label {
         text: "选择要转换到的标准"
         anchors.top: parent.top

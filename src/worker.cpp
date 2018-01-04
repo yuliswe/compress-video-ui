@@ -8,11 +8,12 @@
 #include <QJsonArray>
 #include <cstdlib>
 #include <QtGlobal>
+#include <cstdlib>
 using namespace std;
 
 void WorkerThread::run() {
     while(this->keepRunning) {
-        this->sleep(1);
+        this->msleep(500);
         emit this->signalWorkerInvoke("report", QStringList());
     }
 }
@@ -24,7 +25,8 @@ WorkerThread::WorkerThread() {
     QObject::connect(this, &WorkerThread::signalWorkerInvoke, this, &WorkerThread::onWorkerInvoke);
     QObject::connect(this, &WorkerThread::signalStopTasks, this, &WorkerThread::onStopTasks);
     this->worker.setProcessChannelMode(QProcess::ForwardedErrorChannel);
-    this->worker.start(QString("compress-video-worker"));
+    QString bin = getenv("compress_video_bin");
+    this->worker.start(bin + QString("/compress-video-worker"));
     QObject::connect(&this->worker, &QProcess::readyRead, this, &WorkerThread::onReadyRead);
     this->worker.waitForStarted();
 }
