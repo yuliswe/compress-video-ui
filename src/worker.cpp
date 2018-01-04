@@ -13,7 +13,7 @@ using namespace std;
 
 void WorkerThread::run() {
     while(this->keepRunning) {
-        this->msleep(500);
+        this->msleep(50);
         emit this->signalWorkerInvoke("report", QStringList());
     }
 }
