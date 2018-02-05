@@ -7,7 +7,12 @@ Item {
         anchors.fill: parent;
         onDropped: {
             for (var i = 0; i < drop.urls.length; i++) {
-                var fp = drop.urls[i].toString().replace(/^file:\/\/\//g, "");
+                var fp = drop.urls[i].toString();
+                if (fp.match(/^file:\/\/\/\w:.*/g)) {
+                    fp = fp.replace(/^file:\/\/\//g, "");
+                } else {
+                    fp = fp.replace(/^file:\/\//g, "");
+                }
                 mainWindow.signalWorkerInvoke("addTask", [fp, fileStandard]);
             }
         }

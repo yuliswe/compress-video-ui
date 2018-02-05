@@ -37,7 +37,7 @@ Item {
                         Label {
                             id: label
                             text: modelData.text
-                            font.pointSize: 9
+                            font.pointSize: 11
                             color: "white"
                             font.family: "DengXian"
                             verticalAlignment: Text.AlignVCenter

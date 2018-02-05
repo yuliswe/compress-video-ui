@@ -15,6 +15,7 @@ void WorkerThread::run() {
     while(this->keepRunning) {
         this->msleep(50);
         emit this->signalWorkerInvoke("report", QStringList());
+        this->worker.waitForReadyRead();
     }
 }
 
