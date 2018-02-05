@@ -98,12 +98,12 @@ ApplicationWindow {
                 delete data[i].standard;
                 delete data[i].size;
             }
-            console.log("onSignalQMLDataChanged", JSON.stringify(data));
+//            console.log("onSignalQMLDataChanged", JSON.stringify(data));
             updateModel(newTasksModel, R.filter(R.propEq("fileStatus", "Added"), data));
             updateModel(currentTasksModel, R.filter(function(e) {
                 return R.contains(e.fileStatus, ["Queued", "InProgress", "Error", "Done", "UserStopped"]);
             }, data));
-            console.log("currentTasksModel", JSON.stringify(currentTasksModel.get(0)));
+//            console.log("currentTasksModel", JSON.stringify(currentTasksModel.get(0)));
             //            historyTasksModel.append(data.historyTasksModel);
         }
     }

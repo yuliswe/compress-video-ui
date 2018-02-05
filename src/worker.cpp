@@ -9,13 +9,14 @@
 #include <cstdlib>
 #include <QtGlobal>
 #include <cstdlib>
+#include <iostream>
 using namespace std;
 
 void WorkerThread::run() {
     while(this->keepRunning) {
         this->msleep(50);
         emit this->signalWorkerInvoke("report", QStringList());
-        this->worker.waitForReadyRead();
+        this->worker.waitForReadyRead(1000);
     }
 }
 
@@ -87,9 +88,14 @@ void WorkerThread::invoke(QString cmd, QStringList args) {
     }
     obj.insert("arguments", arr);
     QJsonDocument doc(obj);
-    qDebug() << doc << endl;
-    qDebug() << doc.toJson(QJsonDocument::JsonFormat::Compact) << endl;
-    this->worker.write(doc.toJson(QJsonDocument::JsonFormat::Compact));
+
+    QByteArray json = doc.toJson(QJsonDocument::JsonFormat::Compact);
+    if (cmd != "report") {
+        cerr << json.toStdString() << endl;
+    }
+//    qDebug() << doc << endl;
+//    qDebug() << doc.toJson(QJsonDocument::JsonFormat::Compact) << endl;
+    this->worker.write(json);
     this->worker.write("\n");
     this->worker.waitForBytesWritten();
 }

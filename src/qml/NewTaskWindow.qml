@@ -3,7 +3,7 @@ import QtQuick.Controls 2.2
 
 ApplicationWindow  {
     id: window
-    flags: Qt.Tool
+    flags: Qt.SubWindow
     minimumHeight: 400;
     minimumWidth: 600;
     NewTaskView {
